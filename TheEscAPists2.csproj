@@ -9,7 +9,7 @@
       https://nuget.bepinex.dev/v3/index.json;
       https://nuget.samboy.dev/v3/index.json
     </RestoreAdditionalProjectSources>
-    <RootNamespace>TheEscapists2AP</RootNamespace>
+    <RootNamespace>TheEscAPists2</RootNamespace>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
@@ -46,13 +46,13 @@
 
   <Target Name="CopyOnlyDll" AfterTargets="Build">
     <ItemGroup>
-      <BuiltDll Include="$(OutputPath)TheEscapists2AP.dll" />
+      <BuiltDll Include="$(OutputPath)TheEscAPists2.dll" />
       <BuiltDll Include="$(OutputPath)Archipelago.MultiClient.Net.dll" />
       <BuiltDll Include="$(OutputPath)websocket-sharp.dll" />
       <BuiltDll Include="$(OutputPath)Newtonsoft.Json.dll" />
 <!--      Im hoping these 4 is all thats required to run-->
     </ItemGroup>
-    <Copy SourceFiles="@(BuiltDll)" DestinationFolder="..\BepInEx\plugins\TheEscapists2AP" />
+    <Copy SourceFiles="@(BuiltDll)" DestinationFolder="..\BepInEx\plugins\TheEscAPists2" />
   </Target>
   
 </Project>
