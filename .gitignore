@@ -437,3 +437,6 @@ FodyWeavers.xsd
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
+
+#Shortcuts
+*.lnk
