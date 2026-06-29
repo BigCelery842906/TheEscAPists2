@@ -47,12 +47,16 @@
   <Target Name="CopyOnlyDll" AfterTargets="Build">
     <ItemGroup>
       <BuiltDll Include="$(OutputPath)TheEscAPists2.dll" />
-      <BuiltDll Include="$(OutputPath)Archipelago.MultiClient.Net.dll" />
-      <BuiltDll Include="$(OutputPath)websocket-sharp.dll" />
-      <BuiltDll Include="$(OutputPath)Newtonsoft.Json.dll" />
-<!--      Im hoping these 4 is all thats required to run-->
+<!--      <BuiltDll Include="$(OutputPath)websocket-sharp.dll" />-->
+      <!-- Im hoping these 4 is all thats required to run-->
     </ItemGroup>
     <Copy SourceFiles="@(BuiltDll)" DestinationFolder="..\BepInEx\plugins\TheEscAPists2" />
   </Target>
+
+  <Target Name="Run Game" AfterTargets="CopyOnlyDll">
+    <Exec Command="call TheEscapists2.lnk" />
+  </Target>
+  
+  
   
 </Project>
