@@ -47,6 +47,14 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="GoofsCode.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="GoofsCode.cs" />
+  </ItemGroup>
+
+
 
 
   <Target Name="CopyOnlyDll" AfterTargets="Build">

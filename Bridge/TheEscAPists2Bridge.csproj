@@ -24,14 +24,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="UnityEngine.Modules" Version="5.5.0" IncludeAssets="compile" />
   </ItemGroup>
-
   
-  <ItemGroup>
-    <Compile Remove="GoofsCode.cs" />
-    <None Include="GoofsCode.cs" />
-  </ItemGroup>
-
-
   <Target Name="CopyToPlugins" AfterTargets="Build">
     <ItemGroup>
       <BuiltDll Include="$(OutputPath)TheEscAPists2Bridge.dll" />
