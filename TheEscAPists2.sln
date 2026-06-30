@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36518.9 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheEscAPists2Bridge", "Bridge\TheEscAPists2Bridge.csproj", "{3150FFA6-602E-4034-8074-A6252C01943E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheEscAPists2", "Game Files\TheEscAPists2.csproj", "{F2C82608-3531-4566-B4AE-2BAC44B12A57}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9E396D3B-B5BB-46E2-8136-8F2590B06CA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E396D3B-B5BB-46E2-8136-8F2590B06CA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E396D3B-B5BB-46E2-8136-8F2590B06CA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E396D3B-B5BB-46E2-8136-8F2590B06CA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAED40C7-552A-442E-80B3-748F4CB37FB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAED40C7-552A-442E-80B3-748F4CB37FB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAED40C7-552A-442E-80B3-748F4CB37FB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAED40C7-552A-442E-80B3-748F4CB37FB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3150FFA6-602E-4034-8074-A6252C01943E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3150FFA6-602E-4034-8074-A6252C01943E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3150FFA6-602E-4034-8074-A6252C01943E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3150FFA6-602E-4034-8074-A6252C01943E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2C82608-3531-4566-B4AE-2BAC44B12A57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2C82608-3531-4566-B4AE-2BAC44B12A57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2C82608-3531-4566-B4AE-2BAC44B12A57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2C82608-3531-4566-B4AE-2BAC44B12A57}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E175AB15-CD9A-4DBF-B648-23AA34C0EB57}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DAED40C7-552A-442E-80B3-748F4CB37FB9} = {EA05E3AF-FF5C-4CC5-BF78-789AB7D42C71}
+	EndGlobalSection
+EndGlobal

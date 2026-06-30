@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>TheEscAPists2Bridge</RootNamespace>
+    <AssemblyName>TheEscAPists2Bridge</AssemblyName>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+      <RestoreAdditionalProjectSources>
+        https://api.nuget.org/v3/index.json;
+        https://nuget.bepinex.dev/v3/index.json;
+        https://nuget.samboy.dev/v3/index.json
+      </RestoreAdditionalProjectSources>
+  </PropertyGroup>
+
+  
+  <ItemGroup>
+    <PackageReference Include="Archipelago.MultiClient.Net" Version="6.3.1" />
+    <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
+    <PackageReference Include="BepInEx.Core" Version="5.*" />
+    <PackageReference Include="UnityEngine.Modules" Version="5.5.0" IncludeAssets="compile" />
+  </ItemGroup>
+
+  
+  <ItemGroup>
+    <Compile Remove="GoofsCode.cs" />
+    <None Include="GoofsCode.cs" />
+  </ItemGroup>
+
+  <Target Name="CopyToPlugins" AfterTargets="Build">
+    <ItemGroup>
+      <BuiltDll Include="$(OutputPath)TheEscAPists2Bridge.dll" />
+      <BuiltDll Include="$(OutputPath)Archipelago.MultiClient.Net.dll" />
+      <BuiltDll Include="$(OutputPath)Newtonsoft.Json.dll" />
+      <BuiltDll Include="$(OutputPath)TheEscAPists2Bridge.exe" />
+      <BuiltDll Include="$(OutputPath)TheEscAPists2Bridge.runtimeconfig.json" />
+      <!--      <BuiltDll Include="$(OutputPath)Newtonsoft.Json.dll" />-->
+      <!--      Im hoping these 4 is all thats required to run-->
+    </ItemGroup>
+    <Copy SourceFiles="@(BuiltDll)" DestinationFolder="..\..\BepInEx\plugins\TheEscAPists2\" />
+  </Target>
+
+</Project>

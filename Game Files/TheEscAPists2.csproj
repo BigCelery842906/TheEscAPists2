@@ -29,16 +29,16 @@
 
   <ItemGroup>
     <Reference Include="UnityEngine">
-      <HintPath>..\TheEscapists2_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\..\TheEscapists2_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>..\TheEscapists2_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>..\..\TheEscapists2_Data\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx">
-      <HintPath>..\BepInEx\core\BepInEx.dll</HintPath>
+      <HintPath>..\..\BepInEx\core\BepInEx.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\TheEscapists2_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\TheEscapists2_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
   </ItemGroup>
 
@@ -50,11 +50,11 @@
 <!--      <BuiltDll Include="$(OutputPath)websocket-sharp.dll" />-->
       <!-- Im hoping these 4 is all thats required to run-->
     </ItemGroup>
-    <Copy SourceFiles="@(BuiltDll)" DestinationFolder="..\BepInEx\plugins\TheEscAPists2" />
+    <Copy SourceFiles="@(BuiltDll)" DestinationFolder="..\..\BepInEx\plugins\TheEscAPists2" />
   </Target>
 
   <Target Name="Run Game" AfterTargets="CopyOnlyDll">
-    <Exec Command="call TheEscapists2.lnk" />
+    <Exec Command="call ..\TheEscapists2.lnk" />
   </Target>
   
   
