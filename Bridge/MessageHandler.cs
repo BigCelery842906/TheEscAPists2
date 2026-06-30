@@ -63,9 +63,9 @@ namespace TheEscAPists2Bridge
         
         public void SendChatToGame(string message)
         {
-            Packet.MessagePacket messagePacket = new Packet.MessagePacket(message);
+            Packet.ChatMessagePacket chatMessagePacket = new Packet.ChatMessagePacket(message);
             
-            SerialiseAndSend(messagePacket);
+            SerialiseAndSend(chatMessagePacket);
         }
         //Checks - Try Chat colour changes
         
@@ -113,8 +113,8 @@ namespace TheEscAPists2Bridge
                 }
                 case PacketType.ChatMessage:
                 {
-                    Packet.MessagePacket messagePacket = (Packet.MessagePacket)message;
-                    SendChatToServer(messagePacket.chatMessage);
+                    Packet.ChatMessagePacket chatMessagePacket = (Packet.ChatMessagePacket)message;
+                    SendChatToServer(chatMessagePacket.chatMessage);
                     break;
                 }
                 case PacketType.Check:
