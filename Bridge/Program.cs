@@ -109,7 +109,7 @@ namespace TheEscAPists2Bridge
         private static void ConnectAP()
         {
             ConsoleLogging.LogDebug("Trying to Connect...");
-            ArchipelagoClient.instance.SetConnectionValues("Clique", "BC_Clique", "archipelago.gg:49203", "",
+            ArchipelagoClient.instance.SetConnectionValues("Clique", "BC_Escapists", "archipelago.gg:55644", "",
                 new Version(0, 6, 1));
 
             bool connectionEstablished = ArchipelagoClient.instance.TryToConnect();
