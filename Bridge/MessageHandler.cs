@@ -1,126 +1,8 @@
 ﻿using System.Text.Json;
-using System.Text.Json.Serialization;
-using TheEscAPists2Bridge.PacketLibrary;
+using BC_Dual_Ref_Library;
 
 namespace TheEscAPists2Bridge
 {
-    namespace PacketLibrary
-    {
-        public enum PacketType
-        {
-            Connection,
-            ChatMessage,
-            Check,
-            Deathlink,
-            Goal,
-        }
-
-        public class Packet
-        {
-            public PacketType Type { get; set; }
-
-            public string ToJson()
-            {
-                var options = new JsonSerializerOptions
-                {
-                    Converters = { new PacketConverter() },
-                    IncludeFields = true,
-                };
-                
-                return JsonSerializer.Serialize(this, options);
-            }
-
-            public static Packet? Deserialise(string json)
-            {
-                var options = new JsonSerializerOptions
-                {
-                    Converters = { new PacketConverter() },
-                    IncludeFields = true,
-                };
-                
-                return JsonSerializer.Deserialize<Packet>(json, options);
-            }
-
-            public class ConnectionPacket : Packet
-            {
-                // game, slotName, serverAddress, password, gameVersion
-                public string game = ModInfo.GameName;
-                public string slotName;
-                public string serverAddress;
-                public string password = "";
-                public Version version = ModInfo.GameVersion;
-                
-                
-                public ConnectionPacket()
-                {
-                    Type = PacketType.Connection;
-                }
-
-                public ConnectionPacket(string slotName, string serverAddress, string password = "")
-                {
-                    Type = PacketType.Connection;
-                    this.slotName = slotName;
-                    this.serverAddress = serverAddress;
-                    this.password = password;
-                }
-            }
-
-            public class MessagePacket : Packet
-            {
-                public string chatMessage = "";
-                
-                public MessagePacket()
-                {
-                    Type = PacketType.ChatMessage;
-                }
-
-                public MessagePacket(string message)
-                {
-                    Type = PacketType.ChatMessage;
-                    this.chatMessage = message;
-                }
-            }
-
-            public class CheckPacket : Packet
-            {
-                public string checkName = "";
-
-                public CheckPacket()
-                {
-                    Type = PacketType.Check;
-                }
-
-                public CheckPacket(string checkName)
-                {
-                    Type = PacketType.Check;
-                    this.checkName = checkName;
-                }
-            }
-
-            public class DeathlinkPacket : Packet
-            {
-                public DeathlinkPacket()
-                {
-                    Type = PacketType.Deathlink;
-                }
-            }
-        }
-
-        public class PacketConverter : JsonConverter<Packet>
-        {
-            public override Packet? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            {
-                throw new NotImplementedException();
-            }
-
-            public override void Write(Utf8JsonWriter writer, Packet value, JsonSerializerOptions options)
-            {
-                throw new NotImplementedException();
-            }
-        }
-    }
-   
-    
     public class MessageHandler
     {
         
@@ -271,7 +153,7 @@ namespace TheEscAPists2Bridge
         void SendChatToServer(string ChatMessage)
         {
             //TODO: FEED CHAT MESSAGE TO SERVER
-            ArchipelagoClient.instance.SayThis(ChatMessage);
+            ArchipelagoClient.instance.SayToServer(ChatMessage);
         }
         
         //Checks

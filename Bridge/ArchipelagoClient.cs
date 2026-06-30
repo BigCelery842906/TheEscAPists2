@@ -2,14 +2,15 @@
 using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Helpers;
+using BC_Dual_Ref_Library;
 
 public struct ConnectionInfo
 {
-    public string game = "The Escapists 2";
+    public string game = ModInfo.GameName;
     public string slotName;
     public string serverAddress = "archipelago.gg:38281";
     public string password = "";
-    public Version gameVersion = new Version(0, 0, 1);
+    public Version gameVersion = ModInfo.GameVersion;
 
     public ConnectionInfo(string slotName, string serverAddress, Version gameVersion)
     {
@@ -308,7 +309,7 @@ namespace TheEscAPists2Bridge
             return false;
         }
 
-        public void SayThis(string message)
+        public void SayToServer(string message)
         {
             Session.Say(message);
         }

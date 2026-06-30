@@ -14,8 +14,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BC_Dual_Ref_Library\BC_Dual_Ref_Library.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
     <PackageReference Include="BepInEx.Core" Version="5.*" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="UnityEngine.Modules" Version="5.5.0" IncludeAssets="compile" />
   </ItemGroup>
 

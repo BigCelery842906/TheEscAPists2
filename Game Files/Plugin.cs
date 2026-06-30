@@ -79,9 +79,7 @@ public class Plugin : BaseUnityPlugin
             }
             catch (Exception ex)
             {
-                Logger.LogWarning(
-                    $"Bridge not ready yet ({i + 1}/{maxAttempts})"
-                );
+                Logger.LogWarning($"Bridge not ready yet ({i + 1}/{maxAttempts}), reason: {ex.Message}");
             }
 
             Thread.Sleep(250);
@@ -114,6 +112,7 @@ public class Plugin : BaseUnityPlugin
             if (message == null)
             {
                 logging.LogConsole("Game disconnected. Holding Pipe for reconnect.");
+                //TODO: Initiate hold for reconnect
                 break;
             }
 

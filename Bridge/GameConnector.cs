@@ -118,7 +118,7 @@ namespace TheEscAPists2Bridge
 
         private void ReadMessage(string message)
         {
-            ArchipelagoClient.instance.SayThis(message);
+            ArchipelagoClient.instance.SayToServer(message);
         }
 
         public bool GetConnectionStatus()
