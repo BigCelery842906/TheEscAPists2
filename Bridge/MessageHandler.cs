@@ -86,8 +86,8 @@ namespace TheEscAPists2Bridge
 
         void SerialiseAndSend(Packet packet)
         {
-            string packetJson = Packet.ToJson(packet);
-            
+            string packetJson = packet.ToJson();
+            ConsoleLogging.LogDebug(packetJson);
             GameConnector.instance.SendToGame(packetJson);
         }
         
@@ -101,6 +101,7 @@ namespace TheEscAPists2Bridge
 
         public void ProcessGameToServer(string serialisedMessage)
         {
+            ConsoleLogging.LogDebug(serialisedMessage);
             if (serialisedMessage == null)
             {
                 return;

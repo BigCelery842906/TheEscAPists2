@@ -18,9 +18,11 @@ namespace BC_Dual_Ref_Library
         [JsonProperty("Type")]
         public PacketType Type { get; set; }
 
-        public static string ToJson(Packet packet)
+        public string ToJson()
         {
-            return JsonConvert.SerializeObject(packet);
+            string json = JsonConvert.SerializeObject(this, Formatting.Indented);
+            Console.WriteLine(json);
+            return json;
         }
 
         public static Packet Deserialise(string json)
@@ -128,11 +130,11 @@ namespace BC_Dual_Ref_Library
 
     public class PacketConverter : JsonConverter<Packet>
     {
-        public override bool CanWrite => false;
+        // public override bool CanWrite => false;
 
         public override void WriteJson(JsonWriter writer, Packet value, JsonSerializer serializer)
         {
-            throw new NotSupportedException();
+            serializer.Serialize(writer, value, value.GetType());
         }
 
         public override Packet ReadJson(JsonReader reader, Type objectType, Packet existingValue, bool hasExistingValue,

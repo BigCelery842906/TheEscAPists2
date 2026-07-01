@@ -90,7 +90,7 @@ namespace TheEscAPists2Bridge
                 }
 
                 MessageHandler.instance.ProcessGameToServer(message);
-                ConsoleLogging.LogInfo("Sending to Game -> " + message);
+                ConsoleLogging.LogInfo("Sending to Server -> " + message);
                 
                 writer.WriteLine(message);
                 

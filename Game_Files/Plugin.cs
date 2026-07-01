@@ -183,18 +183,23 @@ public class Plugin : BaseUnityPlugin
         //TODO - REPLACE WITH ACTUAL SLOT NAME
         Packet.ChatMessagePacket chatMessagePacket = new Packet.ChatMessagePacket("BC_Escapists", message);
             
+        // SerialiseAndSend(chatMessagePacket);
+        
+        Logger.LogInfo(chatMessagePacket.ToString());
         SerialiseAndSend(chatMessagePacket);
+        // writer?.WriteLine(chatMessagePacket.ToString());
     }
     
     void SerialiseAndSend(Packet packet)
     {
-        string packetJson = Packet.ToJson(packet);
+        string packetJson = packet.ToJson();
         
         SendToBridge(packetJson);
     }
     
     public void SendToBridge(string message)
     {
+        Logger.LogInfo(message);
         writer?.WriteLine(message);
     }
 }
