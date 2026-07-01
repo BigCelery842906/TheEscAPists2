@@ -18,9 +18,9 @@ namespace BC_Dual_Ref_Library
         [JsonProperty("Type")]
         public PacketType Type { get; set; }
 
-        public string ToJson()
+        public static string ToJson(Packet packet)
         {
-            return JsonConvert.SerializeObject(this);
+            return JsonConvert.SerializeObject(packet);
         }
 
         public static Packet Deserialise(string json)
@@ -64,6 +64,8 @@ namespace BC_Dual_Ref_Library
 
         public class ChatMessagePacket : Packet
         {
+            [JsonProperty("SlotName")]
+            public string slotName = "";
             [JsonProperty("ChatMessage")]
             public string chatMessage = "";
 
@@ -72,10 +74,11 @@ namespace BC_Dual_Ref_Library
                 Type = PacketType.ChatMessage;
             }
 
-            public ChatMessagePacket(string message)
+            public ChatMessagePacket(string slotname, string message)
             {
                 Type = PacketType.ChatMessage;
                 this.chatMessage = message;
+                this.slotName = slotName;
             }
         }
 
@@ -98,9 +101,19 @@ namespace BC_Dual_Ref_Library
 
         public class DeathlinkPacket : Packet
         {
+            [JsonProperty("Slot")]
+            public string slot = "";
+            [JsonProperty("Reason")]
+            public string reason = "";
             public DeathlinkPacket()
             {
                 Type = PacketType.Deathlink;
+            }
+            public DeathlinkPacket(string slot, string reason)
+            {
+                Type = PacketType.Deathlink;
+                this.slot = slot;
+                this.reason = reason;
             }
         }
 

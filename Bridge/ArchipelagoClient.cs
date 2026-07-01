@@ -268,15 +268,8 @@ namespace TheEscAPists2Bridge
             //TODO: Look at optional deathlink - Check player options/yaml etc
             DeathLinkService = Session.CreateDeathLinkService();
             DeathLinkService.EnableDeathLink();
- 
-            DeathLinkService.OnDeathLinkReceived += (deathLinkObject) =>
-            {
-                string mySlotName = connectionInfo.slotName;
-                if (deathLinkObject.Source != mySlotName)
-                {
-                    MessageHandler.instance.SendDeathlinkToGame();
-                }
-            };
+
+            DeathLinkService.OnDeathLinkReceived += MessageHandler.instance.SendDeathlinkToGame;
         }
 
         private void FilterIncomingServerPackets(ArchipelagoSocketHelperDelagates.PacketReceivedHandler packetReceived)
@@ -289,8 +282,11 @@ namespace TheEscAPists2Bridge
         {
             if (connectedToServer)
             {
-
                 Session.Socket.DisconnectAsync();
+                if (DeathLinkService != null)
+                {
+                    DeathLinkService.OnDeathLinkReceived -= MessageHandler.instance.SendDeathlinkToGame;
+                }
                 connectedToServer = false;
                 ConsoleLogging.LogInfo("Disconnected from Server.");
             }
@@ -298,7 +294,7 @@ namespace TheEscAPists2Bridge
             return true;
     }
 
-        public bool GetConnectionStatus()
+        public bool GetConnectionStatusToServer()
         {
 
             if (connectedToServer)
@@ -320,12 +316,15 @@ namespace TheEscAPists2Bridge
             // Session.Locations.CompleteLocationChecks();
         }
         
-        public void SendDeathlink()
+        public void SendDeathlinkToServer(string slot, string reason)
         {
-            //TODO: Set up deathlink correctly
+            // TODO: Set up deathlink correctly - MIGHT BE DONE, NEED TO TEST
+            
+            DeathLink deathlink = new DeathLink(slot, reason);
+            DeathLinkService.SendDeathLink(deathlink);
         }
 
-        public void SendGoal()
+        public void SendGoalToServer()
         {
             Session.SetGoalAchieved();
         }

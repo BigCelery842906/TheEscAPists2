@@ -58,6 +58,13 @@ public static class ConsoleLogging
         Console.WriteLine(success);
         SetConsoleTextColor(ConsoleColor.White);
     }
+
+    public static void LogSend(string thingToSend)
+    {
+        SetConsoleTextColor(ConsoleColor.DarkRed);
+        Console.WriteLine(thingToSend);
+        SetConsoleTextColor(ConsoleColor.White);
+    }
     
     private static void SetConsoleTextColor(ConsoleColor color)
     {
@@ -71,12 +78,13 @@ public static class ConsoleLogging
         LogDebug("This is some debug");
         LogWarning("This is some warning");
         LogSuccess("Something worked as intended and needs to be relayed to user");
+        LogSend("This is some data that has been sent through the bridge");
     }
 
     public static void LogStatus()
     {
         ConsoleLogging.LogDebug("Running Log status now");
-        bool apClientConnected = ArchipelagoClient.instance.GetConnectionStatus();
+        bool apClientConnected = ArchipelagoClient.instance.GetConnectionStatusToServer();
         if (apClientConnected)
         {
             ConsoleLogging.LogSuccess("Archipelago Bridge Connected to Server.");
