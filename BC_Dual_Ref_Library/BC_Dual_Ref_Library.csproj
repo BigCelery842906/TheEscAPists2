@@ -8,4 +8,18 @@
       <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     </ItemGroup>
 
+    <Target Name="CopyNet35" AfterTargets="Build" Condition="'$(TargetFramework)' == 'net35'">
+        <ItemGroup>
+            <BuiltDll Include="$(OutputPath)BC_Dual_Ref_Library.dll" />
+        </ItemGroup>
+        <Copy SourceFiles="@(BuiltDll)" DestinationFolder="..\..\BepInEx\plugins\TheEscAPists2\Game\" />
+    </Target>
+
+    <Target Name="CopyNet8" AfterTargets="Build" Condition="'$(TargetFramework)' == 'net8.0'">
+        <ItemGroup>
+            <BuiltDll Include="$(OutputPath)BC_Dual_Ref_Library.dll" />
+        </ItemGroup>
+        <Copy SourceFiles="@(BuiltDll)" DestinationFolder="..\..\BepInEx\plugins\TheEscAPists2\Bridge\" />
+    </Target>
+
 </Project>

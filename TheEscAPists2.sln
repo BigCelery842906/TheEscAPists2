@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36518.9 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheEscAPists2Bridge", "Bridge\TheEscAPists2Bridge.csproj", "{3150FFA6-602E-4034-8074-A6252C01943E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BC_Dual_Ref_Library", "BC_Dual_Ref_Library\BC_Dual_Ref_Library.csproj", "{D7142D69-D06D-49DA-B495-5539B22B5B5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheEscAPists2", "Game Files\TheEscAPists2.csproj", "{F2C82608-3531-4566-B4AE-2BAC44B12A57}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheEscAPists2Bridge", "Bridge\TheEscAPists2Bridge.csproj", "{19DF31E1-1B7A-4A91-9091-0D6C62F62C32}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BC_Dual_Ref_Library", "BC_Dual_Ref_Library\BC_Dual_Ref_Library.csproj", "{2655B8A2-86DE-4442-86EC-6E225C8F3A77}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheEscAPists2", "Game_Files\TheEscAPists2.csproj", "{350B22DE-1DF9-4D27-B566-B3050D812AD9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,26 +23,23 @@ Global
 		{DAED40C7-552A-442E-80B3-748F4CB37FB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DAED40C7-552A-442E-80B3-748F4CB37FB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DAED40C7-552A-442E-80B3-748F4CB37FB9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3150FFA6-602E-4034-8074-A6252C01943E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3150FFA6-602E-4034-8074-A6252C01943E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3150FFA6-602E-4034-8074-A6252C01943E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3150FFA6-602E-4034-8074-A6252C01943E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F2C82608-3531-4566-B4AE-2BAC44B12A57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F2C82608-3531-4566-B4AE-2BAC44B12A57}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F2C82608-3531-4566-B4AE-2BAC44B12A57}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F2C82608-3531-4566-B4AE-2BAC44B12A57}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2655B8A2-86DE-4442-86EC-6E225C8F3A77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2655B8A2-86DE-4442-86EC-6E225C8F3A77}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2655B8A2-86DE-4442-86EC-6E225C8F3A77}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2655B8A2-86DE-4442-86EC-6E225C8F3A77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7142D69-D06D-49DA-B495-5539B22B5B5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7142D69-D06D-49DA-B495-5539B22B5B5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7142D69-D06D-49DA-B495-5539B22B5B5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7142D69-D06D-49DA-B495-5539B22B5B5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19DF31E1-1B7A-4A91-9091-0D6C62F62C32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19DF31E1-1B7A-4A91-9091-0D6C62F62C32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19DF31E1-1B7A-4A91-9091-0D6C62F62C32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19DF31E1-1B7A-4A91-9091-0D6C62F62C32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{350B22DE-1DF9-4D27-B566-B3050D812AD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{350B22DE-1DF9-4D27-B566-B3050D812AD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{350B22DE-1DF9-4D27-B566-B3050D812AD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{350B22DE-1DF9-4D27-B566-B3050D812AD9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E175AB15-CD9A-4DBF-B648-23AA34C0EB57}
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{DAED40C7-552A-442E-80B3-748F4CB37FB9} = {EA05E3AF-FF5C-4CC5-BF78-789AB7D42C71}
 	EndGlobalSection
 EndGlobal

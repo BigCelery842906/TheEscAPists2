@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BC_Dual_Ref_Library\BC_Dual_Ref_Library.csproj" />
   </ItemGroup>
+  
   <ItemGroup>
     <PackageReference Include="Archipelago.MultiClient.Net" Version="6.3.1" />
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
@@ -32,10 +33,8 @@
       <BuiltDll Include="$(OutputPath)Newtonsoft.Json.dll" />
       <BuiltDll Include="$(OutputPath)TheEscAPists2Bridge.exe" />
       <BuiltDll Include="$(OutputPath)TheEscAPists2Bridge.runtimeconfig.json" />
-      <!--      <BuiltDll Include="$(OutputPath)Newtonsoft.Json.dll" />-->
-      <!--      Im hoping these 4 is all thats required to run-->
     </ItemGroup>
-    <Copy SourceFiles="@(BuiltDll)" DestinationFolder="..\..\BepInEx\plugins\TheEscAPists2\" />
+    <Copy SourceFiles="@(BuiltDll)" DestinationFolder="..\..\BepInEx\plugins\TheEscAPists2\Bridge\" />
   </Target>
 
 </Project>

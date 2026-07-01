@@ -60,10 +60,10 @@
   <Target Name="CopyOnlyDll" AfterTargets="Build">
     <ItemGroup>
       <BuiltDll Include="$(OutputPath)TheEscAPists2.dll" />
+      <BuiltDll Include="$(OutputPath)Newtonsoft.Json.dll"/>
       <!-- <BuiltDll Include="$(OutputPath)websocket-sharp.dll" />-->
-      <!-- Im hoping these 4 is all thats required to run-->
     </ItemGroup>
-    <Copy SourceFiles="@(BuiltDll)" DestinationFolder="..\..\BepInEx\plugins\TheEscAPists2" />
+    <Copy SourceFiles="@(BuiltDll)" DestinationFolder="..\..\BepInEx\plugins\TheEscAPists2\Game" />
   </Target>
 
   <!-- This is a shortcut that I have created that opens the game. Sits in the root folder of the repo (.gitignore excludes this)-->

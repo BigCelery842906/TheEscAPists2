@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Threading;
+using BC_Dual_Ref_Library;
 using BepInEx;
 using BepInEx.Logging;
 using UnityEngine;
@@ -36,8 +37,10 @@ public class Plugin : BaseUnityPlugin
         }
         
         
-        string pluginDir = Path.GetDirectoryName(Info.Location);
-        string bridgePath = Path.Combine(pluginDir, "TheEscAPists2Bridge.exe");
+        string pluginDir = Path.GetDirectoryName(Info.Location); 
+        string newPluginDir = Directory.GetParent(pluginDir).ToString();
+        
+        string bridgePath = Path.Combine(newPluginDir, Path.Combine("Bridge", "TheEscAPists2Bridge.exe"));
         Logger.LogError(bridgePath);
 
         if (!File.Exists(bridgePath))
@@ -142,7 +145,7 @@ public class Plugin : BaseUnityPlugin
             if (logging != null)
             {
                logging.LogConsole("Message test");
-               writer?.WriteLine("Testing the Chat box. This could be a check");
+               SendMessageToBridge("Test message");
             }
         }
 
@@ -173,5 +176,25 @@ public class Plugin : BaseUnityPlugin
             
         reader?.Dispose();
         reader = null;
+    }
+
+    void SendMessageToBridge(string message)
+    {
+        //TODO - REPLACE WITH ACTUAL SLOT NAME
+        Packet.ChatMessagePacket chatMessagePacket = new Packet.ChatMessagePacket("BC_Escapists", message);
+            
+        SerialiseAndSend(chatMessagePacket);
+    }
+    
+    void SerialiseAndSend(Packet packet)
+    {
+        string packetJson = Packet.ToJson(packet);
+        
+        SendToBridge(packetJson);
+    }
+    
+    public void SendToBridge(string message)
+    {
+        writer?.WriteLine(message);
     }
 }
