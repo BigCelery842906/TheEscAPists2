@@ -80,7 +80,7 @@ namespace BC_Dual_Ref_Library
             {
                 Type = PacketType.ChatMessage;
                 this.chatMessage = message;
-                this.slotName = slotName;
+                this.slotName = slotname;
             }
         }
 
