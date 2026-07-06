@@ -73,12 +73,17 @@ namespace TheEscAPists2Bridge
         //Receive Deathlink
         public void SendDeathlinkToGame(DeathLink deathLinkObject)
         {
+            ConsoleLogging.LogDebug("Deathlink received");
             if (deathLinkObject.Source != ArchipelagoClient.instance.GetConnectionInfo().slotName)
             {
+                ConsoleLogging.LogSuccess("Deathlink not from this slot");
                 Packet.DeathlinkPacket deathlinkPacket = new Packet.DeathlinkPacket(deathLinkObject.Source, deathLinkObject.Cause);
+                ConsoleLogging.LogSuccess("Deathlink packet about to send to game");
                 ConsoleLogging.LogSend(deathlinkPacket.ToString());
                 SerialiseAndSend(deathlinkPacket);
+                return;
             }
+            ConsoleLogging.LogError(ConsoleLogging.ErrorCode.TestError,"Deathlink came from this slot");
         }
         
         //Eventually going to need to get the items and feed it through
@@ -131,7 +136,7 @@ namespace TheEscAPists2Bridge
                 case PacketType.Deathlink:
                 {
                     Packet.DeathlinkPacket deathlinkPacket = (Packet.DeathlinkPacket)message;
-                    SendDeathlinkToServer(deathlinkPacket.slot, deathlinkPacket.reason);
+                    SendDeathlinkToServer(deathlinkPacket.slotName, deathlinkPacket.reason);
                     break;
                 }
                 case PacketType.Goal:

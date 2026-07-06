@@ -18,14 +18,15 @@ public class Plugin : BaseUnityPlugin
     private Logging logging;
 
     private Process bridgeProcess;
-    private NamedPipeClientStream pipeClient;
+    private NamedPipeClientStream pipeClientForBridge;
+    private NamedPipeClientStream pipeClientForGame;
     private StreamReader reader;
     private StreamWriter writer;
     private void Awake()
     {
         logging = new Logging(base.Logger);
         StartBridge();
-        ConnectToBridge();
+        StartPipes();
     }
 
     private void StartBridge()
@@ -62,69 +63,98 @@ public class Plugin : BaseUnityPlugin
         
     }
 
-    void ConnectToBridge()
+    void StartPipes()
     {
-        pipeClient = new NamedPipeClientStream(".", "EscAPists2Pipe", PipeDirection.InOut);
+        StartPipeForBridge();
+        StartPipeForGame();
+    }
 
-        const int maxAttempts = 40;
-
-        for (int i = 0; i < maxAttempts; i++)
-        {
+    private void StartPipeForGame()
+    {
+        pipeClientForGame = new NamedPipeClientStream(".", "EscAPists2PipeToGame", PipeDirection.In);
+        
             try
             {
-                pipeClient.Connect(500);
+                pipeClientForGame.Connect(500);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError("(ForGame) Failed to connect to bridge.");
+                return;
+            }
+        
+        reader = new StreamReader(pipeClientForGame);
+        
+        Logger.LogInfo("(ForGame) Connected to bridge.");
+    }
 
-                if (pipeClient.IsConnected)
+    void StartPipeForBridge()
+    {
+        pipeClientForBridge = new NamedPipeClientStream(".", "EscAPists2PipeToBridge", PipeDirection.Out);
+        
+            try
+            {
+                pipeClientForBridge.Connect(500);
+
+                if (pipeClientForBridge.IsConnected)
                 {
-                    Logger.LogInfo("Connected to bridge.");
-                    break;
+                    Logger.LogInfo("(ForBridge) Connected to bridge.");
                 }
             }
             catch (Exception ex)
             {
-                Logger.LogWarning($"Bridge not ready yet ({i + 1}/{maxAttempts}), reason: {ex.Message}");
+                Logger.LogError("(ForBridge) Failed to connect to bridge.");
             }
-
-            Thread.Sleep(250);
-        }
-
-        if (!pipeClient.IsConnected)
-        {
-            Logger.LogError("Failed to connect to bridge.");
-            return;
-        }
-        
-        reader = new StreamReader(pipeClient);
-        writer = new StreamWriter(pipeClient)
+            
+        writer = new StreamWriter(pipeClientForBridge)
         {
             AutoFlush = true
         };
         
-        Logger.LogInfo("Connected to bridge.");
+        Logger.LogInfo("(ForBridge) Connected to bridge.");
 
         Thread thread = new Thread(Listen);
+        thread.IsBackground = true;
+        thread.Start();
     }
 
     void Listen()
-    {
-        while (true)
+    { 
+        try
         {
-                
-            string message = reader.ReadLine();
+            Packet packet = null;
 
-            if (message == null)
+            while ((packet = ReadPacket()) != null)
             {
-                logging.LogConsole("Game disconnected. Holding Pipe for reconnect.");
-                //TODO: Initiate hold for reconnect
-                break;
-            }
 
-            ReadMessage(message);
-            // logging.LogInfo("Sending to Game -> " + message);
-                
-            writer.WriteLine(message);
-                
+                //Process deserialised packet here
+                Logger.LogDebug("Packet Received");
+                // ReadMessage(packet);
+            }
         }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex.ToString());
+        }
+        finally
+        {
+            logging.LogConsole("Bridge disconnected. Holding Pipe for reconnect.");
+        }
+        
+    }
+    
+    private Packet ReadPacket()
+    {
+        string message = null;
+        
+        message = reader.ReadLine();
+
+        if (message != null)
+        {
+            ReadMessage(message);
+            return Packet.Deserialise(message);
+        }
+        return null;
     }
 
     private void ReadMessage(string message)
@@ -137,7 +167,7 @@ public class Plugin : BaseUnityPlugin
     {
         if (Input.GetKeyDown(KeyCode.F6))
         {
-            ConnectToBridge();
+           StartPipes();
         }
 
         if (Input.GetKeyDown(KeyCode.F2))
@@ -151,6 +181,7 @@ public class Plugin : BaseUnityPlugin
 
         if (Input.GetKeyDown(KeyCode.F3))
         {
+            SendAllPacketsToBridge();
             // Logging.BridgeConnect.SetGoalAchieved();
         }
     }
@@ -168,8 +199,11 @@ public class Plugin : BaseUnityPlugin
     void KillEverything()
     {
         bridgeProcess?.Kill();
-        pipeClient?.Dispose(); 
-        pipeClient = null;
+        pipeClientForBridge?.Dispose(); 
+        pipeClientForBridge = null;
+        
+        pipeClientForGame?.Dispose();
+        pipeClientForGame = null;
             
         writer?.Dispose();
         writer = null;
@@ -185,21 +219,29 @@ public class Plugin : BaseUnityPlugin
             
         // SerialiseAndSend(chatMessagePacket);
         
-        Logger.LogInfo(chatMessagePacket.ToString());
+        // Logger.LogInfo(chatMessagePacket.ToString());
         SerialiseAndSend(chatMessagePacket);
         // writer?.WriteLine(chatMessagePacket.ToString());
+    }
+
+    void SendAllPacketsToBridge()
+    {
+        SerialiseAndSend(new Packet.ConnectionPacket("BC_Escapists", "archipelago.gg:56644", ""));
+        SerialiseAndSend(new Packet.ChatMessagePacket("BC_Escapists", "This is a test message packet"));
+        SerialiseAndSend(new Packet.CheckPacket("BC_Escapists", "Check Name"));
+        SerialiseAndSend(new Packet.DeathlinkPacket("BC_Escapists", "Got beaten by dogs"));
+        SerialiseAndSend(new Packet.GoalPacket("BC_Escapists"));
     }
     
     void SerialiseAndSend(Packet packet)
     {
         string packetJson = packet.ToJson();
-        
         SendToBridge(packetJson);
     }
     
     public void SendToBridge(string message)
     {
-        Logger.LogInfo(message);
+        Logger.LogInfo($"Sending to bridge -> {message}");
         writer?.WriteLine(message);
     }
 }

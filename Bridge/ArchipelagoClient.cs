@@ -211,6 +211,7 @@ namespace TheEscAPists2Bridge
                 //Need to find a way to subscribe to an event that will automatically parse the relevant messages to the chat box and log
                 // Session.Socket.PacketReceived += FilterIncomingServerPackets();
                 connectedToServer = true;
+                SubscribeToServerEvents();
                 return true;
             }
 
@@ -268,7 +269,6 @@ namespace TheEscAPists2Bridge
             //TODO: Look at optional deathlink - Check player options/yaml etc
             DeathLinkService = Session.CreateDeathLinkService();
             DeathLinkService.EnableDeathLink();
-
             DeathLinkService.OnDeathLinkReceived += MessageHandler.instance.SendDeathlinkToGame;
         }
 

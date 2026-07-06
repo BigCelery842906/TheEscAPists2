@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO.Pipes;
 using System.Threading.Tasks;
+using BC_Dual_Ref_Library;
 using UnityEngine;
 
 namespace TheEscAPists2Bridge
@@ -9,12 +10,14 @@ namespace TheEscAPists2Bridge
     {
         public static GameConnector instance;
 
-        private NamedPipeServerStream pipeServer;
+        private NamedPipeServerStream pipeServerToBridge;
+        private NamedPipeServerStream pipeServerToGame;
         private StreamReader reader;
         private StreamWriter writer;
-        
-        
-        public void ReceiveConnectionValues(string game, string slotName, string serverAddress, string password, Version gameVersion)
+
+
+        public void ReceiveConnectionValues(string game, string slotName, string serverAddress, string password,
+            Version gameVersion)
         {
             ArchipelagoClient.instance.SetConnectionValues(game, slotName, serverAddress, password, gameVersion);
         }
@@ -45,7 +48,8 @@ namespace TheEscAPists2Bridge
 
         public void StartConnectionToGame()
         {
-            Task.Run(StartPipe);
+            Task.Run(StartPipeForBridge);
+            Task.Run(StartPipeForGame);
         }
 
         public void DisconnectFromGame()
@@ -53,58 +57,81 @@ namespace TheEscAPists2Bridge
             EndPipe();
         }
 
-        private void StartPipe()
+        private void StartPipeForBridge()
         {
-            if (pipeServer != null && pipeServer.IsConnected)
+            if (pipeServerToBridge != null && pipeServerToBridge.IsConnected)
             {
                 return;
             }
-            pipeServer = new NamedPipeServerStream("EscAPists2Pipe", PipeDirection.InOut);
+
+            pipeServerToBridge = new NamedPipeServerStream("EscAPists2PipeToBridge", PipeDirection.In);
+
+            ConsoleLogging.LogInfo("(ToBridge) Waiting for connection...");
+            pipeServerToBridge.WaitForConnection();
+
+            ConsoleLogging.LogSuccess("(ToBridge) Connection established to game.");
+
+            reader = new StreamReader(pipeServerToBridge);
             
-            ConsoleLogging.LogInfo("Waiting for connection...");
-            pipeServer.WaitForConnection();
+            Listen();
+        }
+
+        private void StartPipeForGame()
+        {
+            if (pipeServerToGame != null && pipeServerToGame.IsConnected)
+            {
+                return;
+            }
             
-            ConsoleLogging.LogSuccess("Connection established to game.");
+            pipeServerToGame = new NamedPipeServerStream("EscAPists2PipeToGame", PipeDirection.Out);
             
-            reader = new StreamReader(pipeServer);
-            writer = new StreamWriter(pipeServer)
+            ConsoleLogging.LogInfo("(ToGame) Waiting for connection...");
+            pipeServerToGame.WaitForConnection();
+
+            ConsoleLogging.LogSuccess("(ToGame) Connection established to game.");
+            
+            writer = new StreamWriter(pipeServerToGame)
             {
                 AutoFlush = true
             };
-
-            // Task.Run(Listen);
-            Listen();
         }
 
         void Listen()
         {
-            while (true)
+            try
             {
-                
-                string message = reader.ReadLine();
-
-                if (message == null)
+                while (true)
                 {
-                    ConsoleLogging.LogWarning("Game disconnected. Holding Pipe for reconnect.");
-                    break;
-                }
+                    ConsoleLogging.LogDebug("Waiting for line....");
+                    string message = reader.ReadLine();
 
-                MessageHandler.instance.ProcessGameToServer(message);
-                ConsoleLogging.LogInfo("Sending to Server -> " + message);
-                
-                writer.WriteLine(message);
-                
+                    if (message == null)
+                    {
+                        ConsoleLogging.LogWarning("Game disconnected. Holding Pipe for reconnect.");
+                        return;
+                    }
+
+                    MessageHandler.instance.ProcessGameToServer(message);
+                    ConsoleLogging.LogInfo("Received from game -> " + message);
+                }
+            }
+            catch (Exception e)
+            {
+                ConsoleLogging.LogError(ConsoleLogging.ErrorCode.NoGameConnection, e.ToString());
             }
         }
 
         void EndPipe()
         {
-            pipeServer?.Dispose();
-            pipeServer = null;
+            pipeServerToBridge?.Dispose();
+            pipeServerToBridge = null;
             
+            pipeServerToGame?.Dispose();
+            pipeServerToGame = null;
+
             writer?.Dispose();
             writer = null;
-            
+
             reader?.Dispose();
             reader = null;
 
@@ -114,6 +141,7 @@ namespace TheEscAPists2Bridge
         public void SendToGame(string message)
         {
             writer?.WriteLine(message);
+            writer?.Flush();
         }
 
         private void ReadMessage(string message)
@@ -123,7 +151,7 @@ namespace TheEscAPists2Bridge
 
         public bool GetConnectionStatus()
         {
-            if (pipeServer.IsConnected)
+            if (pipeServerToBridge.IsConnected)
             {
                 return true;
             }

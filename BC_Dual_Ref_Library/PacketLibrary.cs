@@ -1,11 +1,11 @@
 ﻿using System;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 
 namespace BC_Dual_Ref_Library
 {
     public enum PacketType
     {
+        None,
         Connection,
         ChatMessage,
         Check,
@@ -15,41 +15,33 @@ namespace BC_Dual_Ref_Library
 
     public class Packet
     {
-        [JsonProperty("Type")]
         public PacketType Type { get; set; }
+
+        public Packet()
+        {
+            Type = PacketType.None;
+        }
 
         public string ToJson()
         {
-            string json = JsonConvert.SerializeObject(this, Formatting.Indented);
-            Console.WriteLine(json);
-            return json;
+            return PacketConverter.WriteJson(this);
         }
 
         public static Packet Deserialise(string json)
         {
-            var options = new JsonSerializerSettings
-            {
-                Converters = { new PacketConverter() },
-            };
+            //TODO: DESERIALISATION
 
-            return JsonConvert.DeserializeObject<Packet>(json, options);
+            return new Packet();
         }
 
         public class ConnectionPacket : Packet
         {
-            // game, slotName, serverAddress, password, gameVersion
-            [JsonProperty("GameName")]
             public string game = ModInfo.GameName;
-            [JsonProperty("SlotName")]
             public string slotName;
-            [JsonProperty("ServerAddress")]
             public string serverAddress;
-            [JsonProperty("Password")]
             public string password = "";
-            [JsonProperty("GameVersion")]
             public Version version = ModInfo.GameVersion;
-
-
+            
             public ConnectionPacket()
             {
                 Type = PacketType.Connection;
@@ -66,9 +58,7 @@ namespace BC_Dual_Ref_Library
 
         public class ChatMessagePacket : Packet
         {
-            [JsonProperty("SlotName")]
             public string slotName = "";
-            [JsonProperty("ChatMessage")]
             public string chatMessage = "";
 
             public ChatMessagePacket()
@@ -86,7 +76,7 @@ namespace BC_Dual_Ref_Library
 
         public class CheckPacket : Packet
         {
-            [JsonProperty("CheckName")]
+            public string slotName = "";
             public string checkName = "";
 
             public CheckPacket()
@@ -94,97 +84,175 @@ namespace BC_Dual_Ref_Library
                 Type = PacketType.Check;
             }
 
-            public CheckPacket(string checkName)
+            public CheckPacket(string slotName, string checkName)
             {
                 Type = PacketType.Check;
+                this.slotName = slotName;
                 this.checkName = checkName;
             }
         }
 
         public class DeathlinkPacket : Packet
         {
-            [JsonProperty("Slot")]
-            public string slot = "";
-            [JsonProperty("Reason")]
+            public string slotName = "";
             public string reason = "";
             public DeathlinkPacket()
             {
                 Type = PacketType.Deathlink;
             }
-            public DeathlinkPacket(string slot, string reason)
+            public DeathlinkPacket(string slotName, string reason)
             {
                 Type = PacketType.Deathlink;
-                this.slot = slot;
+                this.slotName = slotName;
                 this.reason = reason;
             }
         }
 
         public class GoalPacket : Packet
         {
+            public string slotName = "";
             public GoalPacket()
             {
                 Type = PacketType.Goal;
             }
+            public GoalPacket(string slotName)
+            {
+                Type = PacketType.Goal;
+                this.slotName = slotName;
+            }
         }
     }
 
-    public class PacketConverter : JsonConverter<Packet>
+    public static class PacketConverter 
     {
-        // public override bool CanWrite => false;
-
-        public override void WriteJson(JsonWriter writer, Packet value, JsonSerializer serializer)
+        public static string WriteJson(Packet packet)
         {
-            serializer.Serialize(writer, value, value.GetType());
-        }
+            string jsonString = "";
+            PacketType packetType = packet.Type;
+            string type = $"Type: {packetType.ToString()}";
 
-        public override Packet ReadJson(JsonReader reader, Type objectType, Packet existingValue, bool hasExistingValue,
-            JsonSerializer serializer)
-        {
-            JObject jsonObject = JObject.Load(reader);
-
-            JToken TypeToken = jsonObject["Type"];
-
-            if (TypeToken == null)
-            {
-                throw new JsonSerializationException("Packet does not contain a type property.");
-            }
+            List<string> parts = new List<string>();
             
-            switch (TypeToken.ToObject<PacketType>())
+            parts.Add(type);
+            switch (packetType)
             {
                 case PacketType.Connection:
                 {
-                    Console.WriteLine("Deserializing connection packet");
-                    return jsonObject.ToObject<Packet.ConnectionPacket>(serializer);
+                    Packet.ConnectionPacket connectionPacket = (Packet.ConnectionPacket)packet;
+                    
+                    // game, slot, serveraddress, password, version
+                    string game = $"Game: {connectionPacket.game}";
+                    string slot = $"Slot: {connectionPacket.slotName}";
+                    string server = $"Server: {connectionPacket.serverAddress}";
+                    string password = $"Password: {connectionPacket.password}";
+                    string version = $"Version: {connectionPacket.version}";
+
+                    parts.Add(game);
+                    parts.Add(slot);
+                    parts.Add(server);
+                    parts.Add(password);
+                    parts.Add(version);
+                    
                     break;
                 }
                 case PacketType.ChatMessage:
                 {
-                    Console.WriteLine("Deserializing chat message packet");
-                    return jsonObject.ToObject<Packet.ChatMessagePacket>(serializer);
+                    Packet.ChatMessagePacket chatMessagePacket = (Packet.ChatMessagePacket)packet;
+                    
+                    string slot = $"Slot: {chatMessagePacket.slotName}";
+                    string message =  $"Message: {chatMessagePacket.chatMessage}";
+                    
+                    parts.Add(slot);
+                    parts.Add(message);
+                    
                     break;
                 }
                 case PacketType.Check:
                 {
-                    Console.WriteLine("Deserializing check packet");
-                    return jsonObject.ToObject<Packet.CheckPacket>(serializer);
+                    Packet.CheckPacket checkPacket = (Packet.CheckPacket)packet;
+                    
+                    string slot = $"Slot: {checkPacket.slotName}";
+                    string check =  $"Check: {checkPacket.checkName}";
+                    
+                    parts.Add(slot);
+                    parts.Add(check);
                     break;
                 }
                 case PacketType.Deathlink:
                 {
-                    Console.WriteLine("Deserializing deathlink packet");
-                    return jsonObject.ToObject<Packet.DeathlinkPacket>(serializer);
+                    Packet.DeathlinkPacket deathlinkPacket = (Packet.DeathlinkPacket)packet;
+                    string slot = $"Slot: {deathlinkPacket.slotName}";
+                    string reason = $"Reason: {deathlinkPacket.reason}";
+                    
+                    parts.Add(slot);
+                    parts.Add(reason);
+                    
                     break;
                 }
                 case PacketType.Goal:
                 {
-                    Console.WriteLine("Deserializing goal packet");
-                    return jsonObject.ToObject<Packet.GoalPacket>(serializer);
+                    Packet.GoalPacket goalPacket = (Packet.GoalPacket)packet;
+                    string slot = $"Slot: {goalPacket.slotName}";
+                    
+                    parts.Add(slot);
+                    
                     break;
                 }
+                
             }
-
-            throw new JsonException("Unknown Type");
+            
+            jsonString = string.Join("|", parts.ToArray());
+            return jsonString;
         }
+
+        // public override Packet ReadJson(JsonReader reader, Type objectType, Packet existingValue, bool hasExistingValue,
+        //     JsonSerializer serializer)
+        // {
+        //     JObject jsonObject = JObject.Load(reader);
+        //
+        //     JToken TypeToken = jsonObject["Type"];
+        //
+        //     if (TypeToken == null)
+        //     {
+        //         throw new JsonSerializationException("Packet does not contain a type property.");
+        //     }
+        //     
+        //     switch (TypeToken.ToObject<PacketType>())
+        //     {
+        //         case PacketType.Connection:
+        //         {
+        //             Console.WriteLine("Deserializing connection packet");
+        //             return jsonObject.ToObject<Packet.ConnectionPacket>(serializer);
+        //             break;
+        //         }
+        //         case PacketType.ChatMessage:
+        //         {
+        //             Console.WriteLine("Deserializing chat message packet");
+        //             return jsonObject.ToObject<Packet.ChatMessagePacket>(serializer);
+        //             break;
+        //         }
+        //         case PacketType.Check:
+        //         {
+        //             Console.WriteLine("Deserializing check packet");
+        //             return jsonObject.ToObject<Packet.CheckPacket>(serializer);
+        //             break;
+        //         }
+        //         case PacketType.Deathlink:
+        //         {
+        //             Console.WriteLine("Deserializing deathlink packet");
+        //             return jsonObject.ToObject<Packet.DeathlinkPacket>(serializer);
+        //             break;
+        //         }
+        //         case PacketType.Goal:
+        //         {
+        //             Console.WriteLine("Deserializing goal packet");
+        //             return jsonObject.ToObject<Packet.GoalPacket>(serializer);
+        //             break;
+        //         }
+        //     }
+        //
+        //     throw new JsonException("Unknown Type");
+        // }
 
     }
 }
