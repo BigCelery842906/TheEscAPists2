@@ -207,10 +207,12 @@ namespace TheEscAPists2Bridge
                 ConsoleLogging.LogSuccess("Connection Successful to server");
                 //TODO: Successful Connect Chat
                 // logging.SendChatMessage("Successfully connected to Archipelago as " + connectionInfo.slotName);
+                // MessageHandler.instance.SendChatToGame("Successfully connected to Archipelago as " + connectionInfo.slotName);
                 
                 //Need to find a way to subscribe to an event that will automatically parse the relevant messages to the chat box and log
                 // Session.Socket.PacketReceived += FilterIncomingServerPackets();
                 connectedToServer = true;
+                MessageHandler.instance.SendSlotnameToGame();
                 SubscribeToServerEvents();
                 return true;
             }
@@ -246,11 +248,14 @@ namespace TheEscAPists2Bridge
         {
             Session.MessageLog.OnMessageReceived += (message) =>
             {
+                ConsoleLogging.LogDebug("Received Message from AP -> " + message);
                 lock (incomingChatQueue)
                 {
                     incomingChatQueue.Enqueue(message.ToString());
+                    MessageHandler.instance.ProcessChatQueue();
                 }
             };
+            ConsoleLogging.LogSuccess("Subscribed to chat events");
         }
 
         private void SocketClosedEvent()

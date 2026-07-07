@@ -22,6 +22,10 @@ public class Plugin : BaseUnityPlugin
     private NamedPipeClientStream pipeClientForGame;
     private StreamReader reader;
     private StreamWriter writer;
+
+    private static string slotName;
+    public static bool isConnected; 
+    
     private void Awake()
     {
         logging = new Logging(base.Logger);
@@ -71,6 +75,11 @@ public class Plugin : BaseUnityPlugin
 
     private void StartPipeForGame()
     {
+        if (pipeClientForGame != null && pipeClientForGame.IsConnected)
+        {
+            return;
+        }
+        
         pipeClientForGame = new NamedPipeClientStream(".", "EscAPists2PipeToGame", PipeDirection.In);
         
             try
@@ -80,16 +89,27 @@ public class Plugin : BaseUnityPlugin
             catch (Exception ex)
             {
                 Logger.LogError("(ForGame) Failed to connect to bridge.");
+                pipeClientForGame = null;
                 return;
             }
         
         reader = new StreamReader(pipeClientForGame);
         
         Logger.LogInfo("(ForGame) Connected to bridge.");
+        
+        Thread thread = new Thread(Listen);
+        thread.IsBackground = true;
+        thread.Start();
     }
 
     void StartPipeForBridge()
     {
+
+        if (pipeClientForBridge != null && pipeClientForBridge.IsConnected)
+        {
+            return;
+        }
+        
         pipeClientForBridge = new NamedPipeClientStream(".", "EscAPists2PipeToBridge", PipeDirection.Out);
         
             try
@@ -113,23 +133,26 @@ public class Plugin : BaseUnityPlugin
         
         Logger.LogInfo("(ForBridge) Connected to bridge.");
 
-        Thread thread = new Thread(Listen);
-        thread.IsBackground = true;
-        thread.Start();
+       
     }
 
     void Listen()
-    { 
+    {
         try
         {
-            Packet packet = null;
-
-            while ((packet = ReadPacket()) != null)
+            while (true)
             {
+                Logger.LogDebug("Waiting for line....");
+                string message = reader.ReadLine();
 
-                //Process deserialised packet here
-                Logger.LogDebug("Packet Received");
-                // ReadMessage(packet);
+                if (message == null)
+                {
+                    Logger.LogWarning("Bridge disconnected. Holding Pipe for reconnect.");
+                    return;
+                }
+
+                ProcessIncomingPacket(message);
+                Logger.LogInfo("Received from bridge -> " + message);
             }
         }
         catch (Exception ex)
@@ -138,28 +161,67 @@ public class Plugin : BaseUnityPlugin
         }
         finally
         {
-            logging.LogConsole("Bridge disconnected. Holding Pipe for reconnect.");
+            logging.SendChatMessage("Bridge disconnected. Holding Pipe for reconnect.");
         }
-        
-    }
-    
-    private Packet ReadPacket()
-    {
-        string message = null;
-        
-        message = reader.ReadLine();
 
-        if (message != null)
+    }
+
+    private void ProcessIncomingPacket(string serialisedMessage)
+    {
+        if (serialisedMessage == null)
         {
-            ReadMessage(message);
-            return Packet.Deserialise(message);
+            return;
         }
-        return null;
-    }
+            
+        Packet? message = Packet.Deserialise(serialisedMessage);
+            
+        switch (message.Type)
+        {
+            case PacketType.Connection:
+            {
+                Packet.ConnectionPacket connectionPacket = (Packet.ConnectionPacket)message;
 
-    private void ReadMessage(string message)
-    {
-        logging.SendChatMessage(message);
+                slotName = connectionPacket.slotName;
+                
+                break;
+            }
+            case PacketType.ChatMessage:
+            {
+                Packet.ChatMessagePacket chatMessagePacket = (Packet.ChatMessagePacket)message;
+                logging.SendChatMessage(chatMessagePacket.chatMessage);
+                break;
+            }
+            case PacketType.Check:
+            {
+                Packet.CheckPacket checkPacket = (Packet.CheckPacket)message;
+                //TODO: Implement goof's code
+                break;
+            }
+            case PacketType.Deathlink:
+            {
+                Packet.DeathlinkPacket deathlinkPacket = (Packet.DeathlinkPacket)message;
+                lastDeathLinkSlot = deathlinkPacket.slotName;
+                lastDeathLinkReason = deathlinkPacket.reason;
+                pendingDeathLink = true;
+                break;
+            }
+            case PacketType.Goal:
+            {
+                //TODO: implement goof's code
+                break;
+            }
+            case PacketType.IsConnected:
+            {
+                Packet.IsConnectedPacket isConnectedPacket = (Packet.IsConnectedPacket)message;
+                isConnected = isConnectedPacket.isConnected;
+                break;
+            }
+            default:
+            {
+                Logger.LogWarning("Unknown message type: " + message.Type);
+                break;
+            }
+        }
     }
 
 
@@ -174,7 +236,7 @@ public class Plugin : BaseUnityPlugin
         {
             if (logging != null)
             {
-               logging.LogConsole("Message test");
+               logging.SendChatMessage("Message test");
                SendMessageToBridge("Test message");
             }
         }
@@ -185,6 +247,8 @@ public class Plugin : BaseUnityPlugin
             // Logging.BridgeConnect.SetGoalAchieved();
         }
     }
+
+   
 
     private void OnDestroy()
     {
@@ -215,7 +279,7 @@ public class Plugin : BaseUnityPlugin
     void SendMessageToBridge(string message)
     {
         //TODO - REPLACE WITH ACTUAL SLOT NAME
-        Packet.ChatMessagePacket chatMessagePacket = new Packet.ChatMessagePacket("BC_Escapists", message);
+        Packet.ChatMessagePacket chatMessagePacket = new Packet.ChatMessagePacket(slotName, message);
             
         // SerialiseAndSend(chatMessagePacket);
         
@@ -226,20 +290,20 @@ public class Plugin : BaseUnityPlugin
 
     void SendAllPacketsToBridge()
     {
-        SerialiseAndSend(new Packet.ConnectionPacket("BC_Escapists", "archipelago.gg:56644", ""));
-        SerialiseAndSend(new Packet.ChatMessagePacket("BC_Escapists", "This is a test message packet"));
-        SerialiseAndSend(new Packet.CheckPacket("BC_Escapists", "Check Name"));
-        SerialiseAndSend(new Packet.DeathlinkPacket("BC_Escapists", "Got beaten by dogs"));
-        SerialiseAndSend(new Packet.GoalPacket("BC_Escapists"));
+        SerialiseAndSend(new Packet.ConnectionPacket(slotName, "archipelago.gg:56644", ""));
+        SerialiseAndSend(new Packet.ChatMessagePacket(slotName, "This is a test message packet"));
+        SerialiseAndSend(new Packet.CheckPacket(slotName, "Check Name"));
+        SerialiseAndSend(new Packet.DeathlinkPacket(slotName, "Got beaten by dogs"));
+        SerialiseAndSend(new Packet.GoalPacket(slotName));
     }
     
-    void SerialiseAndSend(Packet packet)
+    public void SerialiseAndSend(Packet packet)
     {
         string packetJson = packet.ToJson();
         SendToBridge(packetJson);
     }
     
-    public void SendToBridge(string message)
+    private void SendToBridge(string message)
     {
         Logger.LogInfo($"Sending to bridge -> {message}");
         writer?.WriteLine(message);

@@ -11,6 +11,7 @@ namespace BC_Dual_Ref_Library
         Check,
         Deathlink,
         Goal,
+        IsConnected,
     }
 
     public class Packet
@@ -119,6 +120,17 @@ namespace BC_Dual_Ref_Library
                 this.slotName = slotName;
             }
         }
+
+        public class IsConnectedPacket : Packet
+        {
+            public bool isConnected = false;
+            
+            public  IsConnectedPacket(bool isConnected)
+            {
+                Type = PacketType.IsConnected;
+                this.isConnected = isConnected;
+            }
+        }
     }
 
     public static class PacketConverter 
@@ -196,7 +208,15 @@ namespace BC_Dual_Ref_Library
                     
                     break;
                 }
-                
+                case PacketType.IsConnected:
+                {
+                    Packet.IsConnectedPacket isConnectedPacket = (Packet.IsConnectedPacket)packet;
+                    string isConnected = $"IsConnected: {isConnectedPacket.isConnected}";
+                    
+                    parts.Add(isConnected);
+
+                    break;
+                }
             }
             
             jsonString = string.Join("|", parts.ToArray());
@@ -271,6 +291,16 @@ namespace BC_Dual_Ref_Library
                     Packet.GoalPacket packetToReturn = new Packet.GoalPacket(slotName);
                     
                     return packetToReturn;
+                }
+
+                case PacketType.IsConnected:
+                {
+                    bool isConnected = bool.Parse(jsonParts[1].Remove(0, 13));
+                    
+                    Packet.IsConnectedPacket isConnectedPacket = new Packet.IsConnectedPacket(isConnected);
+
+
+                    return isConnectedPacket;
                 }
                 
                 default:

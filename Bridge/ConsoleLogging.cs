@@ -97,16 +97,27 @@ public static class ConsoleLogging
         {
             ConsoleLogging.LogError(ErrorCode.NoServerConnection, "Archipelago Bridge Not Connected to Server.");
         }
-        
-        bool gameClientConnected = GameConnector.instance.GetConnectionStatus();
+
+        bool gameClientConnected = GameConnector.instance.GetConnectionStatusBridgeToGame();
 
         if (gameClientConnected)
         {
-            ConsoleLogging.LogSuccess("Game Connected to Bridge.");
+            ConsoleLogging.LogSuccess("Bridge to Game Pipe Connected.");
         }
         else
         {
-            ConsoleLogging.LogError(ErrorCode.NoGameConnection, "Game Not Connected to Bridge.");
+            ConsoleLogging.LogError(ErrorCode.NoGameConnection, "Bridge to Game Pipe not connected.");
         }
-    }
+
+        gameClientConnected = GameConnector.instance.GetConnectionStatusGameToBridge();
+
+        if (gameClientConnected)
+        {
+            ConsoleLogging.LogSuccess("Game to Bridge Pipe Connected.");
+        }
+        else
+        {
+            ConsoleLogging.LogError(ErrorCode.NoGameConnection, "Game to Bridge Pipe not connected.");
+        }
+}
 }

@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 using BC_Dual_Ref_Library;
+using UnityEngine;
 
 namespace TheEscAPists2Bridge
 {
@@ -43,20 +44,28 @@ namespace TheEscAPists2Bridge
 
         private void ProcessServerToGame()
         {
-            //Subscribe to different events which fires off in here for handlers
+            while (true)
+            {
+                //Subscribe to different events which fires off in here for handlers
 
-            ProcessChatQueue();
+                // ProcessChatQueue();
+            }
         }
-        
+
         //Chat Messages
 
-        private void ProcessChatQueue()
+        public void ProcessChatQueue()
         {
+            ConsoleLogging.LogDebug("Checking the queue");
             lock (ArchipelagoClient.instance.incomingChatQueue)
             {
+                ConsoleLogging.LogInfo(ArchipelagoClient.instance.incomingChatQueue.Peek());
+
                 while (ArchipelagoClient.instance.incomingChatQueue.Count > 0)
                 {
+                    ConsoleLogging.LogDebug($"Queue has {ArchipelagoClient.instance.incomingChatQueue.Count} things in it, sending them");
                     string msg = ArchipelagoClient.instance.incomingChatQueue.Dequeue();
+                    ConsoleLogging.LogInfo(msg);
                     Packet.ChatMessagePacket chatPacket = new Packet.ChatMessagePacket("", msg);
                     SerialiseAndSend(chatPacket);
                 }
@@ -85,6 +94,12 @@ namespace TheEscAPists2Bridge
                 return;
             }
             ConsoleLogging.LogError(ConsoleLogging.ErrorCode.TestError,"Deathlink came from this slot");
+        }
+
+        public void SendConnectionStatus(bool isConnected)
+        {
+            Packet.IsConnectedPacket isConnectedPacket = new Packet.IsConnectedPacket(isConnected);
+            SerialiseAndSend(isConnectedPacket);
         }
         
         //Eventually going to need to get the items and feed it through
@@ -196,6 +211,14 @@ namespace TheEscAPists2Bridge
         
         #endregion
 
-        
+
+        //Send the Slot name to the game, for returning packets
+        public void SendSlotnameToGame()
+        {
+            ConnectionInfo connectionInfo = ArchipelagoClient.instance.GetConnectionInfo();
+            Packet.ConnectionPacket connectionPacket = new Packet.ConnectionPacket(connectionInfo.slotName, connectionInfo.serverAddress, connectionInfo.password);
+            
+            SerialiseAndSend(connectionPacket);
+        }
     }
 }
