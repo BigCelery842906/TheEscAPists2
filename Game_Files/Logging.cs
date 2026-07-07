@@ -30,10 +30,8 @@ public class Logging
 
     public void LogConsole(string message)
     {
-        message = "Testing the Chat box. This could be a check";
         Logger.LogInfo("Logging item exists, sending the following message" + message);
         SendChatMessage(message);
-        // BridgeConnect.Say(message);
     }
 
     public void SendChatMessage(string message)

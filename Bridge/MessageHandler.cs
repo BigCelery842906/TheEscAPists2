@@ -57,7 +57,8 @@ namespace TheEscAPists2Bridge
                 while (ArchipelagoClient.instance.incomingChatQueue.Count > 0)
                 {
                     string msg = ArchipelagoClient.instance.incomingChatQueue.Dequeue();
-                    SendChatToServer(msg);
+                    Packet.ChatMessagePacket chatPacket = new Packet.ChatMessagePacket("", msg);
+                    SerialiseAndSend(chatPacket);
                 }
             }
         }

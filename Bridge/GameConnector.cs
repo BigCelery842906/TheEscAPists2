@@ -140,6 +140,7 @@ namespace TheEscAPists2Bridge
 
         public void SendToGame(string message)
         {
+            ConsoleLogging.LogSend(message);
             writer?.WriteLine(message);
             writer?.Flush();
         }

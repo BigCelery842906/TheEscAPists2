@@ -61,7 +61,7 @@ public static class ConsoleLogging
 
     public static void LogSend(string thingToSend)
     {
-        SetConsoleTextColor(ConsoleColor.DarkRed);
+        SetConsoleTextColor(ConsoleColor.DarkCyan);
         Console.WriteLine(thingToSend);
         SetConsoleTextColor(ConsoleColor.White);
     }
