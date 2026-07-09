@@ -102,6 +102,8 @@ namespace TheEscAPists2Bridge
             {
                 AutoFlush = true
             };
+            
+            MessageHandler.instance.SendConnectionStatus();
         }
 
         void Listen()

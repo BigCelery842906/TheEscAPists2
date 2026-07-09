@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.Pipes;
 using System.Reflection;
 using System.Threading;
+using AUTOGEN_T17Wwise_Enums;
 using BC_Dual_Ref_Library;
 using BepInEx;
 using BepInEx.Configuration;
@@ -271,8 +272,7 @@ public class Plugin : BaseUnityPlugin
             RoutineManager rm = RoutineManager.GetInstance();
             if (rm != null && !rm.IsLockdownActive())
             {
- 
-                rm.SetLockdownRoutine(true);
+                SolitaryManager.GetInstance().TriggerLockdown();
  
                 logging.SendChatMessage($"[StealthLink] {stealthLinkCulprit} got caught! PRISON LOCKDOWN INITIATED!");
                 Player localPlayer = Gamer.GetPrimaryGamer()?.m_PlayerObject;
@@ -605,6 +605,114 @@ public class Plugin : BaseUnityPlugin
         Packet.StealthLinkPacket stealhLink = new Packet.StealthLinkPacket(slotName);
         instance.SerialiseAndSend(stealhLink);
     }
+    
+    [HarmonyPatch(typeof(RoutineManager), "StartInit")]
+        public class RoutineManager_StartInit_Patch
+        {
+            // store the vanilla schedule here so there is a clean slate to shuffle from every morning
+            public static List<Routines> vanillaBaseTypes = new List<Routines>();
+            public static List<RoutineSubTypes> vanillaSubTypes = new List<RoutineSubTypes>();
+            public static List<Events> vanillaMusic = new List<Events>();
+            public static List<string> vanillaUITags = new List<string>();
+ 
+            static void Postfix(RoutineManager __instance)
+            {
+                // Fully updated to use the Enum instead of strings
+                // if (!configEnabled.Value || configRandSchedule.Value == ScheduleMode.Off) return;
+                // if (__instance.m_RoutinesData == null || __instance.m_RoutinesData.m_Routines == null || __instance.m_RoutinesData.m_Routines.Count <= 1) return;
+ 
+                // 1. Save the vanilla data immediately on load
+                vanillaBaseTypes.Clear();
+                vanillaSubTypes.Clear();
+                vanillaMusic.Clear();
+                vanillaUITags.Clear();
+ 
+                foreach (var routine in __instance.m_RoutinesData.m_Routines)
+                {
+                    vanillaBaseTypes.Add(routine.m_BaseRoutineType);
+                    vanillaSubTypes.Add(routine.m_SubRoutineType);
+                    vanillaMusic.Add(routine.m_RoutineMusic);
+                    vanillaUITags.Add(routine.m_LocalizationTag);
+                }
+ 
+                // 2. Hook into the daily engine trigger so it scrambles again at midnight
+                __instance.OnDayChange += () => ScrambleDailySchedule(__instance);
+ 
+                // 3. Do the initial scramble for Day 1
+                ScrambleDailySchedule(__instance);
+            }
+ 
+            public static void ScrambleDailySchedule(RoutineManager rm)
+            {
+                // Fully updated to use the Enum instead of strings
+                // ScheduleMode mode = configRandSchedule.Value;
+                ScheduleMode mode = ScheduleMode.Chaos;
+                if (mode == ScheduleMode.Off) return;
+ 
+                var routines = rm.m_RoutinesData.m_Routines;
+                List<int> indicesToShuffle = new List<int>();
+ 
+                // First, restore everything to vanilla, then pick which blocks are allowed to shuffle
+                for (int i = 0; i < routines.Count; i++)
+                {
+                    routines[i].m_BaseRoutineType = vanillaBaseTypes[i];
+                    routines[i].m_SubRoutineType = vanillaSubTypes[i];
+                    routines[i].m_RoutineMusic = vanillaMusic[i];
+                    routines[i].m_LocalizationTag = vanillaUITags[i];
+ 
+                    // If we are in "Safe" mode, DO NOT add Lights Out to the shuffle pool. Please leave it alone.
+                    if (mode == ScheduleMode.Safe && vanillaBaseTypes[i] == Routines.LightsOut) continue;
+ 
+                    indicesToShuffle.Add(i);
+                }
+ 
+                // Extract the data ONLY for the blocks it's allowed to shuffle
+                List<Routines> shuffleBase = new List<Routines>();
+                List<RoutineSubTypes> shuffleSub = new List<RoutineSubTypes>();
+                List<Events> shuffleMusic = new List<Events>();
+                List<string> shuffleUI = new List<string>();
+ 
+                foreach (int i in indicesToShuffle)
+                {
+                    shuffleBase.Add(vanillaBaseTypes[i]);
+                    shuffleSub.Add(vanillaSubTypes[i]);
+                    shuffleMusic.Add(vanillaMusic[i]);
+                    shuffleUI.Add(vanillaUITags[i]);
+                }
+ 
+                // RNG seed based on Roulette Seed + Current In-Game Day (So it's different every day)
+                string seedStr = configRouletteSeed.Value.Trim().ToLower();
+                int seed = 12345;
+                if (seedStr != "random" && !string.IsNullOrEmpty(seedStr)) int.TryParse(seedStr, out seed);
+ 
+                System.Random rng = new System.Random(seed + rm.GetDaysElapsed());
+ 
+                // Fisher-Yates Shuffle
+                int n = shuffleBase.Count;
+                while (n > 1)
+                {
+                    n--;
+                    int k = rng.Next(n + 1);
+ 
+                    var tb = shuffleBase[k]; shuffleBase[k] = shuffleBase[n]; shuffleBase[n] = tb;
+                    var ts = shuffleSub[k]; shuffleSub[k] = shuffleSub[n]; shuffleSub[n] = ts;
+                    var tm = shuffleMusic[k]; shuffleMusic[k] = shuffleMusic[n]; shuffleMusic[n] = tm;
+                    var tu = shuffleUI[k]; shuffleUI[k] = shuffleUI[n]; shuffleUI[n] = tu;
+                }
+ 
+                // Inject the scrambled data back into their original time slots
+                for (int i = 0; i < indicesToShuffle.Count; i++)
+                {
+                    int realIndex = indicesToShuffle[i];
+                    routines[realIndex].m_BaseRoutineType = shuffleBase[i];
+                    routines[realIndex].m_SubRoutineType = shuffleSub[i];
+                    routines[realIndex].m_RoutineMusic = shuffleMusic[i];
+                    routines[realIndex].m_LocalizationTag = shuffleUI[i];
+                }
+ 
+                Plugin.instance.Logger.LogWarning($"[CHAOS] Day {rm.GetDaysElapsed()} schedule scrambled!");
+            }
+        }
      #endregion
         
  #endregion       

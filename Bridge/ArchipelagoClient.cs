@@ -45,6 +45,12 @@ namespace TheEscAPists2Bridge
         public static ArchipelagoClient instance;
         
         private bool connectedToServer = false;
+        
+        public bool GetConnectedStatus()
+        {
+            return connectedToServer;
+        }
+        
         public static ArchipelagoSession Session;
         private ConnectionInfo connectionInfo;
         static DeathLinkService DeathLinkService;
@@ -219,6 +225,7 @@ namespace TheEscAPists2Bridge
                 // Session.Socket.PacketReceived += FilterIncomingServerPackets();
                 connectedToServer = true;
                 MessageHandler.instance.SendSlotnameToGame();
+                MessageHandler.instance.SendConnectionStatus();
                 SubscribeToServerEvents();
                 return true;
             }
@@ -229,7 +236,7 @@ namespace TheEscAPists2Bridge
                 ConsoleLogging.LogError(ConsoleLogging.ErrorCode.ServerRefusedConnection, "Connection Error: " + String.Join("\n", loginFailure.Errors));
                 //TODO: Connection Error Chat
                 // logging.SendChatMessage("Connection Error: " + String.Join("\n", loginFailure.Errors));
-                
+                MessageHandler.instance.SendConnectionStatus();
                 Session.Socket.DisconnectAsync();
 
                 return false;
@@ -241,6 +248,7 @@ namespace TheEscAPists2Bridge
         ~ArchipelagoClient()
         {
             Session.Socket.DisconnectAsync();
+            connectedToServer = false;
         }
 
         public void SubscribeToServerEvents()
@@ -386,5 +394,7 @@ namespace TheEscAPists2Bridge
                 Text = $"[DEBUG ALERT] {slotName} just triggered a prison lockdown!"
             });
         }
+
+        
     }
 }

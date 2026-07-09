@@ -107,9 +107,9 @@ namespace TheEscAPists2Bridge
             }
         }
 
-        public void SendConnectionStatus(bool isConnected)
+        public void SendConnectionStatus()
         {
-            Packet.IsConnectedPacket isConnectedPacket = new Packet.IsConnectedPacket(isConnected);
+            Packet.IsConnectedPacket isConnectedPacket = new Packet.IsConnectedPacket(ArchipelagoClient.instance.GetConnectedStatus());
             SerialiseAndSend(isConnectedPacket);
         }
         
