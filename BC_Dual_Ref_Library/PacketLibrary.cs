@@ -10,6 +10,7 @@ namespace BC_Dual_Ref_Library
         ChatMessage,
         Check,
         Deathlink,
+        StealthLink,
         Goal,
         IsConnected,
     }
@@ -131,6 +132,22 @@ namespace BC_Dual_Ref_Library
                 this.isConnected = isConnected;
             }
         }
+
+        public class StealthLinkPacket : Packet
+        {
+            public string slotName = "";
+
+            public StealthLinkPacket()
+            {
+                Type = PacketType.StealthLink;
+            }
+
+            public StealthLinkPacket(string slotName)
+            {
+                Type = PacketType.StealthLink;
+                this.slotName = slotName;
+            }
+        }
     }
 
     public static class PacketConverter 
@@ -197,6 +214,16 @@ namespace BC_Dual_Ref_Library
                     parts.Add(slot);
                     parts.Add(reason);
                     
+                    break;
+                }
+
+                case PacketType.StealthLink:
+                {
+                    Packet.StealthLinkPacket stealthLinkPacket = (Packet.StealthLinkPacket)packet;
+                    string slot = $"Slot: {stealthLinkPacket.slotName}";
+                    
+                    parts.Add(slot);
+
                     break;
                 }
                 case PacketType.Goal:
@@ -281,6 +308,15 @@ namespace BC_Dual_Ref_Library
                     
                     Packet.DeathlinkPacket packetToReturn = new Packet.DeathlinkPacket(slotName, reason);
                     
+                    return packetToReturn;
+                }
+
+                case PacketType.StealthLink:
+                {
+                    string slotName = jsonParts[1].Remove(0, 6);
+                    
+                    Packet.StealthLinkPacket packetToReturn = new Packet.StealthLinkPacket(slotName);
+
                     return packetToReturn;
                 }
 

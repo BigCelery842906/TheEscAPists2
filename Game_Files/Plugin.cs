@@ -172,6 +172,7 @@ public class Plugin : BaseUnityPlugin
                 if (message == null)
                 {
                     Logger.LogWarning("Bridge disconnected. Holding Pipe for reconnect.");
+                    isConnected = false;
                     return;
                 }
 
@@ -229,6 +230,13 @@ public class Plugin : BaseUnityPlugin
                 pendingDeathLink = true;
                 break;
             }
+            case PacketType.StealthLink:
+            {
+                Packet.StealthLinkPacket stealthLinkPacket = (Packet.StealthLinkPacket)message;
+                stealthLinkCulprit = stealthLinkPacket.slotName;
+                pendingStealthLink = true;
+                break;
+            }
             case PacketType.Goal:
             {
                 //TODO: implement goof's code
@@ -253,6 +261,25 @@ public class Plugin : BaseUnityPlugin
     {
         if (pendingDeathLink) ProcessDeathLink();
         
+        if (pendingStealthLink)
+        {
+            pendingStealthLink = false;
+ 
+ 
+            lastStealthLinkTime = Time.time;
+ 
+            RoutineManager rm = RoutineManager.GetInstance();
+            if (rm != null && !rm.IsLockdownActive())
+            {
+ 
+                rm.SetLockdownRoutine(true);
+ 
+                logging.SendChatMessage($"[StealthLink] {stealthLinkCulprit} got caught! PRISON LOCKDOWN INITIATED!");
+                Player localPlayer = Gamer.GetPrimaryGamer()?.m_PlayerObject;
+                if (localPlayer != null) AkSoundEngine.PostEvent("Play_UI_Error", localPlayer.gameObject);
+            }
+        }
+        
         if (Input.GetKeyDown(KeyCode.F6))
         {
            StartPipes();
@@ -272,6 +299,23 @@ public class Plugin : BaseUnityPlugin
             SendAllPacketsToBridge();
             // Logging.BridgeConnect.SetGoalAchieved();
         }
+        
+        if (Input.GetKeyDown(KeyCode.F4))
+        {
+            Logger.LogWarning("[TEST] Simulating INBOUND DeathLink packet...");
+            pendingDeathLink = true;
+        }
+ 
+        // Press F5 to simulate a friend triggering a lockdown in another prison
+        if (Input.GetKeyDown(KeyCode.F5))
+        {
+            Logger.LogWarning("[TEST] Simulating INBOUND StealthLink packet...");
+            pendingStealthLink = true;
+            stealthLinkCulprit = "A Sneakin Friend";
+            SendStealthLink();
+        }
+ 
+        // ------------------------------------------
     }
 
    
@@ -336,7 +380,7 @@ public class Plugin : BaseUnityPlugin
     }
     
     
-    #region Goof's Code
+    #region Game's Code - Largely from GoofTarune
     //GOOF'S CODE
     private void ProcessDeathLink()
     {
@@ -538,7 +582,29 @@ public class Plugin : BaseUnityPlugin
         }
     }
     
+    [HarmonyPatch(typeof(RoutineManager), "SetLockdownRoutine")]
+    public class RoutineManager_SetLockdownRoutine_Patch
+    {
+        static void Prefix(RoutineManager __instance, bool active)
+        {
+            if (!isConnected) return;
+ 
+            // If the prison is going into Lockdown, and it wasn't ALREADY in lockdown, and it hasn't synced an alarm in the last 10 seconds...
+            if (active && !__instance.IsLockdownActive() && Time.time - lastStealthLinkTime > 10f)
+            {
+                lastStealthLinkTime = Time.time;
+                SendStealthLink(); // Broadcast to the server
+            }
+        }
+    }
     
+    public static void SendStealthLink()
+    {
+        if (!isConnected) return;
+
+        Packet.StealthLinkPacket stealhLink = new Packet.StealthLinkPacket(slotName);
+        instance.SerialiseAndSend(stealhLink);
+    }
      #endregion
         
  #endregion       

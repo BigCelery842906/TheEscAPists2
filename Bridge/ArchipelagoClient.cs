@@ -165,8 +165,14 @@ namespace TheEscAPists2Bridge
                 ConsoleLogging.LogInfo("Host = " + connectionInfo.serverAddress);
                 ConsoleLogging.LogInfo("Runtime = " + Environment.Version);
 
+                // 1. Tell the server to listen to StealthLink if the config is on
+                List<string> tagsList = new List<string>();
+                tagsList.Add("StealthLink");
+                string[] tags = tagsList.Count > 0 ? tagsList.ToArray() : null;
+                
+                
                 loginResult = Session.TryConnectAndLogin(connectionInfo.game, connectionInfo.slotName, ItemsHandlingFlags.AllItems,
-                    connectionInfo.gameVersion, null, "", connectionInfo.password);
+                    connectionInfo.gameVersion, tags, "", connectionInfo.password);
             }
             catch (Exception e)
             {
@@ -242,7 +248,10 @@ namespace TheEscAPists2Bridge
             SocketClosedEvent();
             SetUpDeathlink();
             SubscribeToChatEvent();
+            SetUpStealthLink();
         }
+
+        
 
         private void SubscribeToChatEvent()
         {
@@ -333,6 +342,49 @@ namespace TheEscAPists2Bridge
         {
             Session.SetGoalAchieved();
         }
+        
+        private void SetUpStealthLink()
+        {
+            // 2. Add the custom Packet Listener for incoming StealthLinks
+            Session.Socket.PacketReceived += (packet) =>
+            {
+                if (packet.PacketType == ArchipelagoPacketType.Bounced)
+                {
+                    var bouncedPacket = (Archipelago.MultiClient.Net.Packets.BouncedPacket)packet;
+                    if (bouncedPacket.Tags != null && bouncedPacket.Tags.Contains("StealthLink"))
+                    {
+                        string source = "The Multiverse";
 
+                        // Search the tags for the one holding their name
+                        foreach (string tag in bouncedPacket.Tags)
+                        {
+                            if (tag.StartsWith("StealthSource|"))
+                            {
+                                source = tag.Substring(14); // Slices off "StealthSource|" to reveal the name
+                                break;
+                            }
+                        }
+
+                        MessageHandler.instance.SendStealthLinkToGame(source);
+                    }
+                }
+            };
+        }
+
+        public void SendStealthLink(string slotName)
+        {
+            var bouncePacket = new Archipelago.MultiClient.Net.Packets.BouncePacket
+            {
+                // bypasses the JSON dictionary entirely and hide the sender's name inside the tags
+                Tags = new List<string> { "StealthLink", "StealthSource|" + slotName }
+            };
+            Session.Socket.SendPacket(bouncePacket);
+ 
+            // This is for diagnostics to see if the stealthlink works
+            Session.Socket.SendPacket(new Archipelago.MultiClient.Net.Packets.SayPacket
+            {
+                Text = $"[DEBUG ALERT] {slotName} just triggered a prison lockdown!"
+            });
+        }
     }
 }

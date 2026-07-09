@@ -96,6 +96,17 @@ namespace TheEscAPists2Bridge
             ConsoleLogging.LogError(ConsoleLogging.ErrorCode.TestError,"Deathlink came from this slot");
         }
 
+        public void SendStealthLinkToGame(string slotResponsible)
+        {
+            if (slotResponsible != ArchipelagoClient.instance.GetConnectionInfo().slotName)
+            {
+                Packet.StealthLinkPacket stealthLinkPacket = new Packet.StealthLinkPacket(slotResponsible);
+
+                SerialiseAndSend(stealthLinkPacket);
+                return;
+            }
+        }
+
         public void SendConnectionStatus(bool isConnected)
         {
             Packet.IsConnectedPacket isConnectedPacket = new Packet.IsConnectedPacket(isConnected);
@@ -155,6 +166,12 @@ namespace TheEscAPists2Bridge
                     SendDeathlinkToServer(deathlinkPacket.slotName, deathlinkPacket.reason);
                     break;
                 }
+                case PacketType.StealthLink:
+                {
+                    Packet.StealthLinkPacket stealthLinkPacket = (Packet.StealthLinkPacket)message;
+                    SendStealthLinkToServer(stealthLinkPacket.slotName);
+                    break;
+                }
                 case PacketType.Goal:
                 {
                     SendGoalToServer();
@@ -198,6 +215,12 @@ namespace TheEscAPists2Bridge
         {
             ConsoleLogging.LogSend("Deathlink Send: " + reason);
             ArchipelagoClient.instance.SendDeathlinkToServer(slot, reason);
+        }
+
+        void SendStealthLinkToServer(string slot)
+        {
+            ConsoleLogging.LogSend("StealhLink Send: " + slot);
+            ArchipelagoClient.instance.SendStealthLink(slot);
         }
         
         //Goal
