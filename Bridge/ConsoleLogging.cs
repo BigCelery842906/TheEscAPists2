@@ -2,6 +2,7 @@
 
 public static class ConsoleLogging
 {
+    static bool debugMode = false;
     public static void LogInfo(string info)
     {
         SetConsoleTextColor(ConsoleColor.White);
@@ -38,7 +39,8 @@ public static class ConsoleLogging
 
     public static void LogDebug(string debugInfo)
     {
-        //Make Text Yellow
+        if (!debugMode) { return; }
+        
         SetConsoleTextColor(ConsoleColor.Cyan);
         Console.WriteLine(debugInfo);
         SetConsoleTextColor(ConsoleColor.White);
@@ -46,7 +48,6 @@ public static class ConsoleLogging
     
     public static void LogWarning(string debugInfo)
     {
-        //Make Text Yellow
         SetConsoleTextColor(ConsoleColor.Yellow);
         Console.WriteLine(debugInfo);
         SetConsoleTextColor(ConsoleColor.White);
@@ -71,53 +72,43 @@ public static class ConsoleLogging
         Console.ForegroundColor = color;
     }
 
-    public static void LogAllTypes()
-    {
-        LogError(ErrorCode.TestError, "Test Error");
-        LogInfo("This is some information");
-        LogDebug("This is some debug");
-        LogWarning("This is some warning");
-        LogSuccess("Something worked as intended and needs to be relayed to user");
-        LogSend("This is some data that has been sent through the bridge");
-    }
-
     public static void LogStatus()
     {
-        ConsoleLogging.LogDebug("Running Log status now");
+        LogDebug("Running Log status now");
         bool apClientConnected = ArchipelagoClient.instance.GetConnectionStatusToServer();
         if (apClientConnected)
         {
-            ConsoleLogging.LogSuccess("Archipelago Bridge Connected to Server.");
+            LogSuccess("Archipelago Bridge Connected to Server.");
             ConnectionInfo connectionInfo = ArchipelagoClient.instance.GetConnectionInfo();
-            ConsoleLogging.LogSuccess("Slot Name: " + connectionInfo.slotName);
-            ConsoleLogging.LogSuccess("Server Address: " + connectionInfo.serverAddress);
-            ConsoleLogging.LogSuccess("Server Password: " + connectionInfo.password);
+            LogSuccess("Slot Name: " + connectionInfo.slotName);
+            LogSuccess("Server Address: " + connectionInfo.serverAddress);
+            LogSuccess("Server Password: " + connectionInfo.password);
         }
         else
         {
-            ConsoleLogging.LogError(ErrorCode.NoServerConnection, "Archipelago Bridge Not Connected to Server.");
+            LogError(ErrorCode.NoServerConnection, "Archipelago Bridge Not Connected to Server.");
         }
 
         bool gameClientConnected = GameConnector.instance.GetConnectionStatusBridgeToGame();
 
         if (gameClientConnected)
         {
-            ConsoleLogging.LogSuccess("Bridge to Game Pipe Connected.");
+            LogSuccess("Bridge to Game Pipe Connected.");
         }
         else
         {
-            ConsoleLogging.LogError(ErrorCode.NoGameConnection, "Bridge to Game Pipe not connected.");
+            LogError(ErrorCode.NoGameConnection, "Bridge to Game Pipe not connected.");
         }
 
         gameClientConnected = GameConnector.instance.GetConnectionStatusGameToBridge();
 
         if (gameClientConnected)
         {
-            ConsoleLogging.LogSuccess("Game to Bridge Pipe Connected.");
+            LogSuccess("Game to Bridge Pipe Connected.");
         }
         else
         {
-            ConsoleLogging.LogError(ErrorCode.NoGameConnection, "Game to Bridge Pipe not connected.");
+            LogError(ErrorCode.NoGameConnection, "Game to Bridge Pipe not connected.");
         }
 }
 }

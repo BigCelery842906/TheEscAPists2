@@ -1,26 +1,22 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using BC_Dual_Ref_Library;
+﻿using BC_Dual_Ref_Library;
 
 namespace TheEscAPists2Bridge
 {
-
-
+    
     public class Program
     {
         public static void Main(string[] args)
         {
             Console.WriteLine("Starting the EscAPists 2 Bridge...");
 
-            // ConsoleLogging.LogAllTypes();
-
             MessageHandler messageHandler = new MessageHandler();
             ArchipelagoClient archipelagoClient = new ArchipelagoClient();
             GameConnector gameConnector = new GameConnector();
 
+            PrintHelp();
+            
             Update();
-
-            // Console.ReadLine();
+            
         }
 
 
@@ -67,15 +63,7 @@ namespace TheEscAPists2Bridge
                 
                 case "/help":
                 {
-                    ConsoleLogging.LogInfo("");
-                    ConsoleLogging.LogInfo("--- Help Menu ---");
-                    ConsoleLogging.LogInfo("/connect (arg) - Default is both to game and the server, AP is for the server, bridge is for the game.");
-                    ConsoleLogging.LogInfo("/disconnect (arg) - Default is both to game and the server, AP is for the server, bridge is for the game.");
-                    ConsoleLogging.LogInfo("/help - Displays this help message.");
-                    ConsoleLogging.LogInfo("/status - Log the current status of the bridge connections");
-                    ConsoleLogging.LogInfo("/exit - Close the bridge safely");
-                    ConsoleLogging.LogInfo("/test - Print a packet before serialisation, after serialisation, and after deserialisation");
-                    ConsoleLogging.LogInfo("");
+                    PrintHelp();
                     break;
                 }
 
@@ -100,7 +88,6 @@ namespace TheEscAPists2Bridge
                     ConsoleLogging.LogDebug($"{packet.slotName} : {packet.chatMessage}");
                     string packetJson = packet.ToJson();
                     ConsoleLogging.LogDebug(packetJson);
-                    // MessageHandler.instance.ProcessGameToServer(packetJson);
                     
                     Packet.ConnectionPacket packet2 = new Packet.ConnectionPacket("BC_Escapists", "archipelago.gg:55644", "");
                     ConsoleLogging.LogDebug($"{packet2.slotName} : {packet2.serverAddress} : {packet2.password}");
@@ -128,8 +115,6 @@ namespace TheEscAPists2Bridge
                     Packet.GoalPacket deserialisedPacket5 = (Packet.GoalPacket)PacketConverter.ReadJson(packetJson5);
                     ConsoleLogging.LogDebug($"{deserialisedPacket5.slotName}");
                     
-                    // MessageHandler.instance.ProcessGameToServer();
-                    
                     break;
                 }
 
@@ -149,7 +134,7 @@ namespace TheEscAPists2Bridge
 
         private static void ConnectAP()
         {
-            ConsoleLogging.LogDebug("Trying to Connect...");
+            ConsoleLogging.LogDebug("Trying to Connect to the Server...");
             ArchipelagoClient.instance.SetConnectionValues("Clique", "BC_Escapists", "archipelago.gg:55644", "",
                 new Version(0, 6, 1));
 
@@ -168,7 +153,7 @@ namespace TheEscAPists2Bridge
         private static void ConnectBridge()
         {
             GameConnector.instance.StartConnectionToGame();
-            ConsoleLogging.LogDebug("Trying to Connect to the game");
+            ConsoleLogging.LogDebug("Trying to Connect to the game...");
         }
 
         private static void DisconnectAP()
@@ -190,6 +175,19 @@ namespace TheEscAPists2Bridge
         {
             GameConnector.instance.DisconnectFromGame();
             ConsoleLogging.LogDebug("Trying to Disconnect from the game");
+        }
+
+        private static void PrintHelp()
+        {
+            ConsoleLogging.LogInfo("");
+            ConsoleLogging.LogInfo("--- Help Menu ---");
+            ConsoleLogging.LogInfo("/connect (arg) - Default is both to game and the server, AP is for the server, bridge is for the game.");
+            ConsoleLogging.LogInfo("/disconnect (arg) - Default is both to game and the server, AP is for the server, bridge is for the game.");
+            ConsoleLogging.LogInfo("/help - Displays this help message.");
+            ConsoleLogging.LogInfo("/status - Log the current status of the bridge connections");
+            ConsoleLogging.LogInfo("/exit - Close the bridge safely");
+            ConsoleLogging.LogInfo("/test - Print a packet before serialisation, after serialisation, and after deserialisation");
+            ConsoleLogging.LogInfo("");
         }
     }
 }

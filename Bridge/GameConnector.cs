@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO.Pipes;
-using System.Threading.Tasks;
-using BC_Dual_Ref_Library;
-using UnityEngine;
+﻿using System.IO.Pipes;
 
 namespace TheEscAPists2Bridge
 {
@@ -37,8 +33,6 @@ namespace TheEscAPists2Bridge
             }
             
             StartConnectionToGame();
-            ConsoleLogging.LogDebug("Starting to Create Pipe");
-            // ConsoleLogging.LogAllTypes();
         }
 
         ~GameConnector()
@@ -50,8 +44,7 @@ namespace TheEscAPists2Bridge
         {
             if (!GetConnectionStatusGameToBridge())
             {
-            Task.Run(StartPipeForBridge);
-                
+                Task.Run(StartPipeForBridge);
             }
 
             if (!GetConnectionStatusBridgeToGame())
@@ -74,7 +67,7 @@ namespace TheEscAPists2Bridge
 
             pipeGameToBridge = new NamedPipeServerStream("EscAPists2PipeToBridge", PipeDirection.In);
 
-            ConsoleLogging.LogInfo("(ToBridge) Waiting for connection...");
+            ConsoleLogging.LogInfo("(ToBridge) Pipe Created, Waiting for connection...");
             pipeGameToBridge.WaitForConnection();
 
             ConsoleLogging.LogSuccess("(ToBridge) Connection established to game.");
@@ -93,7 +86,7 @@ namespace TheEscAPists2Bridge
             
             pipeBridgeToGame = new NamedPipeServerStream("EscAPists2PipeToGame", PipeDirection.Out);
             
-            ConsoleLogging.LogInfo("(ToGame) Waiting for connection...");
+            ConsoleLogging.LogInfo("(ToGame) Pipe Created, Waiting for connection...");
             pipeBridgeToGame.WaitForConnection();
 
             ConsoleLogging.LogSuccess("(ToGame) Connection established to game.");
@@ -112,7 +105,6 @@ namespace TheEscAPists2Bridge
             {
                 while (true)
                 {
-                    ConsoleLogging.LogDebug("Waiting for line....");
                     string message = reader.ReadLine();
 
                     if (message == null)
@@ -122,7 +114,6 @@ namespace TheEscAPists2Bridge
                     }
 
                     MessageHandler.instance.ProcessGameToServer(message);
-                    ConsoleLogging.LogInfo("Received from game -> " + message);
                 }
             }
             catch (Exception e)
@@ -150,14 +141,9 @@ namespace TheEscAPists2Bridge
 
         public void SendToGame(string message)
         {
-            ConsoleLogging.LogSend(message);
+            // ConsoleLogging.LogSend(message);
             writer?.WriteLine(message);
             writer?.Flush();
-        }
-
-        private void ReadMessage(string message)
-        {
-            ArchipelagoClient.instance.SayToServer(message);
         }
 
         public bool GetConnectionStatusBridgeToGame()

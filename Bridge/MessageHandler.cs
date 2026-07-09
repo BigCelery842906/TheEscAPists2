@@ -1,7 +1,5 @@
-﻿using System.Text.Json;
-using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
+﻿using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 using BC_Dual_Ref_Library;
-using UnityEngine;
 
 namespace TheEscAPists2Bridge
 {
@@ -56,26 +54,21 @@ namespace TheEscAPists2Bridge
 
         public void ProcessChatQueue()
         {
-            ConsoleLogging.LogDebug("Checking the queue");
+            //TODO: Change this to all packets that need to be sent.
             lock (ArchipelagoClient.instance.incomingChatQueue)
             {
-                ConsoleLogging.LogInfo(ArchipelagoClient.instance.incomingChatQueue.Peek());
-
                 while (ArchipelagoClient.instance.incomingChatQueue.Count > 0)
                 {
-                    ConsoleLogging.LogDebug($"Queue has {ArchipelagoClient.instance.incomingChatQueue.Count} things in it, sending them");
                     string msg = ArchipelagoClient.instance.incomingChatQueue.Dequeue();
-                    ConsoleLogging.LogInfo(msg);
-                    Packet.ChatMessagePacket chatPacket = new Packet.ChatMessagePacket("", msg);
-                    SerialiseAndSend(chatPacket);
+                    SendChatToGame(msg);
                 }
             }
         }
         
-        public void SendChatToGame(string message)
+        private void SendChatToGame(string message)
         {
+            ConsoleLogging.LogSend(message);
             Packet.ChatMessagePacket chatMessagePacket = new Packet.ChatMessagePacket(ArchipelagoClient.instance.GetConnectionInfo().slotName, message);
-            ConsoleLogging.LogSend(chatMessagePacket.ToString());
             SerialiseAndSend(chatMessagePacket);
         }
         //Checks - Try Chat colour changes
@@ -83,23 +76,20 @@ namespace TheEscAPists2Bridge
         //Receive Deathlink
         public void SendDeathlinkToGame(DeathLink deathLinkObject)
         {
-            ConsoleLogging.LogDebug("Deathlink received");
             if (deathLinkObject.Source != ArchipelagoClient.instance.GetConnectionInfo().slotName)
             {
-                ConsoleLogging.LogSuccess("Deathlink not from this slot");
+                ConsoleLogging.LogSend($"DeathLink Received - {deathLinkObject.Cause}");
                 Packet.DeathlinkPacket deathlinkPacket = new Packet.DeathlinkPacket(deathLinkObject.Source, deathLinkObject.Cause);
-                ConsoleLogging.LogSuccess("Deathlink packet about to send to game");
-                ConsoleLogging.LogSend(deathlinkPacket.ToString());
                 SerialiseAndSend(deathlinkPacket);
                 return;
             }
-            ConsoleLogging.LogError(ConsoleLogging.ErrorCode.TestError,"Deathlink came from this slot");
         }
 
         public void SendStealthLinkToGame(string slotResponsible)
         {
             if (slotResponsible != ArchipelagoClient.instance.GetConnectionInfo().slotName)
             {
+                ConsoleLogging.LogSend($"StealthLink Received From: {slotResponsible}");
                 Packet.StealthLinkPacket stealthLinkPacket = new Packet.StealthLinkPacket(slotResponsible);
 
                 SerialiseAndSend(stealthLinkPacket);
@@ -119,7 +109,6 @@ namespace TheEscAPists2Bridge
         void SerialiseAndSend(Packet packet)
         {
             string packetJson = packet.ToJson();
-            ConsoleLogging.LogDebug(packetJson);
             GameConnector.instance.SendToGame(packetJson);
         }
         
@@ -133,7 +122,6 @@ namespace TheEscAPists2Bridge
 
         public void ProcessGameToServer(string serialisedMessage)
         {
-            ConsoleLogging.LogDebug(serialisedMessage);
             if (serialisedMessage == null)
             {
                 return;
@@ -163,7 +151,7 @@ namespace TheEscAPists2Bridge
                 case PacketType.Deathlink:
                 {
                     Packet.DeathlinkPacket deathlinkPacket = (Packet.DeathlinkPacket)message;
-                    SendDeathlinkToServer(deathlinkPacket.slotName, deathlinkPacket.reason);
+                    SendDeathLinkToServer(deathlinkPacket.slotName, deathlinkPacket.reason);
                     break;
                 }
                 case PacketType.StealthLink:
@@ -197,7 +185,6 @@ namespace TheEscAPists2Bridge
         //Say
         void SendChatToServer(string ChatMessage)
         {
-            //TODO: FEED CHAT MESSAGE TO SERVER
             ConsoleLogging.LogSend("Chat Send: " + ChatMessage);
             ArchipelagoClient.instance.SayToServer(ChatMessage);
         }
@@ -211,12 +198,13 @@ namespace TheEscAPists2Bridge
         }
         
         //Send Deathlink
-        void SendDeathlinkToServer(string slot, string reason)
+        void SendDeathLinkToServer(string slot, string reason)
         {
             ConsoleLogging.LogSend("Deathlink Send: " + reason);
-            ArchipelagoClient.instance.SendDeathlinkToServer(slot, reason);
+            ArchipelagoClient.instance.SendDeathLinkToServer(slot, reason);
         }
 
+        //Send StealthLink
         void SendStealthLinkToServer(string slot)
         {
             ConsoleLogging.LogSend("StealhLink Send: " + slot);
@@ -226,14 +214,10 @@ namespace TheEscAPists2Bridge
         //Goal
         void SendGoalToServer()
         {
+            //TODO: TEST
             ConsoleLogging.LogSend("Sending Goal to server.");
             ArchipelagoClient.instance.SendGoalToServer();
         }
-        //
-        //
-        
-        #endregion
-
 
         //Send the Slot name to the game, for returning packets
         public void SendSlotnameToGame()
@@ -243,5 +227,7 @@ namespace TheEscAPists2Bridge
             
             SerialiseAndSend(connectionPacket);
         }
+        
+        #endregion
     }
 }
