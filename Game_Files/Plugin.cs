@@ -348,11 +348,9 @@ public class Plugin : BaseUnityPlugin
             if (healthProp != null)
             {
                 Player_SetIsKnockedOut_Patch.lastDeathLinkTime = Time.time;
-                // healthProp.SetValue(localPlayer.m_CharacterStats, 0f, null);
-                localPlayer.m_CharacterStats.DecreaseHealth(localPlayer.m_CharacterStats.Health+1);
-                //I want to be able to get medics deployed so you don't just get set to 0
-                // localPlayer.m_CharacterTarget.SetIsKnockedOut(true, localPlayer);
-                logging.SendChatMessage($"[DeathLink] {lastDeathLinkSlot} {lastDeathLinkReason}");
+                healthProp.SetValue(localPlayer.m_CharacterStats, 0f, null);
+                localPlayer.SetIsKnockedOut(true, localPlayer.m_CharacterTarget);
+                logging.SendChatMessage($"[DeathLink] {lastDeathLinkReason}");
                 AkSoundEngine.PostEvent("Play_UI_Error", localPlayer.gameObject);
             }
         }
