@@ -582,6 +582,8 @@ public class Plugin : BaseUnityPlugin
         }
     }
     
+    #region StealthLink
+    
     [HarmonyPatch(typeof(RoutineManager), "SetLockdownRoutine")]
     public class RoutineManager_SetLockdownRoutine_Patch
     {
@@ -606,6 +608,9 @@ public class Plugin : BaseUnityPlugin
         instance.SerialiseAndSend(stealhLink);
     }
     
+    #endregion
+    
+    #region ScheduleScrambler
     [HarmonyPatch(typeof(RoutineManager), "StartInit")]
         public class RoutineManager_StartInit_Patch
         {
@@ -713,6 +718,200 @@ public class Plugin : BaseUnityPlugin
                 Plugin.instance.Logger.LogWarning($"[CHAOS] Day {rm.GetDaysElapsed()} schedule scrambled!");
             }
         }
+        
+        #endregion
+        
+    #region PayPhone
+    
+    // 1. REWRITE THE BUTTON TEXT AND HIDE VANILLA HINTS
+    [HarmonyPatch(typeof(PayphoneMenu), "ResetButtons")]
+    public class PayphoneMenu_ResetButtons_Patch
+    {
+        static void Postfix(PayphoneMenu __instance)
+        {
+            if (!configEnabled.Value || !isConnected) return;
+ 
+            FieldInfo buttonsField = typeof(PayphoneMenu).GetField("m_HintButtons", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (buttonsField == null) return;
+ 
+            Array hintButtons = (Array)buttonsField.GetValue(__instance);
+            if (hintButtons != null && hintButtons.Length > 0)
+            {
+                for (int i = 0; i < hintButtons.Length; i++)
+                {
+                    object hintButtonObj = hintButtons.GetValue(i);
+                    Component hintButtonComp = (Component)hintButtonObj;
+ 
+                    if (i == 0)
+                    {
+                        FieldInfo textField = hintButtonObj.GetType().GetField("m_Text", BindingFlags.Public | BindingFlags.Instance);
+                        if (textField != null)
+                        {
+                            object t17Text = textField.GetValue(hintButtonObj);
+                            if (t17Text != null)
+                            {
+                                // Turn off translation tags and overwrite the string
+                                FieldInfo locField = t17Text.GetType().GetField("m_bNeedsLocalization", BindingFlags.Public | BindingFlags.Instance);
+                                PropertyInfo textProp = t17Text.GetType().GetProperty("text", BindingFlags.Public | BindingFlags.Instance);
+ 
+                                if (locField != null) locField.SetValue(t17Text, false);
+                                if (textProp != null) textProp.SetValue(t17Text, "[TICON=Coin] 50 (AP HINT)", null);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Hide all the other vanilla buttons so they don't clutter the UI
+                        hintButtonComp.gameObject.SetActive(false);
+                    }
+                }
+            }
+        }
+    }
+ 
+    // 2. OVERWRITE THE DESCRIPTION TEXT AT THE BOTTOM
+    [HarmonyPatch(typeof(PayphoneMenu), "ShowHintDescription")]
+    public class PayphoneMenu_ShowHintDescription_Patch
+    {
+        static void Postfix(PayphoneMenu __instance)
+        {
+            if (!configEnabled.Value || !isConnected) return;
+ 
+            if (__instance.m_HintVagueDescription != null)
+            {
+                // Clear the vanilla hint text and put in my custom description
+                __instance.m_HintVagueDescription.SetNewLocalizationTag(string.Empty);
+                __instance.m_HintVagueDescription.SetNewPlaceHolder("Contact the Archipelago Server to reveal the location of a random progression item.");
+            }
+        }
+    }
+ 
+    // 3. GREY OUT THE BUTTON IF WE ARE BROKE
+    [HarmonyPatch(typeof(PayphoneMenu), "CheckMoneyForHints")]
+    public class PayphoneMenu_CheckMoneyForHints_Patch
+    {
+        static void Postfix(PayphoneMenu __instance)
+        {
+            if (!configEnabled.Value || !isConnected) return;
+ 
+            FieldInfo buttonsField = typeof(PayphoneMenu).GetField("m_HintButtons", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (buttonsField == null) return;
+ 
+            Array hintButtons = (Array)buttonsField.GetValue(__instance);
+            if (hintButtons != null && hintButtons.Length > 0)
+            {
+                object firstButtonObj = hintButtons.GetValue(0);
+                FieldInfo btnField = firstButtonObj.GetType().GetField("m_Button", BindingFlags.Public | BindingFlags.Instance);
+                if (btnField != null)
+                {
+                    MonoBehaviour btnObj = (MonoBehaviour)btnField.GetValue(firstButtonObj);
+                    Player player = Gamer.GetPrimaryGamer()?.m_PlayerObject;
+ 
+                    if (btnObj != null && player != null && player.m_CharacterStats != null)
+                    {
+                        // Set the button to clickable ONLY if the player has $50 or more
+                        btnObj.enabled = (player.m_CharacterStats.Money >= 50f);
+                    }
+                }
+            }
+        }
+    }
+ 
+    // 4. THE TRANSACTION 
+    [HarmonyPatch(typeof(PayphoneMenu), "HintClicked")]
+    public class PayphoneMenu_HintClicked_Patch
+    {
+        //TODO: Replace
+        // A master list of the most important progression blueprints and their ingame IDs (Mostly just placeholder for now)
+        public static Dictionary<string, int> blueprintNamesToID = new Dictionary<string, int>()
+        {
+            { "Blueprint: Fake Audio Equipment", 182 },
+            { "Blueprint: Civilian Clothes", 136 },
+            { "Blueprint: Fake Carrot", 322 },
+            { "Blueprint: Grappling Hook", 210 },
+            { "Blueprint: Complete Crossbow", 140 },
+            { "Blueprint: Makeshift Rocket Thruster", 268 },
+            { "Blueprint: Makeshift Ladder", 265 },
+            { "Blueprint: Makeshift Breathing Apparatus", 259 },
+            { "Blueprint: Bed Dummy", 113 },
+            { "Blueprint: Guard Outfit", 426 },
+            { "Blueprint: Security Pass", 343 },
+            { "Blueprint: Plastic Red Key", 313 },
+            { "Blueprint: Plastic Cyan Key", 307 },
+            { "Blueprint: Key Mould Red", 420 },
+            { "Blueprint: Key Mould Cyan", 417 },
+            { "Blueprint: Makeshift Harness", 264 },
+            { "Blueprint: Parachute", 300 },
+            { "Blueprint: Lightweight Cutters", 249 }
+        };
+
+        static bool Prefix(PayphoneMenu __instance, int index)
+        {
+            if (!configEnabled.Value || !isConnected) return true;
+
+            Player player = Gamer.GetPrimaryGamer()?.m_PlayerObject;
+            if (player != null && player.m_CharacterStats != null)
+            {
+                int hintCost = 50;
+
+                if (player.m_CharacterStats.Money >= hintCost)
+                {
+                    // 1. Figure out what the player actually needs
+                    List<string> availableHints = new List<string>();
+                    foreach (var kvp in blueprintNamesToID)
+                    {
+                        // If the ID is NOT in our unlocked blueprints, it's still needed
+                        if (!unlockedBlueprints.Contains(kvp.Value))
+                        {
+                            availableHints.Add(kvp.Key);
+                        }
+                    }
+
+                    if (availableHints.Count > 0)
+                    {
+
+                        string chosenHint = availableHints[UnityEngine.Random.Range(0, availableHints.Count)];
+
+
+                        player.m_CharacterStats.DecreaseMoney(hintCost);
+                        AkSoundEngine.PostEvent("Play_UI_Payphone_Purchase", __instance.gameObject);
+
+
+                        if (isConnected)
+                        {
+                            //TODO: Replace this with hint scouting
+                            var sayPacket = new Archipelago.MultiClient.Net.Packets.SayPacket()
+                                { Text = $"!hint {chosenHint}" };
+                            APManager.Session.Socket.SendPacket(sayPacket);
+                            Plugin.instance.logging.SendChatMessage(
+                                $"You dropped ${hintCost} into the payphone to locate: {chosenHint.Replace("Blueprint: ", "")}...");
+                        }
+                    }
+                    else
+                    {
+                        // They already have all the main blueprints
+                        Plugin.instance.logging.SendChatMessage(
+                            "The multiverse has nothing left to teach you! (Stop trying to waste your money)");
+                        AkSoundEngine.PostEvent("Play_UI_Error", __instance.gameObject);
+                    }
+                }
+                else
+                {
+                    AkSoundEngine.PostEvent("Play_UI_Unavailable", __instance.gameObject);
+                    Plugin.instance.logging.SendChatMessage($"You need ${hintCost} to phone the multiverse!");
+                }
+
+                // Force the screen to close and unlock the player's movement
+                __instance.Hide();
+                player.RequestStopInteraction();
+            }
+
+            // Return false to shred the vanilla logic
+            return false;
+        }
+    }
+
+    #endregion
      #endregion
         
  #endregion       
