@@ -9,7 +9,7 @@ namespace BC_Dual_Ref_Library
         Connection,
         ChatMessage,
         Check,
-        Deathlink,
+        DeathLink,
         StealthLink,
         Goal,
         IsConnected,
@@ -92,17 +92,17 @@ namespace BC_Dual_Ref_Library
             }
         }
 
-        public class DeathlinkPacket : Packet
+        public class DeathLinkPacket : Packet
         {
             public string slotName = "";
             public string reason = "";
-            public DeathlinkPacket()
+            public DeathLinkPacket()
             {
-                Type = PacketType.Deathlink;
+                Type = PacketType.DeathLink;
             }
-            public DeathlinkPacket(string slotName, string reason)
+            public DeathLinkPacket(string slotName, string reason)
             {
-                Type = PacketType.Deathlink;
+                Type = PacketType.DeathLink;
                 this.slotName = slotName;
                 this.reason = reason;
             }
@@ -205,11 +205,11 @@ namespace BC_Dual_Ref_Library
                     parts.Add(check);
                     break;
                 }
-                case PacketType.Deathlink:
+                case PacketType.DeathLink:
                 {
-                    Packet.DeathlinkPacket deathlinkPacket = (Packet.DeathlinkPacket)packet;
-                    string slot = $"Slot: {deathlinkPacket.slotName}";
-                    string reason = $"Reason: {deathlinkPacket.reason}";
+                    Packet.DeathLinkPacket deathLinkPacket = (Packet.DeathLinkPacket)packet;
+                    string slot = $"Slot: {deathLinkPacket.slotName}";
+                    string reason = $"Reason: {deathLinkPacket.reason}";
                     
                     parts.Add(slot);
                     parts.Add(reason);
@@ -301,12 +301,12 @@ namespace BC_Dual_Ref_Library
                     return packetToReturn;
                 }
 
-                case PacketType.Deathlink:
+                case PacketType.DeathLink:
                 {
                     string slotName = jsonParts[1].Remove(0, 6);
                     string reason = jsonParts[2].Remove(0, 8);
                     
-                    Packet.DeathlinkPacket packetToReturn = new Packet.DeathlinkPacket(slotName, reason);
+                    Packet.DeathLinkPacket packetToReturn = new Packet.DeathLinkPacket(slotName, reason);
                     
                     return packetToReturn;
                 }

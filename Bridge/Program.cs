@@ -103,10 +103,10 @@ namespace TheEscAPists2Bridge
                     Packet.CheckPacket deserialisedPacket3 = (Packet.CheckPacket)PacketConverter.ReadJson(packetJson3);
                     ConsoleLogging.LogDebug($"{deserialisedPacket3.slotName} : {deserialisedPacket3.checkName}");
                     
-                    Packet.DeathlinkPacket packet4 = new Packet.DeathlinkPacket("BC_Escapists", "Died of death");
+                    Packet.DeathLinkPacket packet4 = new Packet.DeathLinkPacket("BC_Escapists", "Died of death");
                     ConsoleLogging.LogDebug($"{packet4.slotName} : {packet4.reason}");
                     string packetJson4 = packet4.ToJson();
-                    Packet.DeathlinkPacket deserialisedPacket4 = (Packet.DeathlinkPacket)PacketConverter.ReadJson(packetJson4);
+                    Packet.DeathLinkPacket deserialisedPacket4 = (Packet.DeathLinkPacket)PacketConverter.ReadJson(packetJson4);
                     ConsoleLogging.LogDebug($"{deserialisedPacket4.slotName} : {deserialisedPacket4.reason}");
 
                     Packet.GoalPacket packet5 = new Packet.GoalPacket("BC_Escapists");

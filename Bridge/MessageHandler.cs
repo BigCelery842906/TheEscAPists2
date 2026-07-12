@@ -79,8 +79,8 @@ namespace TheEscAPists2Bridge
             if (deathLinkObject.Source != ArchipelagoClient.instance.GetConnectionInfo().slotName)
             {
                 ConsoleLogging.LogSend($"DeathLink Received - {deathLinkObject.Cause}");
-                Packet.DeathlinkPacket deathlinkPacket = new Packet.DeathlinkPacket(deathLinkObject.Source, deathLinkObject.Cause);
-                SerialiseAndSend(deathlinkPacket);
+                Packet.DeathLinkPacket deathLinkPacket = new Packet.DeathLinkPacket(deathLinkObject.Source, deathLinkObject.Cause);
+                SerialiseAndSend(deathLinkPacket);
                 return;
             }
         }
@@ -148,10 +148,10 @@ namespace TheEscAPists2Bridge
                     SendCheckToServer(checkPacket.checkName);
                     break;
                 }
-                case PacketType.Deathlink:
+                case PacketType.DeathLink:
                 {
-                    Packet.DeathlinkPacket deathlinkPacket = (Packet.DeathlinkPacket)message;
-                    SendDeathLinkToServer(deathlinkPacket.slotName, deathlinkPacket.reason);
+                    Packet.DeathLinkPacket deathLinkPacket = (Packet.DeathLinkPacket)message;
+                    SendDeathLinkToServer(deathLinkPacket.slotName, deathLinkPacket.reason);
                     break;
                 }
                 case PacketType.StealthLink:

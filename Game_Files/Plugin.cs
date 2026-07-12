@@ -223,11 +223,11 @@ public class Plugin : BaseUnityPlugin
                 //TODO: Implement goof's code
                 break;
             }
-            case PacketType.Deathlink:
+            case PacketType.DeathLink:
             {
-                Packet.DeathlinkPacket deathlinkPacket = (Packet.DeathlinkPacket)message;
-                lastDeathLinkSlot = deathlinkPacket.slotName;
-                lastDeathLinkReason = deathlinkPacket.reason;
+                Packet.DeathLinkPacket deathLinkPacket = (Packet.DeathLinkPacket)message;
+                lastDeathLinkSlot = deathLinkPacket.slotName;
+                lastDeathLinkReason = deathLinkPacket.reason;
                 pendingDeathLink = true;
                 break;
             }
@@ -363,7 +363,7 @@ public class Plugin : BaseUnityPlugin
         SerialiseAndSend(new Packet.ConnectionPacket(slotName, "archipelago.gg:56644", ""));
         SerialiseAndSend(new Packet.ChatMessagePacket(slotName, "This is a test message packet"));
         SerialiseAndSend(new Packet.CheckPacket(slotName, "Check Name"));
-        SerialiseAndSend(new Packet.DeathlinkPacket(slotName, "Got beaten by dogs"));
+        SerialiseAndSend(new Packet.DeathLinkPacket(slotName, "Got beaten by dogs"));
         SerialiseAndSend(new Packet.GoalPacket(slotName));
     }
     
@@ -576,7 +576,7 @@ public class Plugin : BaseUnityPlugin
                 
                 string deathMessage = $"{slotName} was beaten to a pulp by {killerName}!";
  
-                Packet.DeathlinkPacket deathLink = new Packet.DeathlinkPacket(slotName, deathMessage);
+                Packet.DeathLinkPacket deathLink = new Packet.DeathLinkPacket(slotName, deathMessage);
                 Plugin.instance.SerialiseAndSend(deathLink);
             }
         }
