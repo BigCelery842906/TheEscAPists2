@@ -135,8 +135,11 @@ namespace TheEscAPists2Bridge
         private static void ConnectAP()
         {
             ConsoleLogging.LogDebug("Trying to Connect to the Server...");
-            ArchipelagoClient.instance.SetConnectionValues("Clique", "BC_Escapists", "archipelago.gg:55644", "",
-                new Version(0, 6, 1));
+            if (ArchipelagoClient.instance.GetConnectionInfo().slotName == "")
+            { //Connection info for testing, remove before actual release. TODO
+                ConsoleLogging.LogDebug("No connection information set, defaulting to the testing parameters. Remove this before an actual release.");
+                ArchipelagoClient.instance.SetConnectionValues(curConnectInfo.game, curConnectInfo.slotName, curConnectInfo.serverAddress, curConnectInfo.password, curConnectInfo.gameVersion);
+            }
 
             bool connectionEstablished = ArchipelagoClient.instance.TryToConnect();
 

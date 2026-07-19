@@ -441,3 +441,4 @@ FodyWeavers.xsd
 #Shortcuts
 *.lnk
 Game_Files/GoofsCode.cs
+BC_Dual_Ref_Library/curConnectInfo.cs

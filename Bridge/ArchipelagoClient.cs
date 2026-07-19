@@ -6,7 +6,7 @@ using BC_Dual_Ref_Library;
 public struct ConnectionInfo
 {
     public string game = ModInfo.GameName;
-    public string slotName;
+    public string slotName = "";
     public string serverAddress = "archipelago.gg:38281";
     public string password = "";
     public Version gameVersion = ModInfo.GameVersion;
@@ -108,10 +108,9 @@ namespace TheEscAPists2Bridge
                 List<string> tagsList = new List<string>();
                 tagsList.Add("StealthLink");
                 string[] tags = tagsList.Count > 0 ? tagsList.ToArray() : null;
-                
-                
-                loginResult = Session.TryConnectAndLogin(connectionInfo.game, connectionInfo.slotName, ItemsHandlingFlags.AllItems,
-                    connectionInfo.gameVersion, tags, "", connectionInfo.password);
+
+
+                loginResult = Session.TryConnectAndLogin(connectionInfo.game, connectionInfo.slotName, ItemsHandlingFlags.AllItems, connectionInfo.gameVersion, tags, "", connectionInfo.password);
             }
             catch (Exception e)
             {
