@@ -1,6 +1,8 @@
 ﻿using Archipelago.MultiClient.Net;
 using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 using Archipelago.MultiClient.Net.Enums;
+using Archipelago.MultiClient.Net.Models;
+using Archipelago.MultiClient.Net.Packets;
 using BC_Dual_Ref_Library;
 
 public struct ConnectionInfo
@@ -41,18 +43,18 @@ namespace TheEscAPists2Bridge
     public class ArchipelagoClient
     {
         public static ArchipelagoClient instance;
-        
+
         private bool connectedToServer = false;
-        
+
         public bool GetConnectedStatus()
         {
             return connectedToServer;
         }
-        
+
         public static ArchipelagoSession Session;
         private ConnectionInfo connectionInfo;
         static DeathLinkService DeathLinkService;
-        
+
         public Queue<string> incomingChatQueue = new Queue<string>();
 
         public ConnectionInfo GetConnectionInfo()
@@ -80,9 +82,9 @@ namespace TheEscAPists2Bridge
             connectionInfo = new ConnectionInfo(game, slotName, serverAddress, password, gameVersion);
             connectionInfo.slotName.Trim();
             connectionInfo.serverAddress.Trim();
-            
+
         }
-        
+
         public bool TryToConnect()
         {
             if (connectedToServer)
@@ -94,7 +96,7 @@ namespace TheEscAPists2Bridge
             Session = ArchipelagoSessionFactory.CreateSession(connectionInfo.serverAddress); //Test Parameters
 
             Session.Socket.SocketOpened += () => { ConsoleLogging.LogDebug("Socket Opened"); };
-            
+
             //RoomInfo Packet Received - Do parse on incoming packets
             //Optional GetDataPackage - Also Do parse on incoming packet if this is the case
             //
@@ -114,11 +116,11 @@ namespace TheEscAPists2Bridge
             }
             catch (Exception e)
             {
-                ConsoleLogging.LogError(ConsoleLogging.ErrorCode.ServerRefusedConnection,"Connection refused by server");
+                ConsoleLogging.LogError(ConsoleLogging.ErrorCode.ServerRefusedConnection, "Connection refused by server");
                 ConsoleLogging.LogError(ConsoleLogging.ErrorCode.ServerRefusedConnection, "Failed with these parameters: " + connectionInfo.serverAddress + ": " + connectionInfo.password + ": " + connectionInfo.slotName);
                 ConsoleLogging.LogError(ConsoleLogging.ErrorCode.ServerRefusedConnection, e.ToString());
                 //TODO: Send Chat Failure
-                
+
                 connectedToServer = false;
                 Session.Socket.DisconnectAsync();
 
@@ -155,10 +157,41 @@ namespace TheEscAPists2Bridge
         {
             SocketClosedEvent();
             SetUpDeathlink();
+            SubscribeToServerPackets();
             SubscribeToChatEvent();
-            SetUpStealthLink();
         }
-        
+
+        private void SubscribeToServerPackets()
+        {
+            Session.Socket.PacketReceived += (packet) =>
+            {
+                if (packet.PacketType == ArchipelagoPacketType.Bounced)
+                {
+                    BouncedPacket bouncedPacket = (BouncedPacket)packet;
+                    if (bouncedPacket.Tags != null && bouncedPacket.Tags.Contains("StealthLink"))
+                    {
+                        StealthLinkHandling(bouncedPacket);
+                    }
+                }
+
+                if (packet.PacketType == ArchipelagoPacketType.LocationInfo)
+                {
+                    LocationInfoPacket locationInfoPacket = (LocationInfoPacket)packet;
+                    foreach (NetworkItem item in locationInfoPacket.Locations)
+                    {
+                        ConsoleLogging.LogDebug($"{item.Location.ToString()}");
+                        ConsoleLogging.LogDebug($"{item.Player.ToString()}");
+                        ConsoleLogging.LogDebug($"{item.Flags.ToString()}");
+                        ConsoleLogging.LogDebug($"{item.Item.ToString()}");
+                    }
+
+                    ConsoleLogging.LogDebug($"Item gets returned as: {Session.Locations.GetLocationNameFromId(locationInfoPacket.Locations[0].Location)}");
+                    ConsoleLogging.LogDebug($"Item gets returned as: {Session.Items.GetItemName(locationInfoPacket.Locations[0].Item, ModInfo.GameName)}");
+                    MessageHandler.instance.ScoutHintToGame(Session.Locations.GetLocationNameFromId(locationInfoPacket.Locations[0].Location, ModInfo.GameName), Session.Items.GetItemName(locationInfoPacket.Locations[0].Item, ModInfo.GameName));
+                }
+            };
+        }
+
         private void SubscribeToChatEvent()
         {
             Session.MessageLog.OnMessageReceived += (message) =>
@@ -200,12 +233,13 @@ namespace TheEscAPists2Bridge
                 {
                     DeathLinkService.OnDeathLinkReceived -= MessageHandler.instance.SendDeathlinkToGame;
                 }
+
                 connectedToServer = false;
                 ConsoleLogging.LogInfo("Disconnected from Server.");
             }
 
             return true;
-    }
+        }
 
         public bool GetConnectionStatusToServer()
         {
@@ -222,9 +256,9 @@ namespace TheEscAPists2Bridge
             //TODO: Set up actual check sending - Difference between CompleteLocationChecks and CompleteLocationChecksAsync
             // Session.Locations.CompleteLocationChecks();
         }
-        
+
         public void SendDeathLinkToServer(string slot, string reason)
-        { 
+        {
             DeathLink deathlink = new DeathLink(slot, reason);
             DeathLinkService.SendDeathLink(deathlink);
         }
@@ -233,33 +267,22 @@ namespace TheEscAPists2Bridge
         {
             Session.SetGoalAchieved();
         }
-        
-        private void SetUpStealthLink()
+
+        private void StealthLinkHandling(BouncedPacket bouncedPacket)
         {
-            // 2. Add the custom Packet Listener for incoming StealthLinks
-            Session.Socket.PacketReceived += (packet) =>
+            string source = "The Multiverse";
+
+            // Search the tags for the one holding their name
+            foreach (string tag in bouncedPacket.Tags)
             {
-                if (packet.PacketType == ArchipelagoPacketType.Bounced)
+                if (tag.StartsWith("StealthSource|"))
                 {
-                    var bouncedPacket = (Archipelago.MultiClient.Net.Packets.BouncedPacket)packet;
-                    if (bouncedPacket.Tags != null && bouncedPacket.Tags.Contains("StealthLink"))
-                    {
-                        string source = "The Multiverse";
-
-                        // Search the tags for the one holding their name
-                        foreach (string tag in bouncedPacket.Tags)
-                        {
-                            if (tag.StartsWith("StealthSource|"))
-                            {
-                                source = tag.Substring(14); // Slices off "StealthSource|" to reveal the name
-                                break;
-                            }
-                        }
-
-                        MessageHandler.instance.SendStealthLinkToGame(source);
-                    }
+                    source = tag.Substring(14); // Slices off "StealthSource|" to reveal the name
+                    break;
                 }
-            };
+            }
+
+            MessageHandler.instance.SendStealthLinkToGame(source);
         }
 
         public void SendStealthLink(string slotName)
@@ -270,14 +293,22 @@ namespace TheEscAPists2Bridge
                 Tags = new List<string> { "StealthLink", "StealthSource|" + slotName }
             };
             Session.Socket.SendPacket(bouncePacket);
- 
+
             // This is for diagnostics to see if the stealthlink works
             //TODO: GET A SECOND CLIENT RUNNING TO TEST THIS PROPERLY
-            Session.Socket.SendPacket(new Archipelago.MultiClient.Net.Packets.SayPacket
-            {
-                Text = $"[DEBUG ALERT] {slotName} just triggered a prison lockdown!"
-            });
+            SayToServer($"[DEBUG ALERT] {slotName} just triggered a prison lockdown!");
         }
-        
+
+        public void ScoutHint(string hintPacketHintName)
+        {
+            ConsoleLogging.LogDebug("Starting to Scout Hint");
+
+            long id = Session.Locations.GetLocationIdFromName(connectionInfo.game, hintPacketHintName);
+
+            ConsoleLogging.LogDebug($"Searching for: {hintPacketHintName}. Returned ID: {id}");
+            Session.Locations.ScoutLocationsAsync(true, id);
+
+            ConsoleLogging.LogDebug("Hint should be scouted");
+        }
     }
 }

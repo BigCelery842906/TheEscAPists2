@@ -13,6 +13,7 @@ namespace BC_Dual_Ref_Library
         StealthLink,
         Goal,
         IsConnected,
+        Hint,
     }
 
     public class Packet
@@ -148,6 +149,30 @@ namespace BC_Dual_Ref_Library
                 this.slotName = slotName;
             }
         }
+
+        public class HintPacket : Packet
+        {
+            public enum TypeOfHint { Normal, Scout}
+
+            public TypeOfHint hintType = TypeOfHint.Normal;
+            // public string slotName = "";
+            
+            public string locationName = "";
+            public string itemName = "";
+            public HintPacket()
+            {
+                hintType = TypeOfHint.Normal;
+                Type = PacketType.Hint;
+            }
+
+            public HintPacket(string locationName, TypeOfHint hintType = TypeOfHint.Normal, string itemName = "")
+            {
+                Type = PacketType.Hint;
+                this.hintType = hintType;
+                this.locationName = locationName;
+                this.itemName = itemName;
+            }
+        }
     }
 
     public static class PacketConverter 
@@ -244,6 +269,18 @@ namespace BC_Dual_Ref_Library
 
                     break;
                 }
+
+                case PacketType.Hint:
+                {
+                    Packet.HintPacket hintPacket = (Packet.HintPacket)packet;
+                    string hintType = $"HintType: {hintPacket.hintType}";
+                    string hintName = $"HintName: {hintPacket.locationName}";
+                    
+                    parts.Add(hintType);
+                    parts.Add(hintName);
+
+                    break;
+                }
             }
             
             jsonString = string.Join("|", parts.ToArray());
@@ -337,6 +374,17 @@ namespace BC_Dual_Ref_Library
 
 
                     return isConnectedPacket;
+                }
+
+                case PacketType.Hint:
+                {
+                    string hintType = jsonParts[1].Remove(0, 10);
+                    Packet.HintPacket.TypeOfHint hintTyp = (Packet.HintPacket.TypeOfHint)int.Parse(hintType);
+                    string hintName = jsonParts[2].Remove(0, 10);
+                    
+                    Packet.HintPacket hintPacket = new Packet.HintPacket(hintName, hintTyp);
+
+                    return hintPacket;
                 }
                 
                 default:

@@ -249,6 +249,12 @@ public class Plugin : BaseUnityPlugin
                 isConnected = isConnectedPacket.isConnected;
                 break;
             }
+            case PacketType.Hint:
+            {
+                Packet.HintPacket hintPacket = (Packet.HintPacket)message;
+                logging.instance.SendChatMessage("Hint Packet Received but not implemented");
+                break;
+            }
             default:
             {
                 Logger.LogWarning("Unknown message type: " + message.Type);
@@ -316,6 +322,31 @@ public class Plugin : BaseUnityPlugin
         }
  
         // ------------------------------------------
+        
+        if (Input.GetKeyDown(KeyCode.F8))
+        {
+            Player localPlayer = Gamer.GetPrimaryGamer()?.m_PlayerObject;
+            if (localPlayer != null && localPlayer.m_CharacterStats != null)
+            {
+                string[] stats = { "Intellect", "Strength", "Cardio" };
+                foreach (string statName in stats)
+                {
+                    PropertyInfo statProp = typeof(CharacterStats).GetProperty(statName, BindingFlags.Public | BindingFlags.Instance);
+                    if (statProp != null) statProp.SetValue(localPlayer.m_CharacterStats, 100f, null);
+                    else
+                    {
+                        FieldInfo statField = typeof(CharacterStats).GetField("m_" + statName, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+                        if (statField != null) statField.SetValue(localPlayer.m_CharacterStats, 100f);
+                    }
+                }
+ 
+                // Add $50 to the player's wallet
+                localPlayer.m_CharacterStats.Money += 50f;
+ 
+                logging.SendChatMessage("All Stats Maxed to 100 and added $50!");
+                AkSoundEngine.PostEvent("Play_UI_Take_Item", localPlayer.gameObject);
+            }
+        }
     }
 
    
@@ -879,10 +910,9 @@ public class Plugin : BaseUnityPlugin
 
                         if (isConnected)
                         {
-                            //TODO: Replace this with hint scouting
-                            var sayPacket = new Archipelago.MultiClient.Net.Packets.SayPacket()
-                                { Text = $"!hint {chosenHint}" };
-                            APManager.Session.Socket.SendPacket(sayPacket);
+                            //TODO: Replace this with hint scouting, accept the hint packet, and then funnel it back into this somehow without running into a null error
+                            // var sayPacket = new Archipelago.MultiClient.Net.Packets.SayPacket()
+                            //     { Text = $"!hint {chosenHint}" };
                             Plugin.instance.logging.SendChatMessage(
                                 $"You dropped ${hintCost} into the payphone to locate: {chosenHint.Replace("Blueprint: ", "")}...");
                         }

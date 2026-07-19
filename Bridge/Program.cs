@@ -118,6 +118,13 @@ namespace TheEscAPists2Bridge
                     break;
                 }
 
+                case "/scout":
+                {
+                    ConsoleLogging.LogDebug("Scouting Hint for refunct Block Blub Minigame (WILL ONLY WORK WHEN CONNECTED TO THE REFUNCT SLOT");
+                    ArchipelagoClient.instance.ScoutHint("Block Blub Minigame: Blues Score 120");
+                    break;
+                }
+
                 default:
                 {
                     ConsoleLogging.LogWarning("Unknown Command");
@@ -135,7 +142,7 @@ namespace TheEscAPists2Bridge
         private static void ConnectAP()
         {
             ConsoleLogging.LogDebug("Trying to Connect to the Server...");
-            if (ArchipelagoClient.instance.GetConnectionInfo().slotName == "")
+            // if (ArchipelagoClient.instance.GetConnectionInfo().slotName == "slotName")
             { //Connection info for testing, remove before actual release. TODO
                 ConsoleLogging.LogDebug("No connection information set, defaulting to the testing parameters. Remove this before an actual release.");
                 ArchipelagoClient.instance.SetConnectionValues(curConnectInfo.game, curConnectInfo.slotName, curConnectInfo.serverAddress, curConnectInfo.password, curConnectInfo.gameVersion);

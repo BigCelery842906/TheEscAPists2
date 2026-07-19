@@ -103,6 +103,13 @@ namespace TheEscAPists2Bridge
             SerialiseAndSend(isConnectedPacket);
         }
         
+        public void ScoutHintToGame(string location, string item)
+        {
+            Packet.HintPacket hintPacket = new Packet.HintPacket(location, Packet.HintPacket.TypeOfHint.Scout, item);
+            ConsoleLogging.LogSend($"Scouted Hint: {location} contains {item}");
+            SerialiseAndSend(hintPacket);
+        }
+        
         //Eventually going to need to get the items and feed it through
 
 
@@ -163,6 +170,25 @@ namespace TheEscAPists2Bridge
                 case PacketType.Goal:
                 {
                     SendGoalToServer();
+                    break;
+                }
+                case PacketType.Hint:
+                {
+                    Packet.HintPacket hintPacket = (Packet.HintPacket)message;
+
+                    switch (hintPacket.hintType)
+                    {
+                        case Packet.HintPacket.TypeOfHint.Normal:
+                        {
+                            SendChatToServer($"!hint {hintPacket.locationName}");
+                            break;
+                        }
+                        case Packet.HintPacket.TypeOfHint.Scout:
+                        {
+                            ScoutHintToServer(hintPacket.locationName);
+                            break;
+                        }
+                    }
                     break;
                 }
                 default:
@@ -226,6 +252,12 @@ namespace TheEscAPists2Bridge
             Packet.ConnectionPacket connectionPacket = new Packet.ConnectionPacket(connectionInfo.slotName, connectionInfo.serverAddress, connectionInfo.password);
             
             SerialiseAndSend(connectionPacket);
+        }
+        
+        //Scout Hint
+        private void ScoutHintToServer(string hintPacketHintName)
+        {
+            ArchipelagoClient.instance.ScoutHint(hintPacketHintName);
         }
         
         #endregion
