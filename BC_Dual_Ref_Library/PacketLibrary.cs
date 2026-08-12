@@ -79,17 +79,19 @@ namespace BC_Dual_Ref_Library
         {
             public string slotName = "";
             public string checkName = "";
+            public bool isID = false;
 
             public CheckPacket()
             {
                 Type = PacketType.Check;
             }
 
-            public CheckPacket(string slotName, string checkName)
+            public CheckPacket(string slotName, string checkName, bool isID = false)
             {
                 Type = PacketType.Check;
                 this.slotName = slotName;
                 this.checkName = checkName;
+                this.isID = isID;
             }
         }
 
@@ -225,9 +227,12 @@ namespace BC_Dual_Ref_Library
                     
                     string slot = $"Slot: {checkPacket.slotName}";
                     string check =  $"Check: {checkPacket.checkName}";
+                    string isID = $"isID: {checkPacket.isID}";
                     
                     parts.Add(slot);
                     parts.Add(check);
+                    parts.Add(isID);
+                    
                     break;
                 }
                 case PacketType.DeathLink:
@@ -332,8 +337,9 @@ namespace BC_Dual_Ref_Library
                 {
                     string slotName = jsonParts[1].Remove(0, 6);
                     string checkName = jsonParts[2].Remove(0, 7);
+                    bool isID = bool.Parse(jsonParts[3].Remove(0, 6));
                     
-                    Packet.CheckPacket packetToReturn = new Packet.CheckPacket(slotName, checkName);
+                    Packet.CheckPacket packetToReturn = new Packet.CheckPacket(slotName, checkName, isID);
                     
                     return packetToReturn;
                 }

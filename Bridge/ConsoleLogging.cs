@@ -16,6 +16,7 @@ public static class ConsoleLogging
         NoGameConnection,
         ServerRefusedConnection,
         FailToDisconnect,
+        CheckSendFailure,
         
     }
     /// <summary>
@@ -24,6 +25,7 @@ public static class ConsoleLogging
     /// 03 - The Bridge is not connected to the game.
     /// 04 - Server Refused Connection for some reason, Find more details attached.
     /// 05 - Failed to disconnect from server
+    /// 06 - Check failed to send
     /// </summary>
     /// <param name="errorCode"></param>
     /// 

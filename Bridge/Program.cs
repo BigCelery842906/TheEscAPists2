@@ -140,7 +140,7 @@ namespace TheEscAPists2Bridge
                     {
                         ConsoleLogging.LogDebug("Enter the check you want to send: ");
                         string curLine2 = Console.ReadLine().Trim();
-                        ArchipelagoClient.instance.SendCheck(curLine2);
+                        ArchipelagoClient.instance.SendCheck(curLine2, false);
                     }
                     else
                     {

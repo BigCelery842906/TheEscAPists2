@@ -254,10 +254,23 @@ namespace TheEscAPists2Bridge
             Session.Say(message);
         }
 
-        public void SendCheck(string check)
+        public void SendCheck(string check, bool isID)
         {
-            long id = Session.Locations.GetLocationIdFromName(connectionInfo.game, check);
-            ConsoleLogging.LogDebug($"{check} comes back as ID: {id}");
+            long id = -1;
+            if (!isID)
+            {
+                id = Session.Locations.GetLocationIdFromName(connectionInfo.game, check);
+                ConsoleLogging.LogDebug($"{check} comes back as ID: {id}");
+            }
+            if (isID)
+            {
+                id = long.Parse(check);
+            }
+
+            if (id == -1)
+            {
+                ConsoleLogging.LogError(ConsoleLogging.ErrorCode.CheckSendFailure,"Check came back as ID '-1', aborting check send.");
+            }
             checkedLocations.Add(id);
             ConsoleLogging.LogDebug($"Added {id} to the checked locations, which sits at {checkedLocations.Count} items.");
             //TODO: Set up actual check sending - Difference between CompleteLocationChecks and CompleteLocationChecksAsync

@@ -152,7 +152,7 @@ namespace TheEscAPists2Bridge
                 case PacketType.Check:
                 {
                     Packet.CheckPacket checkPacket = (Packet.CheckPacket)message;
-                    SendCheckToServer(checkPacket.checkName);
+                    SendCheckToServer(checkPacket.checkName, checkPacket.isID);
                     break;
                 }
                 case PacketType.DeathLink:
@@ -216,11 +216,11 @@ namespace TheEscAPists2Bridge
         }
         
         //Checks
-        void SendCheckToServer(string CheckName)
+        void SendCheckToServer(string CheckName, bool isID)
         {
             //TODO: SEND CHECK VALUES
             ConsoleLogging.LogSend("Check Send: " + CheckName);
-            ArchipelagoClient.instance.SendCheck(CheckName);
+            ArchipelagoClient.instance.SendCheck(CheckName, isID);
         }
         
         //Send Deathlink
