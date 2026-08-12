@@ -4,6 +4,7 @@ using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Models;
 using Archipelago.MultiClient.Net.Packets;
 using BC_Dual_Ref_Library;
+using HarmonyLib;
 
 public struct ConnectionInfo
 {
@@ -57,6 +58,8 @@ namespace TheEscAPists2Bridge
 
         public Queue<string> incomingChatQueue = new Queue<string>();
 
+        public List<long> checkedLocations = new List<long>();
+        
         public ConnectionInfo GetConnectionInfo()
         {
             return connectionInfo;
@@ -253,8 +256,12 @@ namespace TheEscAPists2Bridge
 
         public void SendCheck(string check)
         {
+            long id = Session.Locations.GetLocationIdFromName(connectionInfo.game, check);
+            ConsoleLogging.LogDebug($"{check} comes back as ID: {id}");
+            checkedLocations.Add(id);
+            ConsoleLogging.LogDebug($"Added {id} to the checked locations, which sits at {checkedLocations.Count} items.");
             //TODO: Set up actual check sending - Difference between CompleteLocationChecks and CompleteLocationChecksAsync
-            // Session.Locations.CompleteLocationChecks();
+            Session.Locations.CompleteLocationChecks(checkedLocations.Except(Session.Locations.AllLocationsChecked).ToArray());
         }
 
         public void SendDeathLinkToServer(string slot, string reason)

@@ -118,10 +118,36 @@ namespace TheEscAPists2Bridge
                     break;
                 }
 
-                case "/scout":
+                case "/scoutcheck":
                 {
-                    ConsoleLogging.LogDebug("Scouting Hint for refunct Block Blub Minigame (WILL ONLY WORK WHEN CONNECTED TO THE REFUNCT SLOT");
-                    ArchipelagoClient.instance.ScoutHint("Block Blub Minigame: Blues Score 120");
+                    if (ConsoleLogging.debugMode)
+                    {
+                        ConsoleLogging.LogDebug("Enter the check you want to scout: ");
+                        string curLine2 = Console.ReadLine().Trim();
+                        ArchipelagoClient.instance.ScoutHint("curLine2");
+                    }
+                    else
+                    {
+                        ConsoleLogging.LogWarning("Failed: Debug Mode not enabled, This is reserved for testing purposes only");
+                    }
+
+                    break;
+                }
+
+                case "/sendcheck":
+                {
+                    if (ConsoleLogging.debugMode)
+                    {
+                        ConsoleLogging.LogDebug("Enter the check you want to send: ");
+                        string curLine2 = Console.ReadLine().Trim();
+                        ArchipelagoClient.instance.SendCheck(curLine2);
+                    }
+                    else
+                    {
+                        ConsoleLogging.LogWarning(
+                            "Failed: Debug Mode not enabled, This is reserved for testing purposes only");
+                    }
+
                     break;
                 }
 
