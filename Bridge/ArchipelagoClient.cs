@@ -285,6 +285,7 @@ namespace TheEscAPists2Bridge
 
         public void SendGoalToServer()
         {
+            ConsoleLogging.LogSuccess("Slot Goaled. Congratulations!");
             Session.SetGoalAchieved();
         }
 

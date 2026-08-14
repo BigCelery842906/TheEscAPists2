@@ -150,6 +150,13 @@ namespace TheEscAPists2Bridge
 
                     break;
                 }
+                
+                case "/sendgoal":
+                    if (ConsoleLogging.debugMode)
+                    {
+                        ArchipelagoClient.instance.SendGoalToServer();
+                    }
+                        break;
 
                 default:
                 {
