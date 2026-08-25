@@ -287,6 +287,8 @@ public class Plugin : BaseUnityPlugin
             }
         }
         
+        ProcessStatMilestones();
+        
         if (Input.GetKeyDown(KeyCode.F6))
         {
            StartPipes();
@@ -390,7 +392,12 @@ public class Plugin : BaseUnityPlugin
         // writer?.WriteLine(chatMessagePacket.ToString());
     }
 
-    void SendCheckToBridge(string check, bool isID)
+    void SendCheckIDToBridge(long checkID)
+    {
+        SendCheckToBridge(checkID.ToString(), true);
+    }
+    
+    void SendCheckToBridge(string check, bool isID = false)
     {
         Packet.CheckPacket checkPacket = new Packet.CheckPacket(slotName, check, isID);
         SerialiseAndSend(checkPacket);
@@ -1300,6 +1307,98 @@ public class Plugin : BaseUnityPlugin
 
     }
 
+    #endregion
+    
+    #region Stat Handling
+    
+    private float GetStatValue(CharacterStats stats, string statName)
+    {
+        PropertyInfo statProp = typeof(CharacterStats).GetProperty(statName, BindingFlags.Public | BindingFlags.Instance);
+        if (statProp != null) return (float)statProp.GetValue(stats, null);
+ 
+        FieldInfo statField = typeof(CharacterStats).GetField("m_" + statName, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+        if (statField != null) return (float)statField.GetValue(stats);
+ 
+        return 0f;
+    }
+
+    private void ProcessStatMilestones()
+    {
+        //TODO: REPLACE THIS WITH THE CORRECT METHODS - POST RELEASE
+        Player localPlayer = Gamer.GetPrimaryGamer()?.m_PlayerObject;
+        if (localPlayer == null || localPlayer.m_CharacterStats == null) return;
+
+        float intellect = GetStatValue(localPlayer.m_CharacterStats, "Intellect");
+        SendCheckToBridge("Intellect Stat: " + intellect);
+        //AkSoundEngine.PostEvent("Play_UI_Take_Item", localPlayer.gameObject);
+
+
+        float cardio = GetStatValue(localPlayer.m_CharacterStats, "Cardio");
+        SendCheckToBridge("Stamina Stat: " + cardio);
+        //AkSoundEngine.PostEvent("Play_UI_Take_Item", localPlayer.gameObject);
+
+
+        float strength = GetStatValue(localPlayer.m_CharacterStats, "Strength");
+        SendCheckToBridge("Strength Stat: " + strength);
+    }
+
+    [HarmonyPatch(typeof(GymInteraction), "UpdateInteraction")]
+    public class GymInteraction_UpdateInteraction_Patch
+    {
+        //TODO: SET NEW VALUE INTO SLOTDATA
+        static void PostFix(GymInteraction __instance)
+        {
+            // PropertyInfo buttonMasher = typeof(GymInteraction).GetProperty("m_ButtonMasher", BindingFlags.NonPublic | BindingFlags.Instance);
+            
+            Player localPlayer = Gamer.GetPrimaryGamer()?.m_PlayerObject;
+            if (localPlayer == null || localPlayer.m_CharacterStats == null) return;
+            
+            if (__instance.m_StrengthChange > 0)
+            {
+                int strengthVal = (int)instance.GetStatValue(localPlayer.m_CharacterStats, "Strength");
+
+                if (strengthVal >= 100.0f)
+                {
+                    instance.SendCheckToBridge("Strength Stat: Max");
+                    return;
+                }
+                instance.SendCheckToBridge("Strength Stat:" + strengthVal);
+            }
+            if (__instance.m_CardioChange > 0)
+            {
+                int staminaVal = (int)instance.GetStatValue(localPlayer.m_CharacterStats, "Cardio");
+
+                if (staminaVal >= 100.0f)
+                {
+                    instance.SendCheckToBridge("Stamina Stat: Max");
+                    return;
+                }
+                instance.SendCheckToBridge("Stamina Stat:" + staminaVal);
+            }
+        }
+    }
+    
+    
+    
+    [HarmonyPatch(typeof(StudyInteraction), "UpdateInteraction")]
+    public class StudyInteraction_UpdateInteraction_Patch
+    {
+        static void PostFix(StudyInteraction __instance)
+        {
+            Player localPlayer = Gamer.GetPrimaryGamer()?.m_PlayerObject;
+            if (localPlayer == null || localPlayer.m_CharacterStats == null) return;
+
+            int intellectVal = (int)localPlayer.m_CharacterStats.Intellect;
+            
+            if (intellectVal >= 100.0f)
+            {
+                instance.SendCheckToBridge("Strength Stat: Max");
+                return;
+            }
+            instance.SendCheckToBridge("Strength Stat:" + intellectVal);
+        }    
+    }
+    
     #endregion
         
     #endregion

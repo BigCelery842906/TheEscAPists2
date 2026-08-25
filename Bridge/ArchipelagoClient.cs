@@ -59,7 +59,7 @@ namespace TheEscAPists2Bridge
         public Queue<string> incomingChatQueue = new Queue<string>();
 
         public List<long> checkedLocations = new List<long>();
-        
+
         public ConnectionInfo GetConnectionInfo()
         {
             return connectionInfo;
@@ -256,6 +256,30 @@ namespace TheEscAPists2Bridge
 
         public void SendCheck(string check, bool isID)
         {
+            string[] checkParts = check.Split(": ");
+
+            if (checkParts[0] == "Stamina Stat" || checkParts[0] == "Strength Stat" || checkParts[0] == "Intellect Stat")
+            {
+                for (int i = 30; i <= int.Parse(checkParts[1]); i++)
+                {
+                    if (i != 100)
+                    {
+                        SendActualCheck($"{checkParts[0]}: {i}", isID);
+                    }
+                    else
+                    {
+                        SendActualCheck($"{checkParts[0]}: Max", isID);
+                    }
+                }
+            }
+            else
+            {
+                SendActualCheck(check, isID);
+            }
+        }
+
+        private void SendActualCheck(string check, bool isID)
+        {
             long id = -1;
             if (!isID)
             {
@@ -266,15 +290,25 @@ namespace TheEscAPists2Bridge
             {
                 id = long.Parse(check);
             }
-
+            
             if (id == -1)
             {
                 ConsoleLogging.LogError(ConsoleLogging.ErrorCode.CheckSendFailure,"Check came back as ID '-1', aborting check send.");
             }
+
+            if (checkedLocations.Contains(id))
+            {
+                return;
+            }
+            
             checkedLocations.Add(id);
             ConsoleLogging.LogDebug($"Added {id} to the checked locations, which sits at {checkedLocations.Count} items.");
             //TODO: Set up actual check sending - Difference between CompleteLocationChecks and CompleteLocationChecksAsync
+            
+            
+            ConsoleLogging.LogSend("Check Send: " + Session.Locations.GetLocationNameFromId(id));
             Session.Locations.CompleteLocationChecks(checkedLocations.Except(Session.Locations.AllLocationsChecked).ToArray());
+
         }
 
         public void SendDeathLinkToServer(string slot, string reason)

@@ -299,14 +299,8 @@ namespace BC_Dual_Ref_Library
         {
             string[] jsonParts = jsonString.Split('|');
             
-            for (int i = 0; i < jsonParts.Length; i++)
-            {
-                Console.WriteLine(jsonParts[i]);
-            }
-            
             string type = jsonParts[0];
             type = type.Remove(0, 6);
-            Console.WriteLine(type);
 
             PacketType packetType = (PacketType)Enum.Parse(typeof(PacketType), type);
 

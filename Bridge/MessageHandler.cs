@@ -219,7 +219,6 @@ namespace TheEscAPists2Bridge
         void SendCheckToServer(string CheckName, bool isID)
         {
             //TODO: SEND CHECK VALUES
-            ConsoleLogging.LogSend("Check Send: " + CheckName);
             ArchipelagoClient.instance.SendCheck(CheckName, isID);
         }
         
