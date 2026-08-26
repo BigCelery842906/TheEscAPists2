@@ -867,7 +867,7 @@ public class Plugin : BaseUnityPlugin
     [HarmonyPatch(typeof(PayphoneMenu), "HintClicked")]
     public class PayphoneMenu_HintClicked_Patch
     {
-        //TODO: Replace
+        //TODO: Replace (IT'S ALL WRONG)
         // A master list of the most important progression blueprints and their ingame IDs (Mostly just placeholder for now)
         public static Dictionary<string, int> blueprintNamesToID = new Dictionary<string, int>()
         {

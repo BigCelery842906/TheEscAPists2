@@ -41,6 +41,54 @@ public struct ConnectionInfo
 namespace TheEscAPists2Bridge
 {
 
+    public class SlotData
+    {
+        private static int GetSlotOption(Dictionary<string, object> slotData, string slotDataName)
+        {
+            return (int)slotData[slotDataName];
+        }
+
+        private static bool GetSlotOptionBool(Dictionary<string, object> slotData, string slotDataName)
+        {
+            return GetSlotOption(slotData, slotDataName) != 0;
+        }
+
+        public bool CenterPerks2;
+        public bool CougarCreekRailroad;
+        public bool RattlesnakeSprings;
+        public bool KAPOWCamp;
+        public bool HMSOrca;
+        public bool HMPOffshore;
+        public bool FortTundra;
+        public bool Area17;
+        public bool AirForceCon;
+        public bool USSAnomaly;
+
+        public int StrengthStep;
+        public int StaminaStep;
+        public int IntellectStep;
+        public int UniqueEscapesRequired;
+
+        public SlotData(Dictionary<string, object> connectedPacketSlotData)
+        {
+            CenterPerks2 = GetSlotOptionBool(connectedPacketSlotData, "center_perks");
+            CougarCreekRailroad = GetSlotOptionBool(connectedPacketSlotData, "cougar_creek_railroad");
+            RattlesnakeSprings = GetSlotOptionBool(connectedPacketSlotData, "rattlesnake_springs");
+            KAPOWCamp = GetSlotOptionBool(connectedPacketSlotData, "kapow_camp");
+            HMSOrca = GetSlotOptionBool(connectedPacketSlotData, "hms_orca");
+            HMPOffshore = GetSlotOptionBool(connectedPacketSlotData, "hmp_offshore");
+            FortTundra = GetSlotOptionBool(connectedPacketSlotData, "fort_tundra");
+            Area17 = GetSlotOptionBool(connectedPacketSlotData, "area_17");
+            AirForceCon = GetSlotOptionBool(connectedPacketSlotData, "air_force_con");
+            USSAnomaly = GetSlotOptionBool(connectedPacketSlotData, "uss_anomaly");
+
+            StrengthStep = GetSlotOption(connectedPacketSlotData, "strength_step");
+            StaminaStep = GetSlotOption(connectedPacketSlotData, "stamina_step");
+            IntellectStep = GetSlotOption(connectedPacketSlotData, "intellect_step");
+            UniqueEscapesRequired = GetSlotOption(connectedPacketSlotData, "unique_escapes_required");
+        }
+    }
+
     public class ArchipelagoClient
     {
         public static ArchipelagoClient instance;
@@ -59,6 +107,12 @@ namespace TheEscAPists2Bridge
         public Queue<string> incomingChatQueue = new Queue<string>();
 
         public List<long> checkedLocations = new List<long>();
+        private int lastStrength = 29; //Want to send 30 first time round
+        private int lastStamina = 29; //Want to send 30 first time round
+        private int lastIntellect = 29; //Want to send 30 first time round
+        
+        public List<long> missingLocations = new List<long>();
+        public SlotData slotData;
 
         public ConnectionInfo GetConnectionInfo()
         {
@@ -102,7 +156,7 @@ namespace TheEscAPists2Bridge
 
             //RoomInfo Packet Received - Do parse on incoming packets
             //Optional GetDataPackage - Also Do parse on incoming packet if this is the case
-            //
+            //TODO: https://alwaysintreble.github.io/Archipelago/network%20protocol.html#receiveditems
 
             LoginResult loginResult = null;
             try
@@ -114,7 +168,8 @@ namespace TheEscAPists2Bridge
                 tagsList.Add("StealthLink");
                 string[] tags = tagsList.Count > 0 ? tagsList.ToArray() : null;
 
-
+                
+                SubscribeToServerPackets();
                 loginResult = Session.TryConnectAndLogin(connectionInfo.game, connectionInfo.slotName, ItemsHandlingFlags.AllItems, connectionInfo.gameVersion, tags, "", connectionInfo.password);
             }
             catch (Exception e)
@@ -192,7 +247,33 @@ namespace TheEscAPists2Bridge
                     ConsoleLogging.LogDebug($"Item gets returned as: {Session.Items.GetItemName(locationInfoPacket.Locations[0].Item, ModInfo.GameName)}");
                     MessageHandler.instance.ScoutHintToGame(Session.Locations.GetLocationNameFromId(locationInfoPacket.Locations[0].Location, ModInfo.GameName), Session.Items.GetItemName(locationInfoPacket.Locations[0].Item, ModInfo.GameName));
                 }
+
+                if (packet.PacketType == ArchipelagoPacketType.Connected)
+                {
+                    
+                    ConnectedPacket connectedPacket = (ConnectedPacket)packet;
+                    
+                    ProcessConnectedPacket(connectedPacket);
+                }
             };
+            
+            // Session.Socket.
+        }
+
+        private void ProcessConnectedPacket(ConnectedPacket connectedPacket)
+        {
+            checkedLocations = new List<long>(connectedPacket.LocationsChecked);
+
+            missingLocations = new List<long>(connectedPacket.MissingChecks);
+
+            slotData = new SlotData(connectedPacket.SlotData);
+                    
+            ConsoleLogging.LogDebug(slotData.ToString());
+                    
+            //public Dictionary<string, object> SlotData;
+            //https://alwaysintreble.github.io/Archipelago/network%20protocol.html#get
+
+
         }
 
         private void SubscribeToChatEvent()
@@ -257,10 +338,56 @@ namespace TheEscAPists2Bridge
         public void SendCheck(string check, bool isID)
         {
             string[] checkParts = check.Split(": ");
-
-            if (checkParts[0] == "Stamina Stat" || checkParts[0] == "Strength Stat" || checkParts[0] == "Intellect Stat")
+            string stat = "n/a";
+            int lastStat = 29;
+            int statToParse = int.Parse(checkParts[1]);
+            if (checkParts[0] == "Stamina Stat")
             {
-                for (int i = 30; i <= int.Parse(checkParts[1]); i++)
+                stat = "Stamina";
+
+                lastStat = lastStamina;
+                if (lastStamina < statToParse)
+                {
+                    lastStamina = statToParse;
+                }
+                else
+                {
+                    return;
+                }
+
+            }
+            else if (checkParts[0] == "Strength Stat")
+            {
+                stat = "Strength";
+                
+                lastStat = lastStrength;
+                if (lastStrength < statToParse)
+                {
+                    lastStrength = statToParse;
+                }
+                else
+                {
+                    return;
+                }
+            }
+            else if (checkParts[0] == "Intellect Stat")
+            {
+                stat = "Intellect";
+                
+                lastStat = lastIntellect;
+                if (lastIntellect < statToParse)
+                {
+                    lastIntellect = statToParse;
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            if (stat != "n/a")
+            {
+                for (int i = lastStat + 1; i <= int.Parse(checkParts[1]); i++)
                 {
                     if (i != 100)
                     {
@@ -284,7 +411,7 @@ namespace TheEscAPists2Bridge
             if (!isID)
             {
                 id = Session.Locations.GetLocationIdFromName(connectionInfo.game, check);
-                ConsoleLogging.LogDebug($"{check} comes back as ID: {id}");
+                // ConsoleLogging.LogDebug($"{check} comes back as ID: {id}");
             }
             if (isID)
             {
@@ -300,14 +427,19 @@ namespace TheEscAPists2Bridge
             {
                 return;
             }
-            
-            checkedLocations.Add(id);
-            ConsoleLogging.LogDebug($"Added {id} to the checked locations, which sits at {checkedLocations.Count} items.");
-            //TODO: Set up actual check sending - Difference between CompleteLocationChecks and CompleteLocationChecksAsync
-            
-            
-            ConsoleLogging.LogSend("Check Send: " + Session.Locations.GetLocationNameFromId(id));
-            Session.Locations.CompleteLocationChecks(checkedLocations.Except(Session.Locations.AllLocationsChecked).ToArray());
+
+            if (missingLocations.Contains(id))
+            {
+                checkedLocations.Add(id);
+                ConsoleLogging.LogDebug($"Added {id} to the checked locations, which sits at {checkedLocations.Count} items.");
+                //TODO: Set up actual check sending - Difference between CompleteLocationChecks and CompleteLocationChecksAsync
+                ConsoleLogging.LogSend("Check Send: " + Session.Locations.GetLocationNameFromId(id));
+                Session.Locations.CompleteLocationChecks(checkedLocations.Except(Session.Locations.AllLocationsChecked).ToArray());
+            }
+            else
+            {
+                ConsoleLogging.LogError(ConsoleLogging.ErrorCode.CheckSendFailure, "Check not found in list of locations yet to be sent");
+            }
 
         }
 
