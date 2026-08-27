@@ -45,7 +45,7 @@ namespace TheEscAPists2Bridge
     {
         private static int GetSlotOption(Dictionary<string, object> slotData, string slotDataName)
         {
-            return (int)slotData[slotDataName];
+            return Convert.ToInt32(slotData[slotDataName]);
         }
 
         private static bool GetSlotOptionBool(Dictionary<string, object> slotData, string slotDataName)
@@ -82,10 +82,16 @@ namespace TheEscAPists2Bridge
             AirForceCon = GetSlotOptionBool(connectedPacketSlotData, "air_force_con");
             USSAnomaly = GetSlotOptionBool(connectedPacketSlotData, "uss_anomaly");
 
+            
             StrengthStep = GetSlotOption(connectedPacketSlotData, "strength_step");
             StaminaStep = GetSlotOption(connectedPacketSlotData, "stamina_step");
             IntellectStep = GetSlotOption(connectedPacketSlotData, "intellect_step");
             UniqueEscapesRequired = GetSlotOption(connectedPacketSlotData, "unique_escapes_required");
+            
+            foreach (KeyValuePair<string, object> slotData in connectedPacketSlotData)
+            {
+                ConsoleLogging.LogDebug($"String: {slotData.Key} Value: {slotData.Value}");
+            }
         }
     }
 
@@ -106,12 +112,8 @@ namespace TheEscAPists2Bridge
 
         public Queue<string> incomingChatQueue = new Queue<string>();
 
-        public List<long> checkedLocations = new List<long>();
-        private int lastStrength = 29; //Want to send 30 first time round
-        private int lastStamina = 29; //Want to send 30 first time round
-        private int lastIntellect = 29; //Want to send 30 first time round
-        
-        public List<long> missingLocations = new List<long>();
+        public List<long> checkedLocations;
+        public List<long> missingLocations;
         public SlotData slotData;
 
         public ConnectionInfo GetConnectionInfo()
@@ -256,24 +258,16 @@ namespace TheEscAPists2Bridge
                     ProcessConnectedPacket(connectedPacket);
                 }
             };
-            
-            // Session.Socket.
-        }
+                    checkedLocations = new List<long>(connectedPacket.LocationsChecked);
 
-        private void ProcessConnectedPacket(ConnectedPacket connectedPacket)
-        {
-            checkedLocations = new List<long>(connectedPacket.LocationsChecked);
+                    missingLocations = new List<long>(connectedPacket.MissingChecks);
 
-            missingLocations = new List<long>(connectedPacket.MissingChecks);
-
-            slotData = new SlotData(connectedPacket.SlotData);
+                    slotData = new SlotData(connectedPacket.SlotData);
                     
-            ConsoleLogging.LogDebug(slotData.ToString());
+                }
+
                     
-            //public Dictionary<string, object> SlotData;
-            //https://alwaysintreble.github.io/Archipelago/network%20protocol.html#get
-
-
+                    
         }
 
         private void SubscribeToChatEvent()
