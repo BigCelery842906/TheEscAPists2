@@ -113,6 +113,10 @@ namespace TheEscAPists2Bridge
         public Queue<string> incomingChatQueue = new Queue<string>();
 
         public List<long> checkedLocations;
+        private int lastStrength = 30; //Want to send 30 first time round
+        private int lastStamina = 30; //Want to send 30 first time round
+        private int lastIntellect = 30; //Want to send 30 first time round
+
         public List<long> missingLocations;
         public SlotData slotData;
 
@@ -255,9 +259,6 @@ namespace TheEscAPists2Bridge
                     
                     ConnectedPacket connectedPacket = (ConnectedPacket)packet;
                     
-                    ProcessConnectedPacket(connectedPacket);
-                }
-            };
                     checkedLocations = new List<long>(connectedPacket.LocationsChecked);
 
                     missingLocations = new List<long>(connectedPacket.MissingChecks);
@@ -266,8 +267,26 @@ namespace TheEscAPists2Bridge
                     
                 }
 
+                if (packet.PacketType == ArchipelagoPacketType.ReceivedItems)
+                {
+                    ConsoleLogging.LogDebug($"Received {packet.PacketType.ToString()}");
                     
+                    ReceivedItemsPacket receivedItemsPacket = (ReceivedItemsPacket)packet;
                     
+                    ConsoleLogging.LogDebug("Received Items Index: " + receivedItemsPacket.Index);
+                    foreach (NetworkItem item in receivedItemsPacket.Items)
+                    {
+                        ConsoleLogging.LogDebug($"Received Item Item: {item.Item.ToString()}"); //This is the bit I want, except I want the name not the id
+                        
+                        Session.Items.GetItemName(item.Item, ModInfo.GameName);
+                        ConsoleLogging.LogDebug($"Item gets returned as: {Session.Items.GetItemName(item.Item)}");
+                        
+                        //TODO: SET UP ITEMS TO GAME PROCESSING
+                        // MessageHandler.instance.ProcessGameToServer();
+                    }
+                    
+                }
+            };
         }
 
         private void SubscribeToChatEvent()
@@ -331,72 +350,62 @@ namespace TheEscAPists2Bridge
 
         public void SendCheck(string check, bool isID)
         {
-            string[] checkParts = check.Split(": ");
-            string stat = "n/a";
-            int lastStat = 29;
-            int statToParse = int.Parse(checkParts[1]);
-            if (checkParts[0] == "Stamina Stat")
+            if (check.Contains(": "))
             {
-                stat = "Stamina";
+                ConsoleLogging.LogDebug($"Received a check that has a colon in it. {check}");
+                string[] checkParts = check.Split(": ");
+                string stat = "n/a";
+                int lastStat = -1;
+                int statToParse = int.Parse(checkParts[1]);
+                if (checkParts[0] == "Stamina Stat")
+                {
+                    stat = "Stamina";
 
-                lastStat = lastStamina;
-                if (lastStamina < statToParse)
-                {
-                    lastStamina = statToParse;
+                    lastStamina += statToParse;
+                    ConsoleLogging.LogDebug($"Stamina Stat: {statToParse}, {lastStamina}");
+                    lastStat = lastStamina;
                 }
-                else
+                else if (checkParts[0] == "Strength Stat")
                 {
-                    return;
+                    stat = "Strength";
+
+                    lastStrength += statToParse;
+                    ConsoleLogging.LogDebug($"Stamina Stat: {statToParse}, {lastStrength}");
+                    lastStat = lastStrength;
+                }
+                else if (checkParts[0] == "Intellect Stat")
+                {
+                    stat = "Intellect";
+
+                    lastIntellect += statToParse;
+                    ConsoleLogging.LogDebug($"Intellect Stat: {statToParse}, {lastIntellect}");
+                    lastStat = lastIntellect;
                 }
 
-            }
-            else if (checkParts[0] == "Strength Stat")
-            {
-                stat = "Strength";
-                
-                lastStat = lastStrength;
-                if (lastStrength < statToParse)
+                if (stat != "n/a")
                 {
-                    lastStrength = statToParse;
-                }
-                else
-                {
-                    return;
-                }
-            }
-            else if (checkParts[0] == "Intellect Stat")
-            {
-                stat = "Intellect";
-                
-                lastStat = lastIntellect;
-                if (lastIntellect < statToParse)
-                {
-                    lastIntellect = statToParse;
-                }
-                else
-                {
-                    return;
-                }
-            }
-
-            if (stat != "n/a")
-            {
-                for (int i = lastStat + 1; i <= int.Parse(checkParts[1]); i++)
-                {
-                    if (i != 100)
+                    if (lastStat == -1)
                     {
-                        SendActualCheck($"{checkParts[0]}: {i}", isID);
+                        ConsoleLogging.LogError(ConsoleLogging.ErrorCode.CheckSendFailure, "Tried to Send a Stat Check but the stat reported was the default value (-1). Try to send another stat check");
                     }
-                    else
+                    for (int i = 30; i <= lastStat; i++)
                     {
-                        SendActualCheck($"{checkParts[0]}: Max", isID);
+                        if (i != 100)
+                        {
+                            SendActualCheck($"{checkParts[0]}: {i}", isID);
+                        }
+                        else
+                        {
+                            SendActualCheck($"{checkParts[0]}: Max", isID);
+                            return;
+                        }
                     }
+
+                    return;
                 }
             }
-            else
-            {
-                SendActualCheck(check, isID);
-            }
+
+            SendActualCheck(check, isID);
         }
 
         private void SendActualCheck(string check, bool isID)
@@ -446,6 +455,10 @@ namespace TheEscAPists2Bridge
         public void SendGoalToServer()
         {
             ConsoleLogging.LogSuccess("Slot Goaled. Congratulations!");
+            //TODO: DO GOAL CHECK (CHECK LOCATIONS SENT FOR NUMBERS OF ESCAPES - IF EQUAL TO UNIQUE ESCAPES REQUIRED -> GOAL
+            // Take Each location id as it comes in - Check against where the escape ids are within each prison (Get rid of first 2 digits, then take the last 3 as whether its an escape location, add to a counter, then check each time a location gets sent
+            // Example: 81101 is Perimeter on Center Perks
+            // So remove 81, if the first digit is a 1, assume its an escape, and then increment a counter for current escapes. Do this on runtime (Rather than storing on the server)
             Session.SetGoalAchieved();
         }
 

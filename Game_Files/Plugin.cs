@@ -287,8 +287,6 @@ public class Plugin : BaseUnityPlugin
             }
         }
         
-        ProcessStatMilestones();
-        
         if (Input.GetKeyDown(KeyCode.F6))
         {
            StartPipes();
@@ -325,6 +323,11 @@ public class Plugin : BaseUnityPlugin
         }
  
         // ------------------------------------------
+
+        if (Input.GetKeyDown(KeyCode.F7))
+        {
+            SetStats();
+        }
         
         if (Input.GetKeyDown(KeyCode.F8))
         {
@@ -593,8 +596,9 @@ public class Plugin : BaseUnityPlugin
                 if (int.TryParse(escID.Trim(), out int id)) escapeBansList.Add(id);
             }
         }
-        
-        #region Harmony Patches
+    #endregion
+    
+    #region Harmony Patches
     [HarmonyPatch(typeof(Player), "SetIsKnockedOut")]
     public class Player_SetIsKnockedOut_Patch
     {
@@ -1311,97 +1315,100 @@ public class Plugin : BaseUnityPlugin
     
     #region Stat Handling
     
-    private float GetStatValue(CharacterStats stats, string statName)
+    private int strength_prog_count;
+    private int stamina_prog_count;
+    private int intellect_prog_count;
+
+    private int strength_step;
+    private int stamina_step;
+    private int intellect_step;
+
+    private int base_Stat = 30;
+
+    private int synced_strength;
+    private int synced_stamina;
+    private int synced_intellect;
+    
+    void CalculateStats()
     {
-        PropertyInfo statProp = typeof(CharacterStats).GetProperty(statName, BindingFlags.Public | BindingFlags.Instance);
-        if (statProp != null) return (float)statProp.GetValue(stats, null);
- 
-        FieldInfo statField = typeof(CharacterStats).GetField("m_" + statName, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-        if (statField != null) return (float)statField.GetValue(stats);
- 
-        return 0f;
+        synced_strength = base_Stat + (strength_prog_count * strength_step);
+        synced_stamina = base_Stat + (stamina_prog_count * stamina_step);
+        synced_intellect = base_Stat + (intellect_prog_count * intellect_step);
+        
+        //TODO: WHEN ITEM RECEIVED, CALCULATE AND SET AS REQUIRED
+        
+        //TEMP VALUES:
+        synced_strength = 30;
+        synced_stamina = 30;
+        synced_intellect = 30;
     }
 
-    private void ProcessStatMilestones()
+    void SetStats()
     {
-        //TODO: REPLACE THIS WITH THE CORRECT METHODS - POST RELEASE
+        //TODO: SET THIS TO TRIGGER ON ANY PRISON LOADED
+        //TODO: TEMP
+        CalculateStats();
+        
         Player localPlayer = Gamer.GetPrimaryGamer()?.m_PlayerObject;
-        if (localPlayer == null || localPlayer.m_CharacterStats == null) return;
+        CharacterStats charStats = localPlayer?.m_CharacterStats;
 
-        float intellect = GetStatValue(localPlayer.m_CharacterStats, "Intellect");
-        SendCheckToBridge("Intellect Stat: " + intellect);
-        //AkSoundEngine.PostEvent("Play_UI_Take_Item", localPlayer.gameObject);
-
-
-        float cardio = GetStatValue(localPlayer.m_CharacterStats, "Cardio");
-        SendCheckToBridge("Stamina Stat: " + cardio);
-        //AkSoundEngine.PostEvent("Play_UI_Take_Item", localPlayer.gameObject);
-
-
-        float strength = GetStatValue(localPlayer.m_CharacterStats, "Strength");
-        SendCheckToBridge("Strength Stat: " + strength);
+        charStats.Strength = synced_strength;
+        charStats.Cardio = synced_stamina;
+        charStats.Intellect = synced_intellect;
     }
 
-    [HarmonyPatch(typeof(GymInteraction), "UpdateInteraction")]
-    public class GymInteraction_UpdateInteraction_Patch
+
+    [HarmonyPatch(typeof(CharacterStats), "IncreaseStrengthRPC")]
+    public static class CharacterStats_IncreaseStrengthRPC_Patch
     {
-        //TODO: SET NEW VALUE INTO SLOTDATA
-        static void PostFix(GymInteraction __instance)
+        public static void Prefix(CharacterStats __instance, float amount)
         {
-            // PropertyInfo buttonMasher = typeof(GymInteraction).GetProperty("m_ButtonMasher", BindingFlags.NonPublic | BindingFlags.Instance);
+            instance.SendCheckToBridge($"Strength Stat: {(int)amount}");
             
-            Player localPlayer = Gamer.GetPrimaryGamer()?.m_PlayerObject;
-            if (localPlayer == null || localPlayer.m_CharacterStats == null) return;
+             Player localPlayer = Gamer.GetPrimaryGamer()?.m_PlayerObject;
+             CharacterStats charStats = localPlayer?.m_CharacterStats;
             
-            if (__instance.m_StrengthChange > 0)
-            {
-                int strengthVal = (int)instance.GetStatValue(localPlayer.m_CharacterStats, "Strength");
-
-                if (strengthVal >= 100.0f)
-                {
-                    instance.SendCheckToBridge("Strength Stat: Max");
-                    return;
-                }
-                instance.SendCheckToBridge("Strength Stat:" + strengthVal);
-            }
-            if (__instance.m_CardioChange > 0)
-            {
-                int staminaVal = (int)instance.GetStatValue(localPlayer.m_CharacterStats, "Cardio");
-
-                if (staminaVal >= 100.0f)
-                {
-                    instance.SendCheckToBridge("Stamina Stat: Max");
-                    return;
-                }
-                instance.SendCheckToBridge("Stamina Stat:" + staminaVal);
-            }
+             charStats.Strength = instance.synced_strength;
+            
+            return;
         }
     }
-    
-    
-    
-    [HarmonyPatch(typeof(StudyInteraction), "UpdateInteraction")]
-    public class StudyInteraction_UpdateInteraction_Patch
-    {
-        static void PostFix(StudyInteraction __instance)
-        {
-            Player localPlayer = Gamer.GetPrimaryGamer()?.m_PlayerObject;
-            if (localPlayer == null || localPlayer.m_CharacterStats == null) return;
 
-            int intellectVal = (int)localPlayer.m_CharacterStats.Intellect;
+    [HarmonyPatch(typeof(CharacterStats), "IncreaseCardioRPC")]
+    public static class CharacterStats_IncreaseCardioRPC_Patch
+    {
+        public static void Prefix(CharacterStats __instance, float amount)
+        {
+            instance.SendCheckToBridge($"Stamina Stat: {(int)amount}");
             
-            if (intellectVal >= 100.0f)
-            {
-                instance.SendCheckToBridge("Strength Stat: Max");
-                return;
-            }
-            instance.SendCheckToBridge("Strength Stat:" + intellectVal);
-        }    
+            Player localPlayer = Gamer.GetPrimaryGamer()?.m_PlayerObject;
+            CharacterStats charStats = localPlayer?.m_CharacterStats;
+            
+            charStats.Cardio = instance.synced_stamina;
+            
+            return;
+        }
     }
-    
+
+    [HarmonyPatch(typeof(CharacterStats), "IncreaseIntellectRPC")]
+    public static class CharacterStats_IncreaseIntellectRPC_Patch
+    {
+        public static void Prefix(CharacterStats __instance, float amount)
+        {
+            instance.SendCheckToBridge($"Intellect Stat: {(int)amount}");
+            
+            Player localPlayer = Gamer.GetPrimaryGamer()?.m_PlayerObject;
+            CharacterStats charStats = localPlayer?.m_CharacterStats;
+            
+            charStats.Intellect = instance.synced_intellect;
+            
+            return;
+        }
+    }
+
     #endregion
-        
+
     #endregion
- #endregion
     
+
 }
