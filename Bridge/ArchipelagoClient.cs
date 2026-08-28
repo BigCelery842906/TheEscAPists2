@@ -88,6 +88,8 @@ namespace TheEscAPists2Bridge
             IntellectStep = GetSlotOption(connectedPacketSlotData, "intellect_step");
             UniqueEscapesRequired = GetSlotOption(connectedPacketSlotData, "unique_escapes_required");
             
+            MessageHandler.instance.SendSlotDataToGame(this);
+            
             foreach (KeyValuePair<string, object> slotData in connectedPacketSlotData)
             {
                 ConsoleLogging.LogDebug($"String: {slotData.Key} Value: {slotData.Value}");
@@ -221,7 +223,6 @@ namespace TheEscAPists2Bridge
         {
             SocketClosedEvent();
             SetUpDeathlink();
-            SubscribeToServerPackets();
             SubscribeToChatEvent();
         }
 

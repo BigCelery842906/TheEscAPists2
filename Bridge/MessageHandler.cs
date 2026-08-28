@@ -115,6 +115,12 @@ namespace TheEscAPists2Bridge
             Packet.ItemPacket itemPacket = new Packet.ItemPacket(itemName, isID);
             SerialiseAndSend(itemPacket);
         }
+
+        public void SendSlotDataToGame(SlotData slotData)
+        {
+            Packet.SlotDataPacket slotDataPacket = new Packet.SlotDataPacket(slotData.StrengthStep, slotData.StaminaStep, slotData.IntellectStep);
+            SerialiseAndSend(slotDataPacket);
+        }
         
         //Eventually going to need to get the items and feed it through
 

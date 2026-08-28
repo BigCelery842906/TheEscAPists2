@@ -248,6 +248,10 @@ public class Plugin : BaseUnityPlugin
             {
                 Packet.IsConnectedPacket isConnectedPacket = (Packet.IsConnectedPacket)message;
                 isConnected = isConnectedPacket.isConnected;
+                
+                strength_prog_count = 0;
+                stamina_prog_count = 0;
+                intellect_prog_count = 0;
                 break;
             }
             case PacketType.Hint:
@@ -262,6 +266,18 @@ public class Plugin : BaseUnityPlugin
                 logging.instance.SendChatMessage("Item Packet Received but not implemented - NEXT THING TO DO");
                 
                 ProcessItem(itemPacket);
+                break;
+            }
+            case PacketType.SlotData:
+            {
+                Packet.SlotDataPacket slotDataPacket = (Packet.SlotDataPacket)message;
+                
+                strength_step = slotDataPacket.strength_step;
+                stamina_step = slotDataPacket.stamina_step;
+                intellect_step = slotDataPacket.intellect_step;
+                
+                logging.SendChatMessage($"Strength Step: {strength_step},  Stamina Step: {stamina_step}, Intellect Step: {intellect_step}");
+
                 break;
             }
             default:
@@ -641,7 +657,34 @@ public class Plugin : BaseUnityPlugin
 
     void HandleCustomAPProgressiveStat(string itemName)
     {
+        switch (itemName)
+        {
+            case "Progressive Strength":
+            {
+                strength_prog_count++;
+                break;
+            }
+
+            case "Progressive Stamina":
+            {
+                stamina_prog_count++;
+                break;
+            }
+
+            case "Progressive Intellect":
+            {
+                intellect_prog_count++;
+                break;
+            }
+            default:
+            {
+                Logger.LogError($"Item Received but it doesn't match a progressive item. Item Name: {itemName}");
+                return;
+            }
+        }
         
+        SetStats();
+
     }
 
     void HandleCustomAPPrisonUnlock(string itemName)
@@ -1563,23 +1606,18 @@ public class Plugin : BaseUnityPlugin
         synced_strength = base_Stat + (strength_prog_count * strength_step);
         synced_stamina = base_Stat + (stamina_prog_count * stamina_step);
         synced_intellect = base_Stat + (intellect_prog_count * intellect_step);
-        
-        //TODO: WHEN ITEM RECEIVED, CALCULATE AND SET AS REQUIRED
-        
-        //TEMP VALUES:
-        synced_strength = 30;
-        synced_stamina = 30;
-        synced_intellect = 30;
     }
 
     void SetStats()
     {
         //TODO: SET THIS TO TRIGGER ON ANY PRISON LOADED
-        //TODO: TEMP
         CalculateStats();
         
         Player localPlayer = Gamer.GetPrimaryGamer()?.m_PlayerObject;
         CharacterStats charStats = localPlayer?.m_CharacterStats;
+
+        if (charStats == null)
+        {return;}
 
         charStats.Strength = synced_strength;
         charStats.Cardio = synced_stamina;

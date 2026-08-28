@@ -15,6 +15,7 @@ namespace BC_Dual_Ref_Library
         IsConnected,
         Hint,
         Item,
+        SlotData,
     }
 
     public class Packet
@@ -189,6 +190,21 @@ namespace BC_Dual_Ref_Library
                 this.isItemID = isItemID;
             }
         }
+
+        public class SlotDataPacket : Packet
+        {
+            public int strength_step;
+            public int stamina_step;
+            public int intellect_step;
+
+            public SlotDataPacket(int strengthStep, int staminaStep, int intellectStep)
+            {
+                Type = PacketType.SlotData;
+                strength_step = strengthStep;
+                stamina_step = staminaStep;
+                intellect_step = intellectStep;
+            }
+        }
     }
 
     public static class PacketConverter 
@@ -311,6 +327,21 @@ namespace BC_Dual_Ref_Library
 
                     break;
                 }
+
+                case PacketType.SlotData:
+                {
+                    Packet.SlotDataPacket slotDataPacket = (Packet.SlotDataPacket)packet;
+
+                    string strengthStep = $"StrengthStep: {slotDataPacket.strength_step}";
+                    string staminaStep =  $"StaminaStep: {slotDataPacket.stamina_step}";
+                    string intellectStep = $"IntellectStep: {slotDataPacket.intellect_step}";
+                    
+                    parts.Add(strengthStep);
+                    parts.Add(staminaStep);
+                    parts.Add(intellectStep);
+                    
+                    break;
+                }
             }
             
             jsonString = string.Join("|", parts.ToArray());
@@ -420,6 +451,17 @@ namespace BC_Dual_Ref_Library
                     Packet.ItemPacket itemPacket = new Packet.ItemPacket(itemName, isItemID);
                     
                     return itemPacket;
+                }
+
+                case PacketType.SlotData:
+                {
+                    int strengthStep = int.Parse(jsonParts[1].Remove(0, 14));
+                    int staminaStep = int.Parse(jsonParts[2].Remove(0, 13));
+                    int intellectStep = int.Parse(jsonParts[3].Remove(0, 15));
+                    
+                    Packet.SlotDataPacket slotDataPacket = new Packet.SlotDataPacket(strengthStep, staminaStep, intellectStep);
+
+                    return slotDataPacket;
                 }
                 default:
                     return new Packet();
