@@ -256,6 +256,14 @@ public class Plugin : BaseUnityPlugin
                 logging.instance.SendChatMessage("Hint Packet Received but not implemented");
                 break;
             }
+            case PacketType.Item:
+            {
+                Packet.ItemPacket itemPacket = (Packet.ItemPacket)message;
+                logging.instance.SendChatMessage("Item Packet Received but not implemented - NEXT THING TO DO");
+                
+                ProcessItem(itemPacket);
+                break;
+            }
             default:
             {
                 Logger.LogWarning("Unknown message type: " + message.Type);
@@ -275,16 +283,8 @@ public class Plugin : BaseUnityPlugin
  
  
             lastStealthLinkTime = Time.time;
- 
-            RoutineManager rm = RoutineManager.GetInstance();
-            if (rm != null && !rm.IsLockdownActive())
-            {
-                SolitaryManager.GetInstance().TriggerLockdown();
- 
-                logging.SendChatMessage($"[StealthLink] {stealthLinkCulprit} got caught! PRISON LOCKDOWN INITIATED!");
-                Player localPlayer = Gamer.GetPrimaryGamer()?.m_PlayerObject;
-                if (localPlayer != null) AkSoundEngine.PostEvent("Play_UI_Error", localPlayer.gameObject);
-            }
+
+            TriggerLockdown(true);
         }
         
         if (Input.GetKeyDown(KeyCode.F6))
@@ -351,6 +351,16 @@ public class Plugin : BaseUnityPlugin
  
                 logging.SendChatMessage("All Stats Maxed to 100 and added $50!");
                 AkSoundEngine.PostEvent("Play_UI_Take_Item", localPlayer.gameObject);
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.F9))
+        {
+            ItemData[] items = Resources.LoadAll<ItemData>("Prefabs/Items");
+
+            foreach (ItemData item in items)
+            {
+                instance.SendMessageToBridge($"ID: {item.m_ItemDataID} - Tag: {item.m_ItemLocalizationTag}");
             }
         }
     }
@@ -427,9 +437,226 @@ public class Plugin : BaseUnityPlugin
         Logger.LogInfo($"Sending to bridge -> {message}");
         writer?.WriteLine(message);
     }
-    
-    
+
+    void ProcessItem(Packet.ItemPacket itemPacket)
+    {
+        bool isID = itemPacket.isItemID;
+        string itemName = itemPacket.itemName;
+
+        logging.SendChatMessage($"Item Received: {itemName}");
+        
+            if (itemName.Contains("Trap"))
+            {
+                logging.SendChatMessage("Contains the word trap, going to handle it as a custom item");
+                HandleCustomAPTrap(itemName);
+            }
+            else if (itemName.Contains("Blueprint"))
+            {
+                logging.SendChatMessage("Contains the word Blueprint, going to handle it as a custom item");
+                HandleCustomAPBlueprint(itemName);
+            }
+            else if (itemName.Contains("Progressive"))
+            {
+                logging.SendChatMessage("Contains the word Progressive, going to handle it as a custom item");
+                HandleCustomAPProgressiveStat(itemName);
+            }
+            else if (itemName.Contains("Prison Unlock"))
+            {
+                logging.SendChatMessage("Contains the phrase Prison Unlock, going to handle it as a custom item");
+                HandleCustomAPPrisonUnlock(itemName);
+            }
+            else
+            {
+                HandleGameItem(itemName);
+            }
+    }
+
+    void TriggerLockdown(bool isStealthlink = false)
+    {
+        RoutineManager rm = RoutineManager.GetInstance();
+        if (rm != null && !rm.IsLockdownActive())
+        {
+            SolitaryManager.GetInstance().TriggerLockdown();
+
+            if (isStealthlink)
+            {
+                logging.SendChatMessage($"[StealthLink] {stealthLinkCulprit} got caught! PRISON LOCKDOWN INITIATED!");
+            }
+            else
+            {
+                logging.SendChatMessage("Lockdown Trap Triggered!");
+            }
+
+            Player localPlayer = Gamer.GetPrimaryGamer()?.m_PlayerObject;
+            if (localPlayer != null) AkSoundEngine.PostEvent("Play_UI_Error", localPlayer.gameObject);
+        }
+    }
+
+    void SearchPlayersDesk()
+    {
+        List<DeskInteraction> playerDesks = DeskInteraction.GetPlayerDesks();
+
+        if (playerDesks == null || playerDesks.Count == 0)
+        {
+            return;
+        }
+
+        List<AICharacter_Guard> m_ShakeDownGuards = new List<AICharacter_Guard>();
+
+        List<AICharacter_Guard> guards = new List<AICharacter_Guard>(FindObjectsOfType<AICharacter_Guard>());
+
+        if (guards.Count == 0)
+        {
+            return;
+        }
+
+        for (int i = 0; i < guards.Count; i++)
+        {
+            if (guards[i].m_RollCallStatus == AICharacter_Guard.RollCallStatus.DoesShakeDown)
+            {
+                m_ShakeDownGuards.Add(guards[i]);
+            }
+        }
+
+        if (m_ShakeDownGuards.Count == 0)
+        {
+            return;
+        }
+
+        int guardIndex = 0;
+
+        for (int i = 0; i < playerDesks.Count; i++)
+        {
+            DeskEventManager component = playerDesks[i].GetComponent<DeskEventManager>();
+            if (component == null)
+            {
+                continue;
+            }
+
+            AIEvent investigateObjectEvent = component.GetInvestigateObjectEvent();
+            if (investigateObjectEvent == null)
+            {
+                continue;
+            }
+
+            m_ShakeDownGuards[guardIndex].AddEvent(investigateObjectEvent);
+
+            guardIndex++;
+            if (guardIndex >= m_ShakeDownGuards.Count)
+            {
+                guardIndex = 0;
+            }
+        }
+    }
+
+    // private void ProcessAPMailbox()
+    // {
+    //     if (apItemID >= 90000) HandleCustomAPItem(apItemID);
+    //     else
+    //     {
+    //         ItemManager itemMan = ItemManager.GetInstance();
+    //         Player localPlayer = Gamer.GetPrimaryGamer()?.m_PlayerObject;
+    //
+    //         if (itemMan != null && localPlayer != null)
+    //         {
+    //             int playerNetID = localPlayer.m_NetView.viewID;
+    //             int dummyRequestID = 0;
+    //             int realGameID = apItemID - 80000;
+    //
+    //             ItemData checkData = itemMan.GetItemDataWithID(realGameID);
+    //             if (checkData != null)
+    //             {
+    //                 itemMan.AssignItemRPC(playerNetID, realGameID, OnItemReceivedFromAP, ref dummyRequestID, -1);
+    //             }
+    //             else
+    //             {
+    //                 cloudInventory.Add(realGameID);
+    //                 logging.SendChatMessage("Item not loaded in this map. Saved to Cloud Storage.");
+    //             }
+    //         }
+    //     }
+    // }
+
+
+    void HandleCustomAPTrap(string customItem)
+        {
+            Player localPlayer = Gamer.GetPrimaryGamer()?.m_PlayerObject;
+            if (localPlayer == null || localPlayer.m_CharacterStats == null) return;
+ 
+            switch (customItem)
+            {
+                case "Max Heat Trap":
+                {
+                    localPlayer.m_CharacterStats.IncreaseHeat(100.0f);
+                    instance.logging.SendChatMessage("TRAP TRIGGERED! Heat maxed to 100!");
+                    AkSoundEngine.PostEvent("Play_UI_Error", localPlayer.gameObject);
+
+                    break;
+                }
+                case "Cell Search Trap":
+                {
+                    SearchPlayersDesk();
+                    break;
+                }
+                case "Lockdown Trap":
+                {
+                    TriggerLockdown(false);
+                    break;
+                }
+                case "Butterfingers Trap":
+                {
+                    //TODO: THIS CURRENTLY DROPS ONE OF THE ITEM BUT LETS THE PLAYER KEEP IT
+                    Item equippedItem = localPlayer.GetEquippedItem();
+                    if (equippedItem != null)
+                    {
+                        localPlayer.m_ItemContainer.RemoveItemRPC(equippedItem, false, RPC_CallContexts.All);
+                        equippedItem.transform.position = localPlayer.transform.position;
+                        LevelScript.GetInstance().m_LevelItemContainer
+                            .AddItemRPC(equippedItem, false, RPC_CallContexts.All);
+                        if (equippedItem.MeshRendererProp != null) equippedItem.MeshRendererProp.enabled = true;
+                        if (equippedItem.BoxColliderProp != null) equippedItem.BoxColliderProp.enabled = true;
+                        equippedItem.AddToCullingSystem();
+                        equippedItem.ItemDropped();
+                        instance.logging.SendChatMessage("TRAP TRIGGERED! Butterfingers!");
+                    }
+                    break;
+                }
+                default:
+                    // if (customID >= 91000 && customID <= 92000)
+                    // {
+                    //     int targetItemID = customID - 91000;
+                    // unlockedBlueprints.Add(targetItemID);
+                    //     logging.SendChatMessage($"BLUEPRINT ACQUIRED! You can now craft Item ID: {targetItemID}!");
+                    //     AkSoundEngine.PostEvent("Play_UI_Take_Item", localPlayer.gameObject);
+                    // }
+                    logging.SendChatMessage($"Not a trap but item has been recognised as {customItem}");
+                    break;
+            }
+        }
+
+    void HandleCustomAPBlueprint(string itemName)
+    {
+        
+    }
+
+    void HandleCustomAPProgressiveStat(string itemName)
+    {
+        
+    }
+
+    void HandleCustomAPPrisonUnlock(string itemName)
+    {
+        
+    }
+
+    void HandleGameItem(string gameItem)
+    {
+        
+    }
+
     #region Game's Code - Largely from GoofTarune
+    
+    #region GoofCode
     //GOOF'S CODE
     private void ProcessDeathLink()
     {
@@ -596,6 +823,8 @@ public class Plugin : BaseUnityPlugin
                 if (int.TryParse(escID.Trim(), out int id)) escapeBansList.Add(id);
             }
         }
+    #endregion
+    
     #endregion
     
     #region Harmony Patches

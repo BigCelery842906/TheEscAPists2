@@ -109,6 +109,12 @@ namespace TheEscAPists2Bridge
             ConsoleLogging.LogSend($"Scouted Hint: {location} contains {item}");
             SerialiseAndSend(hintPacket);
         }
+
+        public void SendItemToGame(string itemName, bool isID)
+        {
+            Packet.ItemPacket itemPacket = new Packet.ItemPacket(itemName, isID);
+            SerialiseAndSend(itemPacket);
+        }
         
         //Eventually going to need to get the items and feed it through
 

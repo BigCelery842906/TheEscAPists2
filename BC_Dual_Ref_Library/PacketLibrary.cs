@@ -14,6 +14,7 @@ namespace BC_Dual_Ref_Library
         Goal,
         IsConnected,
         Hint,
+        Item,
     }
 
     public class Packet
@@ -175,6 +176,19 @@ namespace BC_Dual_Ref_Library
                 this.itemName = itemName;
             }
         }
+
+        public class ItemPacket : Packet
+        {
+            public string itemName;
+            public bool isItemID = false;
+
+            public ItemPacket(string itemName, bool isItemID = false)
+            {
+                Type = PacketType.Item;
+                this.itemName = itemName;
+                this.isItemID = isItemID;
+            }
+        }
     }
 
     public static class PacketConverter 
@@ -286,6 +300,17 @@ namespace BC_Dual_Ref_Library
 
                     break;
                 }
+                case PacketType.Item:
+                {
+                    Packet.ItemPacket itemPacket = (Packet.ItemPacket)packet;
+                    string itemName = $"ItemName: {itemPacket.itemName}";
+                    string isItemID = $"IsItemID: {itemPacket.isItemID}";
+                    
+                    parts.Add(itemName);
+                    parts.Add(isItemID);
+
+                    break;
+                }
             }
             
             jsonString = string.Join("|", parts.ToArray());
@@ -386,7 +411,16 @@ namespace BC_Dual_Ref_Library
 
                     return hintPacket;
                 }
-                
+
+                case PacketType.Item:
+                {
+                    string itemName = jsonParts[1].Remove(0, 10);
+                    bool isItemID = Convert.ToBoolean(jsonParts[2].Remove(0, 10));
+                    
+                    Packet.ItemPacket itemPacket = new Packet.ItemPacket(itemName, isItemID);
+                    
+                    return itemPacket;
+                }
                 default:
                     return new Packet();
             }

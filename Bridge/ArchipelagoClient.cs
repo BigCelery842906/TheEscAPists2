@@ -278,11 +278,11 @@ namespace TheEscAPists2Bridge
                     {
                         ConsoleLogging.LogDebug($"Received Item Item: {item.Item.ToString()}"); //This is the bit I want, except I want the name not the id
                         
-                        Session.Items.GetItemName(item.Item, ModInfo.GameName);
+                        string itemName = Session.Items.GetItemName(item.Item, ModInfo.GameName);
                         ConsoleLogging.LogDebug($"Item gets returned as: {Session.Items.GetItemName(item.Item)}");
                         
                         //TODO: SET UP ITEMS TO GAME PROCESSING
-                        // MessageHandler.instance.ProcessGameToServer();
+                        MessageHandler.instance.SendItemToGame(itemName, false);
                     }
                     
                 }
