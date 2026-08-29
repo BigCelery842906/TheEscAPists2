@@ -1694,6 +1694,8 @@ public class Plugin : BaseUnityPlugin
             if (___m_ButtonClass == null)
                 return;
 
+            bool vanillaInteractable = ___m_ButtonClass.interactable;
+
             if (!isConnected)
             {
                 instance.StartPipes();
@@ -1776,6 +1778,11 @@ public class Plugin : BaseUnityPlugin
                 {
                     ___m_ButtonClass.interactable = isPrisonUnlocked;
                     ___m_ButtonClass.m_bCanInteractWithMouse = isPrisonUnlocked;
+                }
+                else
+                {
+                    ___m_ButtonClass.interactable = vanillaInteractable;
+                    ___m_ButtonClass.m_bCanInteractWithMouse = vanillaInteractable;
                 }
 
                 // GlobalStart.GLOBALSTART_MODE.IN_LEVEL;
