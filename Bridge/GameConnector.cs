@@ -91,6 +91,7 @@ namespace TheEscAPists2Bridge
 
             ConsoleLogging.LogSuccess("(ToGame) Connection established to game.");
             
+            CheckConnections();
             writer = new StreamWriter(pipeBridgeToGame)
             {
                 AutoFlush = true
@@ -164,6 +165,14 @@ namespace TheEscAPists2Bridge
             }
             
             return false;
+        }
+
+        void CheckConnections()
+        {
+            if (GetConnectionStatusBridgeToGame() && GetConnectionStatusGameToBridge())
+            {
+                Program.StartConnectionInfo();
+            }
         }
     }
 }

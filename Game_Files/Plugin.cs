@@ -1680,6 +1680,9 @@ public class Plugin : BaseUnityPlugin
     
     #region PrisonLoading
 
+    private GameObject KeysRequiredObject = null;
+    T17Text KeysRequiredText = null;
+    
     [HarmonyPatch(typeof(SaveSlotController), "UpdateEnabledState")]
     public static class SaveSlotController_UpdateEnabledState_Patch
     {
@@ -1691,10 +1694,38 @@ public class Plugin : BaseUnityPlugin
             if (___m_ButtonClass == null)
                 return;
 
+            if (!isConnected)
+            {
+                instance.StartPipes();
+
+                if (instance.KeysRequiredObject == null)
+                {
+                    instance.logging.SendChatMessage("No Keys Required Object found, looking again");
+                    instance.KeysRequiredObject = GameObject.Find("FrontendParent/RootMenu/SlideBottom/SafeZone/MenuBody/CampaignMenu/PanelLeft/Column_01/PrisonSelect/PrisonPreviewImage/KeysRequired");
+                    return;
+                }
+
+                if (instance.KeysRequiredText == null)
+                {
+                    instance.logging.SendChatMessage("No Keys Required Text found, looking again");
+                    instance.KeysRequiredText = instance.KeysRequiredObject.GetComponent<T17Text>();
+                    return;
+                }
+                
+                instance.logging.SendChatMessage("Trying to Set the object and text as in the program");
+                instance.KeysRequiredObject.SetActive(true);
+                instance.KeysRequiredText.text = "Connect to Archipelago via the Console Window!";
+
+            }
+
             LevelScript.PRISON_ENUM prison_Enum = GlobalStart.GetInstance().GetCurrentSelectedPrisonData().m_LevelInfo.m_PrisonEnum;
 
             if (instance.prisonUnlocksReceived == null)
+            { // Disable all buttons until connection
+                ___m_ButtonClass.interactable = false;
+                ___m_ButtonClass.m_bCanInteractWithMouse = false;
                 return;
+            }
 
             bool isPrisonUnlocked = false;
 
@@ -1746,6 +1777,8 @@ public class Plugin : BaseUnityPlugin
                     ___m_ButtonClass.interactable = isPrisonUnlocked;
                     ___m_ButtonClass.m_bCanInteractWithMouse = isPrisonUnlocked;
                 }
+
+                // GlobalStart.GLOBALSTART_MODE.IN_LEVEL;
             }
         }
     }

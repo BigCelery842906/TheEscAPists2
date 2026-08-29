@@ -9,6 +9,12 @@ public static class ConsoleLogging
         Console.WriteLine(info);
     }
 
+    public static void LogInfoInput(string info)
+    {
+        SetConsoleTextColor(ConsoleColor.White);
+        Console.Write(info);
+    }
+
     public enum ErrorCode
     {
         TestError,
