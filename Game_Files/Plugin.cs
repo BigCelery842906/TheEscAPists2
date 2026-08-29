@@ -687,9 +687,16 @@ public class Plugin : BaseUnityPlugin
 
     }
 
+    private List<string> prisonUnlocksReceived;
+
     void HandleCustomAPPrisonUnlock(string itemName)
     {
+        if (prisonUnlocksReceived == null)
+        {
+            prisonUnlocksReceived = new List<string>();
+        }
         
+        prisonUnlocksReceived.Add(itemName);
     }
 
     void HandleGameItem(string gameItem)
@@ -866,8 +873,6 @@ public class Plugin : BaseUnityPlugin
                 if (int.TryParse(escID.Trim(), out int id)) escapeBansList.Add(id);
             }
         }
-    #endregion
-    
     #endregion
     
     #region Harmony Patches
@@ -1672,10 +1677,85 @@ public class Plugin : BaseUnityPlugin
             return;
         }
     }
+    
+    #region PrisonLoading
+
+    [HarmonyPatch(typeof(SaveSlotController), "UpdateEnabledState")]
+    public static class SaveSlotController_UpdateEnabledState_Patch
+    {
+        public static void Postfix(SaveSlotController __instance, T17Button ___m_ButtonClass)
+        {
+            if (__instance == null)
+                return;
+
+            if (___m_ButtonClass == null)
+                return;
+
+            LevelScript.PRISON_ENUM prison_Enum = GlobalStart.GetInstance().GetCurrentSelectedPrisonData().m_LevelInfo.m_PrisonEnum;
+
+            if (instance.prisonUnlocksReceived == null)
+                return;
+
+            bool isPrisonUnlocked = false;
+
+            switch (prison_Enum)
+            {
+                case LevelScript.PRISON_ENUM.Centre_Perks:
+                    isPrisonUnlocked = instance.prisonUnlocksReceived.Contains("Center Perks 2.0 Prison Unlock");
+                    break;
+                case LevelScript.PRISON_ENUM.OldWestFort:
+                    isPrisonUnlocked = instance.prisonUnlocksReceived.Contains("Rattlesnake Springs Prison Unlock");
+                    break;
+                case LevelScript.PRISON_ENUM.POW_Camp:
+                    isPrisonUnlocked = instance.prisonUnlocksReceived.Contains("K.A.P.O.W Camp Prison Unlock");
+                    break;
+                case LevelScript.PRISON_ENUM.Oil_Rig:
+                    isPrisonUnlocked = instance.prisonUnlocksReceived.Contains("H.M.P. Offshore Prison Unlock");
+                    break;
+                case LevelScript.PRISON_ENUM.Gulag_Prison:
+                    isPrisonUnlocked = instance.prisonUnlocksReceived.Contains("Fort Tundra Prison Unlock");
+                    break;
+                case LevelScript.PRISON_ENUM.Area_17:
+                    isPrisonUnlocked = instance.prisonUnlocksReceived.Contains("Area 17 Prison Unlock");
+                    break;
+                case LevelScript.PRISON_ENUM.Space_Prison:
+                    isPrisonUnlocked = instance.prisonUnlocksReceived.Contains("U.S.S. Anomaly Prison Unlock");
+                    break;
+                case LevelScript.PRISON_ENUM.Transport_Train:
+                    isPrisonUnlocked = instance.prisonUnlocksReceived.Contains("Cougar Creek Railroad Prison Unlock");
+                    break;
+                case LevelScript.PRISON_ENUM.Transport_Boat:
+                    isPrisonUnlocked = instance.prisonUnlocksReceived.Contains("H.M.S. Orca Prison Unlock");
+                    break;
+                case LevelScript.PRISON_ENUM.Transport_Plane:
+                    isPrisonUnlocked = instance.prisonUnlocksReceived.Contains("Air Force Con Prison Unlock");
+                    break;
+                default:
+                    break;
+            }
+
+            if (!isPrisonUnlocked)
+            {
+                ___m_ButtonClass.interactable = isPrisonUnlocked;
+                ___m_ButtonClass.m_bCanInteractWithMouse = isPrisonUnlocked;
+            }
+            else
+            {
+                if (__instance.m_Controlling == SaveSlotController.ControllingWhat.NewGame)
+                {
+                    ___m_ButtonClass.interactable = isPrisonUnlocked;
+                    ___m_ButtonClass.m_bCanInteractWithMouse = isPrisonUnlocked;
+                }
+            }
+        }
+    }
+
+    #endregion
 
     #endregion
 
     #endregion
     
+    #endregion
 
 }
