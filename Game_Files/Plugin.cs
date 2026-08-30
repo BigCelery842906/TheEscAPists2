@@ -1698,27 +1698,26 @@ public class Plugin : BaseUnityPlugin
 
             bool vanillaInteractable = ___m_ButtonClass.interactable;
 
+            if (instance.KeysRequiredObject == null)
+            {
+                instance.logging.SendChatMessage("No Keys Required Object found, looking again");
+                instance.KeysRequiredObject = GameObject.Find("FrontendParent/RootMenu/SlideBottom/SafeZone/MenuBody/CampaignMenu/PanelLeft/Column_01/PrisonSelect/PrisonPreviewImage/KeysRequired");
+                return;
+            }
+
+            if (instance.KeysRequiredText == null)
+            {
+                instance.logging.SendChatMessage("No Keys Required Text found, looking again");
+                instance.KeysRequiredText = instance.KeysRequiredObject.GetComponent<T17Text>();
+                return;
+            }
+
             if (!isConnected)
             {
                 instance.StartPipes();
-
-                if (instance.KeysRequiredObject == null)
-                {
-                    instance.logging.SendChatMessage("No Keys Required Object found, looking again");
-                    instance.KeysRequiredObject = GameObject.Find("FrontendParent/RootMenu/SlideBottom/SafeZone/MenuBody/CampaignMenu/PanelLeft/Column_01/PrisonSelect/PrisonPreviewImage/KeysRequired");
-                    return;
-                }
-
-                if (instance.KeysRequiredText == null)
-                {
-                    instance.logging.SendChatMessage("No Keys Required Text found, looking again");
-                    instance.KeysRequiredText = instance.KeysRequiredObject.GetComponent<T17Text>();
-                    return;
-                }
                 
                 instance.KeysRequiredObject.SetActive(true);
                 instance.KeysRequiredText.text = "Connect to Archipelago via the Console Window!";
-
             }
 
             LevelScript.PRISON_ENUM prison_Enum = GlobalStart.GetInstance().GetCurrentSelectedPrisonData().m_LevelInfo.m_PrisonEnum;
@@ -1772,9 +1771,15 @@ public class Plugin : BaseUnityPlugin
             {
                 ___m_ButtonClass.interactable = isPrisonUnlocked;
                 ___m_ButtonClass.m_bCanInteractWithMouse = isPrisonUnlocked;
+                
+                instance.KeysRequiredObject.SetActive(true);
+                instance.KeysRequiredText.text = "Prison Unlock not received yet!";
             }
             else
             {
+                instance.KeysRequiredObject.SetActive(true);
+                instance.KeysRequiredText.text = "Prison Unlock Received!";
+                
                 if (__instance.m_Controlling == SaveSlotController.ControllingWhat.NewGame)
                 {
                     ___m_ButtonClass.interactable = isPrisonUnlocked;
