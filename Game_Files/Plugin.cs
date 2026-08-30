@@ -57,6 +57,8 @@ public class Plugin : BaseUnityPlugin
         Harmony harmony = new Harmony("com.yourname.escapists2.randomizer");
         harmony.PatchAll();
         Logger.LogInfo("V3.2.0 - Architecture Organized"); //??
+
+        GlobalStart.EnteredLevelEvent += DoPlayerStats;
     }
 
     private void StartBridge()
@@ -1714,7 +1716,6 @@ public class Plugin : BaseUnityPlugin
                     return;
                 }
                 
-                instance.logging.SendChatMessage("Trying to Set the object and text as in the program");
                 instance.KeysRequiredObject.SetActive(true);
                 instance.KeysRequiredText.text = "Connect to Archipelago via the Console Window!";
 
@@ -1784,9 +1785,22 @@ public class Plugin : BaseUnityPlugin
                     ___m_ButtonClass.interactable = vanillaInteractable;
                     ___m_ButtonClass.m_bCanInteractWithMouse = vanillaInteractable;
                 }
-
-                // GlobalStart.GLOBALSTART_MODE.IN_LEVEL;
             }
+        }
+    }
+
+    void DoPlayerStats()
+    {
+        instance.logging.SendChatMessage("Doing the player stats now!!!");
+        instance.SetStats();
+    }
+
+    [HarmonyPatch(typeof(PlayerSelectMenu), "OnAppearanceSelected")]
+    public static class PlayerSelectMenu_OnAppearanceSelected_Patch
+    {
+        public static void Postfix(PlayerSelectMenu __instance)
+        {
+            instance.DoPlayerStats();
         }
     }
 
