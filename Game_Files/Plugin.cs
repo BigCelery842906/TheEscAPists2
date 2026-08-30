@@ -13,6 +13,7 @@ using BepInEx.Logging;
 using HarmonyLib;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = System.Random;
 
 namespace TheEscAPists2;
 
@@ -35,6 +36,10 @@ public class Plugin : BaseUnityPlugin
     
     public static string lastDeathLinkSlot = "";
     public static string lastDeathLinkReason = "";
+    
+    private List<string> prisonUnlocksReceived;
+    private List<int> blueprintsReceived;
+        
     private void Awake()
     {
         if (instance == null)
@@ -59,6 +64,12 @@ public class Plugin : BaseUnityPlugin
         Logger.LogInfo("V3.2.0 - Architecture Organized"); //??
 
         GlobalStart.EnteredLevelEvent += DoPlayerStats;
+        GlobalStart.EndLevelEvent += InGameFalse;
+    }
+
+    void InGameFalse()
+    {
+        inGame = false;
     }
 
     private void StartBridge()
@@ -304,6 +315,14 @@ public class Plugin : BaseUnityPlugin
 
             TriggerLockdown(true);
         }
+
+        if (inGame)
+        {
+            if (itemQueue.Count != 0 || moneyToAdd != 0)
+            {
+                DequeueItemQueue();
+            }
+        }
         
         if (Input.GetKeyDown(KeyCode.F6))
         {
@@ -352,22 +371,17 @@ public class Plugin : BaseUnityPlugin
             Player localPlayer = Gamer.GetPrimaryGamer()?.m_PlayerObject;
             if (localPlayer != null && localPlayer.m_CharacterStats != null)
             {
-                string[] stats = { "Intellect", "Strength", "Cardio" };
-                foreach (string statName in stats)
-                {
-                    PropertyInfo statProp = typeof(CharacterStats).GetProperty(statName, BindingFlags.Public | BindingFlags.Instance);
-                    if (statProp != null) statProp.SetValue(localPlayer.m_CharacterStats, 100f, null);
-                    else
-                    {
-                        FieldInfo statField = typeof(CharacterStats).GetField("m_" + statName, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-                        if (statField != null) statField.SetValue(localPlayer.m_CharacterStats, 100f);
-                    }
-                }
+                localPlayer.m_CharacterStats.Strength = 100;
+                localPlayer.m_CharacterStats.Intellect = 100;
+                localPlayer.m_CharacterStats.Cardio = 100;
+                localPlayer.m_CharacterStats.Heat = 0;
+                localPlayer.m_CharacterStats.Energy = 100;
+                localPlayer.m_CharacterStats.Health = 100;
  
                 // Add $50 to the player's wallet
-                localPlayer.m_CharacterStats.Money += 50f;
+                localPlayer.m_CharacterStats.Money += 500f;
  
-                logging.SendChatMessage("All Stats Maxed to 100 and added $50!");
+                logging.SendChatMessage("All Stats Maxed and added $500!");
                 AkSoundEngine.PostEvent("Play_UI_Take_Item", localPlayer.gameObject);
             }
         }
@@ -482,6 +496,10 @@ public class Plugin : BaseUnityPlugin
             {
                 logging.SendChatMessage("Contains the phrase Prison Unlock, going to handle it as a custom item");
                 HandleCustomAPPrisonUnlock(itemName);
+            }
+            else if (itemName.Contains("Coins"))
+            {
+                moneyToAdd += 50;
             }
             else
             {
@@ -652,9 +670,27 @@ public class Plugin : BaseUnityPlugin
             }
         }
 
+    
+
     void HandleCustomAPBlueprint(string itemName)
     {
+        if (blueprintsReceived == null)
+        {
+            blueprintsReceived = new List<int>();
+        }
         
+        string cutItemName = itemName.Remove(0, 11);
+        instance.logging.SendChatMessage($"Reduced {itemName} to {cutItemName}");
+
+        int itemID = References.GetItemIDFromName(cutItemName);
+
+        if (itemID == -1)
+        {
+            instance.logging.SendChatMessage("Couldn't find the blueprint reference in the dictionary. Aborting. (NOTIFY BIGCELERY842906 IF YOU SEE THIS");
+            return;
+        }
+        
+        blueprintsReceived.Add(itemID);
     }
 
     void HandleCustomAPProgressiveStat(string itemName)
@@ -689,7 +725,7 @@ public class Plugin : BaseUnityPlugin
 
     }
 
-    private List<string> prisonUnlocksReceived;
+   
 
     void HandleCustomAPPrisonUnlock(string itemName)
     {
@@ -703,8 +739,86 @@ public class Plugin : BaseUnityPlugin
 
     void HandleGameItem(string gameItem)
     {
+        int itemID = References.GetItemIDFromName(gameItem);
         
+        if (itemID == -1)
+        {
+            instance.logging.SendChatMessage("No Vanilla Game Item found, please notify BigCelery842906 if you see this!");
+            return;
+        }
+        
+        if (inGame)
+        {
+            DequeueItemQueue();
+        }
+        else
+        {
+            itemQueue.Enqueue(itemID);
+        }
+
     }
+
+    bool inGame =  false;
+    Queue<int> itemQueue = new Queue<int>();
+    int moneyToAdd = 0;
+    void DequeueItemQueue()
+    {
+        if (inGame)
+        {
+            Player localPlayer = Gamer.GetPrimaryGamer()?.m_PlayerObject;
+            
+            localPlayer.m_CharacterStats.Money += moneyToAdd;
+            moneyToAdd = 0;
+            
+            int playerNetID = localPlayer.m_NetView.viewID;
+            int dummyRequestID = 0;
+
+
+            if (itemQueue.Count == 0 || itemQueue == null)
+            {
+                return;
+            }
+            for (int i = 0; i < itemQueue.Count; i++)
+            {
+                int itemID = itemQueue.Dequeue();
+
+                ItemManager itemManager = ItemManager.GetInstance();
+
+                if (itemManager != null)
+                {
+                    itemManager.AssignItemRPC(playerNetID, itemID, OnItemReceivedFromAP, ref dummyRequestID, -1);
+                }
+            }
+        }
+    }
+    
+    public static void OnItemReceivedFromAP(Item item, int eventID)
+    {
+        if (item == null) return;
+        Player localPlayer = Gamer.GetPrimaryGamer()?.m_PlayerObject;
+        if (localPlayer != null && localPlayer.m_ItemContainer != null)
+        {
+            bool successfullyAdded = localPlayer.m_ItemContainer.AddItemRPC(item, false, RPC_CallContexts.All);
+            if (successfullyAdded)
+            {
+                string safeName = string.IsNullOrEmpty(item.m_ItemData.name) ? "Archipelago Item" : item.m_ItemData.name;
+                instance.logging.SendChatMessage($"Received {safeName}!");
+                AkSoundEngine.PostEvent("Play_UI_Take_Item", localPlayer.gameObject);
+            }
+            else
+            {
+                item.transform.position = localPlayer.transform.position;
+                LevelScript.GetInstance().m_LevelItemContainer.AddItemRPC(item, false, RPC_CallContexts.All);
+                if (item.MeshRendererProp != null) item.MeshRendererProp.enabled = true;
+                if (item.BoxColliderProp != null) item.BoxColliderProp.enabled = true;
+                item.AddToCullingSystem();
+                item.ItemDropped();
+                instance.logging.SendChatMessage($"Inventory full! Dropped {item.m_ItemData.name} at your feet.");
+                AkSoundEngine.PostEvent("Play_UI_Drop_Item", localPlayer.gameObject);
+            }
+        }
+    }
+    
 
     #region Game's Code - Largely from GoofTarune
     
@@ -901,8 +1015,25 @@ public class Plugin : BaseUnityPlugin
                 {
                     killerName = characterResponsible.m_CharacterCustomisation.m_DisplayName;
                 }
-                
-                string deathMessage = $"{slotName} was beaten to a pulp by {killerName}!";
+
+                string deathMessage = "";
+                Random rand = new Random();
+                int deathMessageIndex = rand.Next(0, 4);
+                switch (deathMessageIndex)
+                {
+                    case 0:
+                        deathMessage = $"{slotName} was beaten to a pulp by {killerName}!";
+                        break;
+                    case 1:
+                        deathMessage = $"{slotName} picked a fight against {killerName} and lost!";
+                        break;
+                    case 2:
+                        deathMessage = $"{slotName} overestimated their fighting ability";
+                        break;
+                    case 3:
+                        deathMessage = $"{slotName} found their limit";
+                        break;
+                }
  
                 Packet.DeathLinkPacket deathLink = new Packet.DeathLinkPacket(slotName, deathMessage);
                 instance.SerialiseAndSend(deathLink);
@@ -1799,6 +1930,7 @@ public class Plugin : BaseUnityPlugin
     {
         instance.logging.SendChatMessage("Doing the player stats now!!!");
         instance.SetStats();
+        instance.inGame = true;
     }
 
     [HarmonyPatch(typeof(PlayerSelectMenu), "OnAppearanceSelected")]
