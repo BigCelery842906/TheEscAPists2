@@ -896,17 +896,16 @@ public class Plugin : BaseUnityPlugin
                 lastDeathLinkTime = Time.time;
  
                 string killerName = "their own incompetence";
+                
                 if (characterResponsible != null)
                 {
-                    killerName = characterResponsible.name;
-    
-                    if (killerName.Contains("(")) killerName = killerName.Substring(0, killerName.IndexOf("(")).Trim();
+                    killerName = characterResponsible.m_CharacterCustomisation.m_DisplayName;
                 }
                 
                 string deathMessage = $"{slotName} was beaten to a pulp by {killerName}!";
  
                 Packet.DeathLinkPacket deathLink = new Packet.DeathLinkPacket(slotName, deathMessage);
-                Plugin.instance.SerialiseAndSend(deathLink);
+                instance.SerialiseAndSend(deathLink);
             }
         }
     }
@@ -1680,6 +1679,8 @@ public class Plugin : BaseUnityPlugin
         }
     }
     
+    #endregion 
+    
     #region PrisonLoading
 
     private GameObject KeysRequiredObject = null;
@@ -1815,6 +1816,5 @@ public class Plugin : BaseUnityPlugin
 
     #endregion
     
-    #endregion
 
 }
