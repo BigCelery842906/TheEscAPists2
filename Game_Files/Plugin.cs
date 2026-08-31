@@ -1941,6 +1941,128 @@ public class Plugin : BaseUnityPlugin
             instance.DoPlayerStats();
         }
     }
+    
+    
+    #region Escape Checks
+    
+     [HarmonyPatch(typeof(EscapePrisonFunctionality), "RPC_EscapePrison")]
+    public class EscapePrisonFunctionality_RPC_EscapePrison_Patch
+    {
+        static void Prefix(EscapePrisonFunctionality __instance, EscapeMethod escapeMethod)
+        {
+            
+            // instance.Logger.LogWarning($"[ESCAPE DETECT] Scene: {currentScene}, Engine Method: {escapeMethod.ToString()}");
+
+            switch (escapeMethod)
+            {
+                case EscapeMethod.NothingSpecial: //PERIMETER BREAKOUT
+                {
+                    string currentScene = GetCurrentPrisonScene();
+
+                    string prison = "";
+                    switch (currentScene)
+                    {
+                        case "Centre_Perks": // Center Perks 2.0
+                        {
+                            prison = "Center Perks 2.0";
+                            break;
+                        }
+                        case "OldWestFort":   // Rattlesnake Springs
+                        {
+                            prison = "Rattlesnake Springs";
+                            break;
+                        }
+                        case "POW_Camp": // KAPOW Camp
+                        {
+                            prison = "K.A.P.O.W Camp";
+                            break;
+                        }
+                        case "Oil_Rig": // HMP Offshore
+                        {
+                            prison = "H.M.P. Offshore";
+                            break;
+                        }
+                        case "Gulag_Prison": // Fort Tundra
+                        {
+                            prison = "Fort Tundra";
+                            break;
+                        }
+                        case "Area_17": // Area 17
+                        {
+                            prison = "Area 17";
+                            break;
+                        }
+                        case "Space Prison": // USS Anomaly
+                        {
+                            prison = "U.S.S. Anomaly";
+                            break;
+                        }
+                    }
+
+                    if (prison == "")
+                    {
+                        instance.logging.SendChatMessage("Prison Escape Check failed. Please report this to BigCelery842906 along with which escape you tried to complete.");
+                        return;
+                    }
+                    
+                    instance.SendCheckToBridge($"Escape: Perimeter Breakout ({prison})");
+
+                    break;
+                }
+
+                case EscapeMethod.Documentary:
+                    instance.SendCheckToBridge("Escape: Meet the Crew (Center Perks 2.0)");
+                    break;
+                case EscapeMethod.Zipline:
+                    instance.SendCheckToBridge("Escape: Zip It Up (Rattlesnake Springs)");
+                    break;
+                case EscapeMethod.Motorcycle:
+                    instance.SendCheckToBridge("Escape: Speed McQueen (K.A.P.O.W Camp)");
+                    break;
+                case EscapeMethod.SingleplayerTrashBag:
+                    instance.SendCheckToBridge("Escape: Trash Talk  (H.M.P. Offshore)");
+                    break;
+                case EscapeMethod.Dolphin:
+                    instance.SendCheckToBridge("Escape: Swimming With Dolphins  (H.M.P. Offshore)");
+                    break;
+                case EscapeMethod.Sewers:
+                    instance.SendCheckToBridge("Escape: Rock-hammer Hard Place (Fort Tundra)");
+                    break;
+                case EscapeMethod.HumanDisguise:
+                    instance.SendCheckToBridge("Escape: I'm Only Human (Area 17)");
+                    break;
+                case EscapeMethod.Jetpack:
+                    instance.SendCheckToBridge("Escape: Race From Space (U.S.S. Anomaly)");
+                    break;
+                
+                //TRANSPORT
+                case EscapeMethod.HorseEscape:
+                    instance.SendCheckToBridge("Escape: My Little Phoney (Cougar Creek Railroad)");
+                    break;
+                case EscapeMethod.GrappleGantry: //TODO: TEST THIS ONE
+                    instance.SendCheckToBridge("Escape: Hooked On You (Cougar Creek Railroad)");
+                    break;
+                case EscapeMethod.ScubaGear:
+                    instance.SendCheckToBridge("Escape: Scuba Doo (H.M.S. Orca)");
+                    break;
+                case EscapeMethod.StolenJetski:
+                    instance.SendCheckToBridge("Escape: Wave Goodbye (H.M.S. Orca)");
+                    break;
+                case EscapeMethod.Parachute:
+                    instance.SendCheckToBridge( "Escape: Plane Crazy (Air Force Con)");
+                    break;
+                case EscapeMethod.ForceEmergencyLanding:
+                    instance.SendCheckToBridge("Escape: Passport To Freedom (Air Force Con)");
+                    break;
+                
+                default:
+                    instance.logging.SendChatMessage("Prison Escape Check failed. Please report this to BigCelery842906 along with which escape you tried to complete.");
+                    break;
+            }
+        }
+    }
+    
+    #endregion
 
     #endregion
 

@@ -355,6 +355,14 @@ namespace TheEscAPists2Bridge
             {
                 ConsoleLogging.LogDebug($"Received a check that has a colon in it. {check}");
                 string[] checkParts = check.Split(": ");
+                
+                if (checkParts[0] == "Escape") // Prefire all the stat checks to prevent errors
+                {
+                    SendActualCheck(check, isID);
+                    return;
+                }
+                
+                
                 string stat = "n/a";
                 int lastStat = -1;
                 int statToParse = int.Parse(checkParts[1]);
@@ -382,6 +390,7 @@ namespace TheEscAPists2Bridge
                     ConsoleLogging.LogDebug($"Intellect Stat: {statToParse}, {lastIntellect}");
                     lastStat = lastIntellect;
                 }
+               
 
                 if (stat != "n/a")
                 {
