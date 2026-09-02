@@ -470,6 +470,7 @@ public class Plugin : BaseUnityPlugin
         writer?.WriteLine(message);
     }
 
+    #region Item Handling
     void ProcessItem(Packet.ItemPacket itemPacket)
     {
         bool isID = itemPacket.isItemID;
@@ -584,35 +585,6 @@ public class Plugin : BaseUnityPlugin
             }
         }
     }
-
-    // private void ProcessAPMailbox()
-    // {
-    //     if (apItemID >= 90000) HandleCustomAPItem(apItemID);
-    //     else
-    //     {
-    //         ItemManager itemMan = ItemManager.GetInstance();
-    //         Player localPlayer = Gamer.GetPrimaryGamer()?.m_PlayerObject;
-    //
-    //         if (itemMan != null && localPlayer != null)
-    //         {
-    //             int playerNetID = localPlayer.m_NetView.viewID;
-    //             int dummyRequestID = 0;
-    //             int realGameID = apItemID - 80000;
-    //
-    //             ItemData checkData = itemMan.GetItemDataWithID(realGameID);
-    //             if (checkData != null)
-    //             {
-    //                 itemMan.AssignItemRPC(playerNetID, realGameID, OnItemReceivedFromAP, ref dummyRequestID, -1);
-    //             }
-    //             else
-    //             {
-    //                 cloudInventory.Add(realGameID);
-    //                 logging.SendChatMessage("Item not loaded in this map. Saved to Cloud Storage.");
-    //             }
-    //         }
-    //     }
-    // }
-
 
     void HandleCustomAPTrap(string customItem)
         {
@@ -819,6 +791,7 @@ public class Plugin : BaseUnityPlugin
         }
     }
     
+    #endregion Item Handling
 
     #region Game's Code - Largely from GoofTarune
     
@@ -920,7 +893,7 @@ public class Plugin : BaseUnityPlugin
             { 210, 81101 }
         };
         
-        #endregion
+        #endregion //Config Stuff
         
         private void InitializeConfigs()
         {
@@ -989,7 +962,7 @@ public class Plugin : BaseUnityPlugin
                 if (int.TryParse(escID.Trim(), out int id)) escapeBansList.Add(id);
             }
         }
-    #endregion
+    #endregion Goof's Code
     
     #region Harmony Patches
     [HarmonyPatch(typeof(Player), "SetIsKnockedOut")]
@@ -1067,7 +1040,7 @@ public class Plugin : BaseUnityPlugin
         instance.SerialiseAndSend(stealhLink);
     }
     
-    #endregion
+    #endregion //Stealthlink
     
     #region ScheduleScrambler
     [HarmonyPatch(typeof(RoutineManager), "StartInit")]
@@ -1178,9 +1151,9 @@ public class Plugin : BaseUnityPlugin
             }
         }
         
-        #endregion
+        #endregion //Schedule Scrambler - Not sure it does anything
         
-    #region PayPhone
+    #region PayPhone Hints
     
     // 1. REWRITE THE BUTTON TEXT AND HIDE VANILLA HINTS
     [HarmonyPatch(typeof(PayphoneMenu), "ResetButtons")]
@@ -1369,7 +1342,7 @@ public class Plugin : BaseUnityPlugin
         }
     }
 
-    #endregion
+    #endregion //Payphone Hints
     
     #region DeskInteractions
 
@@ -1720,7 +1693,7 @@ public class Plugin : BaseUnityPlugin
 
     }
 
-    #endregion
+    #endregion //Desk Checks
     
     #region Stat Handling
     
@@ -1810,7 +1783,7 @@ public class Plugin : BaseUnityPlugin
         }
     }
     
-    #endregion 
+    #endregion // Stat Handling
     
     #region PrisonLoading
 
@@ -1942,6 +1915,7 @@ public class Plugin : BaseUnityPlugin
         }
     }
     
+    #endregion //Prison Loading
     
     #region Escape Checks
     
@@ -2062,13 +2036,16 @@ public class Plugin : BaseUnityPlugin
         }
     }
     
-    #endregion
+    #endregion //Escape Checks
 
-    #endregion
+    #region Job Checks
+    
+    #endregion //Job Checks
+    
+    #endregion //Harmony Patches
 
-    #endregion
-
-    #endregion
+    #endregion //Game's Code
+    
     
 
 }
