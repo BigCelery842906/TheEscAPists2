@@ -223,7 +223,6 @@ namespace TheEscAPists2Bridge
         //Say
         void SendChatToServer(string ChatMessage)
         {
-            ConsoleLogging.LogSend("Chat Send: " + ChatMessage);
             ArchipelagoClient.instance.SayToServer(ChatMessage);
         }
         

@@ -94,43 +94,49 @@ namespace TheEscAPists2Bridge
 
                     case "/test":
                     {
-                        Packet.ChatMessagePacket packet = new Packet.ChatMessagePacket("BC_Escapists",
-                            "THIS IS A MESSAGE THAT SHOULD WORK HOLY HELL");
-                        ConsoleLogging.LogDebug($"{packet.slotName} : {packet.chatMessage}");
-                        string packetJson = packet.ToJson();
-                        ConsoleLogging.LogDebug(packetJson);
+                        if (ConsoleLogging.debugMode)
+                        {
+                            Packet.ChatMessagePacket packet = new Packet.ChatMessagePacket("BC_Escapists",
+                                "THIS IS A MESSAGE THAT SHOULD WORK HOLY HELL");
+                            ConsoleLogging.LogDebug($"{packet.slotName} : {packet.chatMessage}");
+                            string packetJson = packet.ToJson();
+                            ConsoleLogging.LogDebug(packetJson);
 
-                        Packet.ConnectionPacket packet2 =
-                            new Packet.ConnectionPacket("BC_Escapists", "archipelago.gg:55644", "");
-                        ConsoleLogging.LogDebug($"{packet2.slotName} : {packet2.serverAddress} : {packet2.password}");
-                        string packetJson2 = packet2.ToJson();
-                        ConsoleLogging.LogDebug(packetJson2);
-                        Packet.ConnectionPacket deserialisedPacket2 =
-                            (Packet.ConnectionPacket)PacketConverter.ReadJson(packetJson2);
-                        ConsoleLogging.LogDebug(
-                            $"{deserialisedPacket2.slotName} : {deserialisedPacket2.serverAddress} : {deserialisedPacket2.password}");
+                            Packet.ConnectionPacket packet2 =
+                                new Packet.ConnectionPacket("BC_Escapists", "archipelago.gg:55644", "");
+                            ConsoleLogging.LogDebug(
+                                $"{packet2.slotName} : {packet2.serverAddress} : {packet2.password}");
+                            string packetJson2 = packet2.ToJson();
+                            ConsoleLogging.LogDebug(packetJson2);
+                            Packet.ConnectionPacket deserialisedPacket2 =
+                                (Packet.ConnectionPacket)PacketConverter.ReadJson(packetJson2);
+                            ConsoleLogging.LogDebug(
+                                $"{deserialisedPacket2.slotName} : {deserialisedPacket2.serverAddress} : {deserialisedPacket2.password}");
 
-                        Packet.CheckPacket packet3 = new Packet.CheckPacket("BC_Escapists", "CheckName");
-                        ConsoleLogging.LogDebug($"{packet3.slotName} : {packet3.checkName}");
-                        string packetJson3 = packet3.ToJson();
-                        ConsoleLogging.LogDebug(packetJson3);
-                        Packet.CheckPacket deserialisedPacket3 =
-                            (Packet.CheckPacket)PacketConverter.ReadJson(packetJson3);
-                        ConsoleLogging.LogDebug($"{deserialisedPacket3.slotName} : {deserialisedPacket3.checkName}");
+                            Packet.CheckPacket packet3 = new Packet.CheckPacket("BC_Escapists", "CheckName");
+                            ConsoleLogging.LogDebug($"{packet3.slotName} : {packet3.checkName}");
+                            string packetJson3 = packet3.ToJson();
+                            ConsoleLogging.LogDebug(packetJson3);
+                            Packet.CheckPacket deserialisedPacket3 =
+                                (Packet.CheckPacket)PacketConverter.ReadJson(packetJson3);
+                            ConsoleLogging.LogDebug(
+                                $"{deserialisedPacket3.slotName} : {deserialisedPacket3.checkName}");
 
-                        Packet.DeathLinkPacket packet4 = new Packet.DeathLinkPacket("BC_Escapists", "Died of death");
-                        ConsoleLogging.LogDebug($"{packet4.slotName} : {packet4.reason}");
-                        string packetJson4 = packet4.ToJson();
-                        Packet.DeathLinkPacket deserialisedPacket4 =
-                            (Packet.DeathLinkPacket)PacketConverter.ReadJson(packetJson4);
-                        ConsoleLogging.LogDebug($"{deserialisedPacket4.slotName} : {deserialisedPacket4.reason}");
+                            Packet.DeathLinkPacket packet4 =
+                                new Packet.DeathLinkPacket("BC_Escapists", "Died of death");
+                            ConsoleLogging.LogDebug($"{packet4.slotName} : {packet4.reason}");
+                            string packetJson4 = packet4.ToJson();
+                            Packet.DeathLinkPacket deserialisedPacket4 =
+                                (Packet.DeathLinkPacket)PacketConverter.ReadJson(packetJson4);
+                            ConsoleLogging.LogDebug($"{deserialisedPacket4.slotName} : {deserialisedPacket4.reason}");
 
-                        Packet.GoalPacket packet5 = new Packet.GoalPacket("BC_Escapists");
-                        ConsoleLogging.LogDebug($"{packet5.slotName}");
-                        string packetJson5 = packet5.ToJson();
-                        Packet.GoalPacket deserialisedPacket5 =
-                            (Packet.GoalPacket)PacketConverter.ReadJson(packetJson5);
-                        ConsoleLogging.LogDebug($"{deserialisedPacket5.slotName}");
+                            Packet.GoalPacket packet5 = new Packet.GoalPacket("BC_Escapists");
+                            ConsoleLogging.LogDebug($"{packet5.slotName}");
+                            string packetJson5 = packet5.ToJson();
+                            Packet.GoalPacket deserialisedPacket5 =
+                                (Packet.GoalPacket)PacketConverter.ReadJson(packetJson5);
+                            ConsoleLogging.LogDebug($"{deserialisedPacket5.slotName}");
+                        }
 
                         break;
                     }
@@ -170,12 +176,29 @@ namespace TheEscAPists2Bridge
                     }
 
                     case "/sendgoal":
+                    {
                         if (ConsoleLogging.debugMode)
                         {
                             ArchipelagoClient.instance.SendGoalToServer();
                         }
 
                         break;
+                    }
+
+                    case "/senditem":
+                    {
+                        if (ConsoleLogging.debugMode)
+                        {
+                            ConsoleLogging.LogInfoInput("What item do you want to send? ");
+                            string curLine2 = Console.ReadLine().Trim();
+                            MessageHandler.instance.SendItemToGame(curLine2, false);
+                        }
+                        else
+                        {
+                            ConsoleLogging.LogWarning("Failed: Debug Mode not enabled, This is reserved for testing purposes only"); 
+                        }
+                        break;
+                    }
 
                     default:
                     {
@@ -264,6 +287,7 @@ namespace TheEscAPists2Bridge
                 ConsoleLogging.LogInfo("/scoutcheck - This will trigger another line to scout what is at a specific location");
                 ConsoleLogging.LogInfo("/sendcheck - This will trigger another line to send a check");
                 ConsoleLogging.LogInfo("/sendgoal - Send the goal flag to the server"); 
+                ConsoleLogging.LogInfo("/senditem - Send a specific item to the game - Useful for testing specific things");
             }
             ConsoleLogging.LogInfo("");
         }

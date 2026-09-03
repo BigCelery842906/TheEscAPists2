@@ -59,7 +59,7 @@ public class Plugin : BaseUnityPlugin
         InitializeConfigs();
         UpdateBlacklist();
  
-        Harmony harmony = new Harmony("com.yourname.escapists2.randomizer");
+        Harmony harmony = new Harmony("com.bigcelery842906.escapists2.archipelago.randomiser");
         harmony.PatchAll();
         Logger.LogInfo("V3.2.0 - Architecture Organized"); //??
 
@@ -394,6 +394,11 @@ public class Plugin : BaseUnityPlugin
             {
                 instance.SendMessageToBridge($"ID: {item.m_ItemDataID} - Tag: {item.m_ItemLocalizationTag}");
             }
+
+            foreach (CraftManager.Recipe recipe in CraftManager.GetInstance().GetAllRecipes())
+            {
+                instance.SendMessageToBridge($" {{\"{recipe.m_Product.name}\", {CraftManager.GetInstance().GetRecipeId(recipe)}}},");
+            }
         }
     }
 
@@ -500,10 +505,12 @@ public class Plugin : BaseUnityPlugin
             }
             else if (itemName.Contains("Coins"))
             {
+                logging.SendChatMessage("Contains the word Coins, going to add it to the users wallet");
                 moneyToAdd += 50;
             }
             else
             {
+                logging.SendChatMessage("Not triggered any of the catches, going to treat as a vanilla game item");
                 HandleGameItem(itemName);
             }
     }
@@ -644,25 +651,25 @@ public class Plugin : BaseUnityPlugin
 
     
 
-    void HandleCustomAPBlueprint(string itemName)
+    void HandleCustomAPBlueprint(string blueprintName)
     {
         if (blueprintsReceived == null)
         {
             blueprintsReceived = new List<int>();
         }
         
-        string cutItemName = itemName.Remove(0, 11);
-        instance.logging.SendChatMessage($"Reduced {itemName} to {cutItemName}");
+        string cutItemName = blueprintName.Remove(0, 11);
+        instance.logging.SendChatMessage($"Reduced {blueprintName} to {cutItemName}");
 
-        int itemID = References.GetItemIDFromName(cutItemName);
+        int recipeID = References.GetRecipeIDFromName(cutItemName);
 
-        if (itemID == -1)
+        if (recipeID == -1)
         {
             instance.logging.SendChatMessage("Couldn't find the blueprint reference in the dictionary. Aborting. (NOTIFY BIGCELERY842906 IF YOU SEE THIS");
             return;
         }
         
-        blueprintsReceived.Add(itemID);
+        blueprintsReceived.Add(recipeID);
     }
 
     void HandleCustomAPProgressiveStat(string itemName)
@@ -711,22 +718,16 @@ public class Plugin : BaseUnityPlugin
 
     void HandleGameItem(string gameItem)
     {
+        instance.logging.SendChatMessage($"Handle Game Item Function Entered for {gameItem}");
         int itemID = References.GetItemIDFromName(gameItem);
-        
+        instance.logging.SendChatMessage($"Returned an id: {itemID} from {gameItem}");
         if (itemID == -1)
         {
             instance.logging.SendChatMessage("No Vanilla Game Item found, please notify BigCelery842906 if you see this!");
             return;
         }
         
-        if (inGame)
-        {
-            DequeueItemQueue();
-        }
-        else
-        {
-            itemQueue.Enqueue(itemID);
-        }
+        itemQueue.Enqueue(itemID);
 
     }
 
@@ -759,6 +760,7 @@ public class Plugin : BaseUnityPlugin
                 if (itemManager != null)
                 {
                     itemManager.AssignItemRPC(playerNetID, itemID, OnItemReceivedFromAP, ref dummyRequestID, -1);
+                    instance.logging.SendChatMessage($"Item {itemID} should have been given to the player - DequeueItemQueue");
                 }
             }
         }
@@ -776,6 +778,7 @@ public class Plugin : BaseUnityPlugin
                 string safeName = string.IsNullOrEmpty(item.m_ItemData.name) ? "Archipelago Item" : item.m_ItemData.name;
                 instance.logging.SendChatMessage($"Received {safeName}!");
                 AkSoundEngine.PostEvent("Play_UI_Take_Item", localPlayer.gameObject);
+                instance.logging.SendChatMessage($"Item {safeName} should have been given to the player - OnItemReceivedFromAP");
             }
             else
             {
@@ -1043,115 +1046,115 @@ public class Plugin : BaseUnityPlugin
     #endregion //Stealthlink
     
     #region ScheduleScrambler
-    [HarmonyPatch(typeof(RoutineManager), "StartInit")]
-        public class RoutineManager_StartInit_Patch
-        {
-            // store the vanilla schedule here so there is a clean slate to shuffle from every morning
-            public static List<Routines> vanillaBaseTypes = new List<Routines>();
-            public static List<RoutineSubTypes> vanillaSubTypes = new List<RoutineSubTypes>();
-            public static List<Events> vanillaMusic = new List<Events>();
-            public static List<string> vanillaUITags = new List<string>();
- 
-            static void Postfix(RoutineManager __instance)
-            {
-                // Fully updated to use the Enum instead of strings
-                // if (!configEnabled.Value || configRandSchedule.Value == ScheduleMode.Off) return;
-                // if (__instance.m_RoutinesData == null || __instance.m_RoutinesData.m_Routines == null || __instance.m_RoutinesData.m_Routines.Count <= 1) return;
- 
-                // 1. Save the vanilla data immediately on load
-                vanillaBaseTypes.Clear();
-                vanillaSubTypes.Clear();
-                vanillaMusic.Clear();
-                vanillaUITags.Clear();
- 
-                foreach (var routine in __instance.m_RoutinesData.m_Routines)
-                {
-                    vanillaBaseTypes.Add(routine.m_BaseRoutineType);
-                    vanillaSubTypes.Add(routine.m_SubRoutineType);
-                    vanillaMusic.Add(routine.m_RoutineMusic);
-                    vanillaUITags.Add(routine.m_LocalizationTag);
-                }
- 
-                // 2. Hook into the daily engine trigger so it scrambles again at midnight
-                __instance.OnDayChange += () => ScrambleDailySchedule(__instance);
- 
-                // 3. Do the initial scramble for Day 1
-                ScrambleDailySchedule(__instance);
-            }
- 
-            public static void ScrambleDailySchedule(RoutineManager rm)
-            {
-                // Fully updated to use the Enum instead of strings
-                // ScheduleMode mode = configRandSchedule.Value;
-                ScheduleMode mode = ScheduleMode.Chaos;
-                if (mode == ScheduleMode.Off) return;
- 
-                var routines = rm.m_RoutinesData.m_Routines;
-                List<int> indicesToShuffle = new List<int>();
- 
-                // First, restore everything to vanilla, then pick which blocks are allowed to shuffle
-                for (int i = 0; i < routines.Count; i++)
-                {
-                    routines[i].m_BaseRoutineType = vanillaBaseTypes[i];
-                    routines[i].m_SubRoutineType = vanillaSubTypes[i];
-                    routines[i].m_RoutineMusic = vanillaMusic[i];
-                    routines[i].m_LocalizationTag = vanillaUITags[i];
- 
-                    // If we are in "Safe" mode, DO NOT add Lights Out to the shuffle pool. Please leave it alone.
-                    if (mode == ScheduleMode.Safe && vanillaBaseTypes[i] == Routines.LightsOut) continue;
- 
-                    indicesToShuffle.Add(i);
-                }
- 
-                // Extract the data ONLY for the blocks it's allowed to shuffle
-                List<Routines> shuffleBase = new List<Routines>();
-                List<RoutineSubTypes> shuffleSub = new List<RoutineSubTypes>();
-                List<Events> shuffleMusic = new List<Events>();
-                List<string> shuffleUI = new List<string>();
- 
-                foreach (int i in indicesToShuffle)
-                {
-                    shuffleBase.Add(vanillaBaseTypes[i]);
-                    shuffleSub.Add(vanillaSubTypes[i]);
-                    shuffleMusic.Add(vanillaMusic[i]);
-                    shuffleUI.Add(vanillaUITags[i]);
-                }
- 
-                // RNG seed based on Roulette Seed + Current In-Game Day (So it's different every day)
-                string seedStr = configRouletteSeed.Value.Trim().ToLower();
-                int seed = 12345;
-                if (seedStr != "random" && !string.IsNullOrEmpty(seedStr)) int.TryParse(seedStr, out seed);
- 
-                System.Random rng = new System.Random(seed + rm.GetDaysElapsed());
- 
-                // Fisher-Yates Shuffle
-                int n = shuffleBase.Count;
-                while (n > 1)
-                {
-                    n--;
-                    int k = rng.Next(n + 1);
- 
-                    var tb = shuffleBase[k]; shuffleBase[k] = shuffleBase[n]; shuffleBase[n] = tb;
-                    var ts = shuffleSub[k]; shuffleSub[k] = shuffleSub[n]; shuffleSub[n] = ts;
-                    var tm = shuffleMusic[k]; shuffleMusic[k] = shuffleMusic[n]; shuffleMusic[n] = tm;
-                    var tu = shuffleUI[k]; shuffleUI[k] = shuffleUI[n]; shuffleUI[n] = tu;
-                }
- 
-                // Inject the scrambled data back into their original time slots
-                for (int i = 0; i < indicesToShuffle.Count; i++)
-                {
-                    int realIndex = indicesToShuffle[i];
-                    routines[realIndex].m_BaseRoutineType = shuffleBase[i];
-                    routines[realIndex].m_SubRoutineType = shuffleSub[i];
-                    routines[realIndex].m_RoutineMusic = shuffleMusic[i];
-                    routines[realIndex].m_LocalizationTag = shuffleUI[i];
-                }
- 
-                Plugin.instance.Logger.LogWarning($"[CHAOS] Day {rm.GetDaysElapsed()} schedule scrambled!");
-            }
-        }
-        
-        #endregion //Schedule Scrambler - Not sure it does anything
+    // [HarmonyPatch(typeof(RoutineManager), "StartInit")]
+    //     public class RoutineManager_StartInit_Patch
+    //     {
+    //         // store the vanilla schedule here so there is a clean slate to shuffle from every morning
+    //         public static List<Routines> vanillaBaseTypes = new List<Routines>();
+    //         public static List<RoutineSubTypes> vanillaSubTypes = new List<RoutineSubTypes>();
+    //         public static List<Events> vanillaMusic = new List<Events>();
+    //         public static List<string> vanillaUITags = new List<string>();
+    //
+    //         static void Postfix(RoutineManager __instance)
+    //         {
+    //             // Fully updated to use the Enum instead of strings
+    //             // if (!configEnabled.Value || configRandSchedule.Value == ScheduleMode.Off) return;
+    //             // if (__instance.m_RoutinesData == null || __instance.m_RoutinesData.m_Routines == null || __instance.m_RoutinesData.m_Routines.Count <= 1) return;
+    //
+    //             // 1. Save the vanilla data immediately on load
+    //             vanillaBaseTypes.Clear();
+    //             vanillaSubTypes.Clear();
+    //             vanillaMusic.Clear();
+    //             vanillaUITags.Clear();
+    //
+    //             foreach (var routine in __instance.m_RoutinesData.m_Routines)
+    //             {
+    //                 vanillaBaseTypes.Add(routine.m_BaseRoutineType);
+    //                 vanillaSubTypes.Add(routine.m_SubRoutineType);
+    //                 vanillaMusic.Add(routine.m_RoutineMusic);
+    //                 vanillaUITags.Add(routine.m_LocalizationTag);
+    //             }
+    //
+    //             // 2. Hook into the daily engine trigger so it scrambles again at midnight
+    //             __instance.OnDayChange += () => ScrambleDailySchedule(__instance);
+    //
+    //             // 3. Do the initial scramble for Day 1
+    //             ScrambleDailySchedule(__instance);
+    //         }
+    //
+    //         public static void ScrambleDailySchedule(RoutineManager rm)
+    //         {
+    //             // Fully updated to use the Enum instead of strings
+    //             // ScheduleMode mode = configRandSchedule.Value;
+    //             ScheduleMode mode = ScheduleMode.Chaos;
+    //             if (mode == ScheduleMode.Off) return;
+    //
+    //             var routines = rm.m_RoutinesData.m_Routines;
+    //             List<int> indicesToShuffle = new List<int>();
+    //
+    //             // First, restore everything to vanilla, then pick which blocks are allowed to shuffle
+    //             for (int i = 0; i < routines.Count; i++)
+    //             {
+    //                 routines[i].m_BaseRoutineType = vanillaBaseTypes[i];
+    //                 routines[i].m_SubRoutineType = vanillaSubTypes[i];
+    //                 routines[i].m_RoutineMusic = vanillaMusic[i];
+    //                 routines[i].m_LocalizationTag = vanillaUITags[i];
+    //
+    //                 // If we are in "Safe" mode, DO NOT add Lights Out to the shuffle pool. Please leave it alone.
+    //                 if (mode == ScheduleMode.Safe && vanillaBaseTypes[i] == Routines.LightsOut) continue;
+    //
+    //                 indicesToShuffle.Add(i);
+    //             }
+    //
+    //             // Extract the data ONLY for the blocks it's allowed to shuffle
+    //             List<Routines> shuffleBase = new List<Routines>();
+    //             List<RoutineSubTypes> shuffleSub = new List<RoutineSubTypes>();
+    //             List<Events> shuffleMusic = new List<Events>();
+    //             List<string> shuffleUI = new List<string>();
+    //
+    //             foreach (int i in indicesToShuffle)
+    //             {
+    //                 shuffleBase.Add(vanillaBaseTypes[i]);
+    //                 shuffleSub.Add(vanillaSubTypes[i]);
+    //                 shuffleMusic.Add(vanillaMusic[i]);
+    //                 shuffleUI.Add(vanillaUITags[i]);
+    //             }
+    //
+    //             // RNG seed based on Roulette Seed + Current In-Game Day (So it's different every day)
+    //             string seedStr = configRouletteSeed.Value.Trim().ToLower();
+    //             int seed = 12345;
+    //             if (seedStr != "random" && !string.IsNullOrEmpty(seedStr)) int.TryParse(seedStr, out seed);
+    //
+    //             System.Random rng = new System.Random(seed + rm.GetDaysElapsed());
+    //
+    //             // Fisher-Yates Shuffle
+    //             int n = shuffleBase.Count;
+    //             while (n > 1)
+    //             {
+    //                 n--;
+    //                 int k = rng.Next(n + 1);
+    //
+    //                 var tb = shuffleBase[k]; shuffleBase[k] = shuffleBase[n]; shuffleBase[n] = tb;
+    //                 var ts = shuffleSub[k]; shuffleSub[k] = shuffleSub[n]; shuffleSub[n] = ts;
+    //                 var tm = shuffleMusic[k]; shuffleMusic[k] = shuffleMusic[n]; shuffleMusic[n] = tm;
+    //                 var tu = shuffleUI[k]; shuffleUI[k] = shuffleUI[n]; shuffleUI[n] = tu;
+    //             }
+    //
+    //             // Inject the scrambled data back into their original time slots
+    //             for (int i = 0; i < indicesToShuffle.Count; i++)
+    //             {
+    //                 int realIndex = indicesToShuffle[i];
+    //                 routines[realIndex].m_BaseRoutineType = shuffleBase[i];
+    //                 routines[realIndex].m_SubRoutineType = shuffleSub[i];
+    //                 routines[realIndex].m_RoutineMusic = shuffleMusic[i];
+    //                 routines[realIndex].m_LocalizationTag = shuffleUI[i];
+    //             }
+    //
+    //             Plugin.instance.Logger.LogWarning($"[CHAOS] Day {rm.GetDaysElapsed()} schedule scrambled!");
+    //         }
+    //     }
+    //     
+    #endregion //Schedule Scrambler - Commented Currently for testing. Add in post release
         
     #region PayPhone Hints
     
@@ -2039,9 +2042,76 @@ public class Plugin : BaseUnityPlugin
     #endregion //Escape Checks
 
     #region Job Checks
+
+    [HarmonyPatch(typeof(BaseJob), "QuotaAchieved", MethodType.Setter)]
+    public class BaseJob_QuotaAchieved_Patch
+    {
+        static void Postfix(BaseJob __instance)
+        {
+            if (__instance.NormalizedProgress >= 1)
+            {
+                if (__instance.Employee.m_CharacterStats.m_bIsPlayer)
+                {
+                    JobType type = __instance.m_Type;
+
+                    string jobType = type.ToString();
+
+                    switch (type)
+                    {
+                        case JobType.Electrician:
+                            jobType = "Engineering";
+                            break;
+                        case JobType.WasteDisposal:
+                            jobType = "Waste Disposal";
+                            break;
+                        case JobType.MailSorting:
+                            jobType = "Mail Sorting";
+                            break;
+                        case JobType.CanineCarer:
+                            jobType = "Canine Carer";
+                            break;
+                            
+                    }
+                    
+                    instance.SendCheckToBridge($"Job: {jobType}");
+                }
+            }
+        }
+    } 
     
     #endregion //Job Checks
     
+    #region Crafting
+
+    [HarmonyPatch(typeof(CraftManager), "GetIntellectRequiredForRecipe")]
+    public class CraftManager_GetIntellectRequiredForRecipe_Patch
+    {
+        static void Postfix(CraftManager __instance, int recipeID, ref int __result)
+        {
+            instance.logging.SendChatMessage($"Recipe id trying to send is: {recipeID}");
+            if (References.apworldBlueprints.ContainsValue(recipeID))
+            {
+                instance.logging.SendChatMessage("Recipe ID found in the apworld blueprints");
+
+                if (!instance.blueprintsReceived.Contains(recipeID))
+                {
+                    instance.logging.SendChatMessage("Found the blueprint in the received list");
+                    __result = 101;
+                }
+                else
+                {
+                    instance.logging.SendChatMessage("Did not find the blueprint in the received list");
+                }
+            }
+            else
+            {
+                instance.logging.SendChatMessage("Recipe ID not found in the apworld blueprints");
+            }
+            
+        }
+    }
+    
+    #endregion //Crafting
     #endregion //Harmony Patches
 
     #endregion //Game's Code

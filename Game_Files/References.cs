@@ -17,6 +17,114 @@ public static class References
         
         return itemID;
     }
+
+    public static int GetRecipeIDFromName(string RecipeName)
+    {
+        string trimmedItemName = RecipeName.Replace(" ", "");
+        int recipeID = -1;
+
+        if (apworldBlueprints.ContainsKey(trimmedItemName))
+        {
+            recipeID = apworldBlueprints[trimmedItemName];
+        }
+
+        return recipeID;
+    }
+
+    public static Dictionary<string, int> apworldBlueprints = new Dictionary<string, int>()
+    {
+        { "BaseballBat", 0 },
+        { "BeautifulPainting", 1 },
+        { "BedDummy", 2 },
+        { "Cake", 3 },
+        { "Candle", 4 },
+        { "CombBlade", 5 },
+        { "ContrabandPouch", 6 },
+        { "CrateBase", 7 },
+        { "CrateCasing", 8 },
+        { "CrateTop", 9 },
+        { "CupOfTea", 10 },
+        { "CushionedInmateOutfit", 11 },
+        { "CuttingFloss", 12 },
+        { "CyanKeyCardCopy", 13 },
+        { "DurableContrabandPouch", 14 },
+        { "EnergyModule", 15 },
+        { "EscapistsFigurine", 16 },
+        { "FakeAudioEquipment", 17 },
+        { "FakeKeycardCyan", 18 },
+        { "FakeFence", 19 },
+        { "FakeKeycardRed", 20 },
+        { "FakeVentCover", 21 },
+        { "FakeWallBlock", 22 },
+        { "FlimsyCutters", 23 },
+        { "Flimsy Pickaxe", 24 },
+        { "FlimsyShovel", 25 },
+        { "FramedPhoto", 26 },
+        { "GlassShank", 27 },
+        { "GlueReadiedFurniture", 28 },
+        { "GrappleHead", 29 },
+        { "GrapplingHook", 30 },
+        { "GuardOutfit", 31 },
+        { "InfirmaryOveralls", 32 },
+        { "InfirmaryOveralls2", 33 },
+        { "KeyMouldCyan", 34 },
+        { "KeyMouldGreen", 35 },
+        { "KeyMouldPurple", 36 },
+        { "KeyMouldRed", 37 },
+        { "KeyMouldYellow", 38 },
+        { "KnuckleDuster", 39 },
+        { "LightweightCutters", 40 },
+        { "LightweightPickaxe", 41 },
+        { "LightweightShovel", 42 },
+        { "MachineReadyShoe", 43 },
+        { "MakeshiftCosh", 44 },
+        { "MakeshiftDoubleBass", 45 },
+        { "MakeshiftLadder", 46 },
+        { "MakeshiftSledgehammer", 47 },
+        { "MakeshiftSpear", 48 },
+        { "MakeshiftStungun", 49 },
+        { "ManicureKit", 50 },
+        { "MoltenChoc", 51 },
+        { "MoltenChoc2", 52 },
+        { "MoltenPlastic", 53 },
+        { "MoltenPlastic2", 54 },
+        { "Multitool", 55 },
+        { "MusicWashboard", 56 },
+        { "Nunchuck", 57 },
+        { "PaddedInmateOutfit", 58 },
+        { "PairOfShoes", 59 },
+        { "PaperMache", 60 },
+        { "PlasticCyanKey", 61 },
+        { "PlasticGreenKey", 62 },
+        { "PlasticPurpleKey", 63 },
+        { "PlasticRedKey", 64 },
+        { "PlasticYellowKey", 65 },
+        { "PlatedInmateOutfit", 66 },
+        { "Poster", 67 },
+        { "PottedPlant", 68 },
+        { "PretendFlower", 69 },
+        { "ReadiedPaintBrush", 70 },
+        { "RedKeyCardCopy", 71 },
+        { "SheetRope", 72 },
+        { "SockMace", 73 },
+        { "SturdyCutters", 74 },
+        { "SturdyPickaxe", 75 },
+        { "SturdyShovel", 76 },
+        { "SuperBaseballBat", 77 },
+        { "SuperKnuckleDuster", 78 },
+        { "SuperMetalBaton", 79 },
+        { "SuperSockMace", 80 },
+        { "SuperWhip", 81 },
+        { "TimberBrace", 82 },
+        { "ToolHandle", 83 },
+        { "UncookedPie", 84 },
+        { "UngluedFurniture", 85 },
+        { "VisitorsKit", 86 },
+        { "WadOfPutty", 87 },
+        { "Whip", 88 },
+    };
+    
+    
     private static Dictionary<string, int> BlueprintIDReferences = new Dictionary<string, int>()
     {
         { "BottleOfSleepingPills", 121 },
