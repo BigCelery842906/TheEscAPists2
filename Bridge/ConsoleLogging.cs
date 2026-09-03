@@ -23,6 +23,7 @@ public static class ConsoleLogging
         ServerRefusedConnection,
         FailToDisconnect,
         CheckSendFailure,
+        LoadFailure,
         
     }
     /// <summary>
@@ -32,6 +33,7 @@ public static class ConsoleLogging
     /// 04 - Server Refused Connection for some reason, Find more details attached.
     /// 05 - Failed to disconnect from server
     /// 06 - Check failed to send
+    /// 07 - Failed to Load Save
     /// </summary>
     /// <param name="errorCode"></param>
     /// 

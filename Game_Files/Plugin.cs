@@ -2115,7 +2115,5 @@ public class Plugin : BaseUnityPlugin
     #endregion //Harmony Patches
 
     #endregion //Game's Code
-    
-    
 
 }

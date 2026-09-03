@@ -113,6 +113,12 @@ namespace TheEscAPists2Bridge
         static DeathLinkService DeathLinkService;
 
         public Queue<string> incomingChatQueue = new Queue<string>();
+        public Queue<string> incomingItemsQueue = new Queue<string>();
+        public Queue<int> incomingItemsIndexQueue = new Queue<int>();
+        private bool hasLoaded = false;
+        private int lastItemIndexReceived = 0;
+        private int localIndexReceived = 0;
+        private string seed = "";
 
         public List<long> checkedLocations;
         private int lastStrength = 30; //Want to send 30 first time round
@@ -142,6 +148,38 @@ namespace TheEscAPists2Bridge
             }
         }
 
+        void DequeueItems()
+        {
+            if (hasLoaded)
+            {
+                if (incomingItemsQueue.Count == 0 || incomingItemsQueue == null)
+                {
+                    return;
+                }
+
+                int index = incomingItemsIndexQueue.Dequeue();
+                string itemName = incomingItemsQueue.Dequeue();
+                ConsoleLogging.LogDebug($"{lastItemIndexReceived} >= {index}");
+
+                if (!(itemName.Contains("Progressive") || itemName.Contains("Prison Unlock") || itemName.Contains("Blueprint")))
+                {
+                    if (lastItemIndexReceived >= index)
+                    {
+                        ConsoleLogging.LogDebug($"DID NOT SEND ITEM DUE TO ITEM INDEX, WHICH IS {index}");
+                        return;
+                    }
+                }
+
+                if (!(lastItemIndexReceived >= index))
+                {
+                    lastItemIndexReceived = index;
+                }
+
+                MessageHandler.instance.SendItemToGame(itemName, false);
+
+            }
+        }
+
         public void SetConnectionValues(string game, string slotName, string serverAddress, string password, Version gameVersion)
         {
             connectionInfo = new ConnectionInfo(game, slotName, serverAddress, password, gameVersion);
@@ -166,6 +204,8 @@ namespace TheEscAPists2Bridge
             //Optional GetDataPackage - Also Do parse on incoming packet if this is the case
             //TODO: https://alwaysintreble.github.io/Archipelago/network%20protocol.html#receiveditems
 
+            seed = Session.RoomState.Seed;
+            ConsoleLogging.LogDebug(Session.RoomState.Seed);
             LoginResult loginResult = null;
             try
             {
@@ -199,6 +239,8 @@ namespace TheEscAPists2Bridge
                 MessageHandler.instance.SendSlotnameToGame();
                 MessageHandler.instance.SendConnectionStatus();
                 SubscribeToServerEvents();
+                
+                LoadFile();
                 return true;
             }
 
@@ -280,12 +322,14 @@ namespace TheEscAPists2Bridge
                         ConsoleLogging.LogDebug($"Received Item Item: {item.Item.ToString()}"); //This is the bit I want, except I want the name not the id
                         
                         string itemName = Session.Items.GetItemName(item.Item, ModInfo.GameName);
+                        localIndexReceived++;
                         ConsoleLogging.LogDebug($"Item gets returned as: {Session.Items.GetItemName(item.Item)}");
                         
-                        //TODO: SET UP ITEMS TO GAME PROCESSING
-                        MessageHandler.instance.SendItemToGame(itemName, false);
+                        incomingItemsQueue.Enqueue(itemName);
+                        incomingItemsIndexQueue.Enqueue(localIndexReceived);
+                        DequeueItems();
                     }
-                    
+                    SaveFile();
                 }
             };
         }
@@ -311,6 +355,8 @@ namespace TheEscAPists2Bridge
                 ConsoleLogging.LogWarning($"Connection lost: {reason}");
                 incomingChatQueue.Enqueue($"Connection lost to server: {reason}");
                 MessageHandler.instance.ProcessChatQueue();
+                
+                SaveFile();
             };
         }
 
@@ -336,6 +382,7 @@ namespace TheEscAPists2Bridge
                 ConsoleLogging.LogInfo("Disconnected from Server.");
             }
 
+            SaveFile();
             return true;
         }
 
@@ -448,6 +495,7 @@ namespace TheEscAPists2Bridge
                 //TODO: Set up actual check sending - Difference between CompleteLocationChecks and CompleteLocationChecksAsync
                 ConsoleLogging.LogSend("Check Send: " + Session.Locations.GetLocationNameFromId(id));
                 Session.Locations.CompleteLocationChecks(checkedLocations.Except(Session.Locations.AllLocationsChecked).ToArray());
+                SaveFile();
             }
             else
             {
@@ -513,6 +561,52 @@ namespace TheEscAPists2Bridge
             Session.Locations.ScoutLocationsAsync(true, id);
 
             ConsoleLogging.LogDebug("Hint should be scouted");
+        }
+        
+        static void LoadFile()
+        {
+            string pathToCheck = Directory.GetCurrentDirectory();
+            pathToCheck += instance.connectionInfo.slotName + instance.seed + ".json";
+            if (!File.Exists(pathToCheck))
+            {
+                ConsoleLogging.LogDebug("No File found, loading nothing.");
+                instance.hasLoaded = true;
+                return;
+            }
+
+            try
+            {
+                string[] lines = File.ReadAllLines(pathToCheck);
+
+                instance.lastStrength = int.Parse(lines[0]);
+                instance.lastStamina = int.Parse(lines[1]);
+                instance.lastIntellect = int.Parse(lines[2]);
+                instance.lastItemIndexReceived = int.Parse(lines[3]);
+            }
+            catch (Exception error)
+            {
+                ConsoleLogging.LogError(ConsoleLogging.ErrorCode.LoadFailure, $"Tried to load file {pathToCheck} with error {error}");
+            }
+
+            instance.hasLoaded = true;
+            instance.DequeueItems();
+        }
+
+        static void SaveFile()
+        {
+            ConsoleLogging.LogDebug("SAVING FILE");
+            string pathToSave =  Directory.GetCurrentDirectory();
+            pathToSave.Remove(pathToSave.Length - 4);
+            pathToSave += instance.connectionInfo.slotName + instance.seed + ".json";
+
+            ConsoleLogging.LogDebug($"Saving to {pathToSave}");
+            string[] lineToSave = new string[4];
+            lineToSave[0] = instance.lastStrength.ToString();
+            lineToSave[1] = instance.lastStamina.ToString();
+            lineToSave[2] = instance.lastIntellect.ToString();
+            lineToSave[3] = instance.lastItemIndexReceived.ToString();
+            
+            File.WriteAllLines(pathToSave, lineToSave);
         }
     }
 }
