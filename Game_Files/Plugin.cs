@@ -38,7 +38,7 @@ public class Plugin : BaseUnityPlugin
     public static string lastDeathLinkReason = "";
     
     private List<string> prisonUnlocksReceived;
-    private List<int> blueprintsReceived;
+    private List<int[]> blueprintsReceived;
         
     private void Awake()
     {
@@ -388,16 +388,35 @@ public class Plugin : BaseUnityPlugin
 
         if (Input.GetKeyDown(KeyCode.F9))
         {
-            ItemData[] items = Resources.LoadAll<ItemData>("Prefabs/Items");
-
-            foreach (ItemData item in items)
-            {
-                instance.SendMessageToBridge($"ID: {item.m_ItemDataID} - Tag: {item.m_ItemLocalizationTag}");
-            }
-
+            // ItemData[] items = Resources.LoadAll<ItemData>("Prefabs/Items");
+            //
+            // foreach (ItemData item in items)
+            // {
+            //     instance.SendMessageToBridge($"ID: {item.m_ItemDataID} - Tag: {item.m_ItemLocalizationTag}");
+            // }
+            //
             foreach (CraftManager.Recipe recipe in CraftManager.GetInstance().GetAllRecipes())
             {
-                instance.SendMessageToBridge($" {{\"{recipe.m_Product.name}\", {CraftManager.GetInstance().GetRecipeId(recipe)}}},");
+                Logger.LogDebug($"Looking for recipe for: {recipe.m_Product.m_ItemLocalizationTag}");
+                ItemData[] ingredients = new ItemData[3];
+                
+                ingredients = recipe.m_Ingredients;
+
+                int[] itemID = new int[3];
+
+                for (int i = 0; i < ingredients.Length; i++)
+                {
+                    if (ingredients[i] != null)
+                    {
+                        itemID[i] = ingredients[i].m_ItemDataID;
+                    }
+                    else
+                    {
+                        itemID[i] = -1;
+                    }
+                }
+
+                instance.SendMessageToBridge($" {{\"{recipe.m_Product.name}\", [{itemID[0]}. {itemID[1]}, {itemID[2]}]}},");
             }
         }
     }
@@ -655,21 +674,21 @@ public class Plugin : BaseUnityPlugin
     {
         if (blueprintsReceived == null)
         {
-            blueprintsReceived = new List<int>();
+            blueprintsReceived = new List<int[]>();
         }
         
-        string cutItemName = blueprintName.Remove(0, 11);
-        instance.logging.SendChatMessage($"Reduced {blueprintName} to {cutItemName}");
+        string cutBlueprintName = blueprintName.Remove(0, 11);
+        instance.logging.SendChatMessage($"Reduced {blueprintName} to {cutBlueprintName}");
 
-        int recipeID = References.GetRecipeIDFromName(cutItemName);
+        int[] recipeIngredients = References.GetRecipeIngredientsFromName(cutBlueprintName);
 
-        if (recipeID == -1)
+        if (recipeIngredients == (int[])[-1, -1, -1])
         {
             instance.logging.SendChatMessage("Couldn't find the blueprint reference in the dictionary. Aborting. (NOTIFY BIGCELERY842906 IF YOU SEE THIS");
             return;
         }
         
-        blueprintsReceived.Add(recipeID);
+        blueprintsReceived.Add(recipeIngredients);
     }
 
     void HandleCustomAPProgressiveStat(string itemName)
@@ -2100,25 +2119,88 @@ public class Plugin : BaseUnityPlugin
         static void Postfix(CraftManager __instance, int recipeID, ref int __result)
         {
             instance.logging.SendChatMessage($"Recipe id trying to send is: {recipeID}");
-            if (References.apworldBlueprints.ContainsValue(recipeID))
-            {
-                instance.logging.SendChatMessage("Recipe ID found in the apworld blueprints");
+            
+            CraftManager.Recipe recipe = __instance.GetRecipeByID(recipeID);
 
-                if (!instance.blueprintsReceived.Contains(recipeID))
+            if (recipe == null || recipe.m_Ingredients == null)
+            {
+                instance.logging.SendChatMessage("Recipe or Ingredients are null");
+                return;
+            }
+            
+            int[] ingredients = new int[3];
+            for (int i = 0; i < 3; i++)
+            {
+                if (recipe.m_Ingredients[i] != null)
                 {
-                    instance.logging.SendChatMessage("Found the blueprint in the received list");
-                    __result = 101;
+                    ingredients[i] = recipe.m_Ingredients[i].m_ItemDataID;
                 }
                 else
                 {
-                    instance.logging.SendChatMessage("Did not find the blueprint in the received list");
+                    ingredients[i] = -1;
                 }
             }
-            else
+            
+            instance.logging.SendChatMessage($"Recipe Ingredients: [{ingredients[0]}, {ingredients[1]}, {ingredients[2]}]");
+
+            int[] matchingBlueprint = null;
+
+            foreach (KeyValuePair<string, int[]> blueprint in References.apworldBlueprints)
             {
-                instance.logging.SendChatMessage("Recipe ID not found in the apworld blueprints");
+                if (IngredientsMatch(ingredients, blueprint.Value))
+                {
+                    matchingBlueprint = blueprint.Value;
+                    
+                    instance.logging.SendChatMessage($"Found AP Blueprint: {blueprint.Key}");
+                    break;
+                }
+            }
+
+            if (matchingBlueprint == null)
+            {
+                instance.logging.SendChatMessage("Recipe not found in the apworld blueprints");
+                return;
+            }
+
+            bool blueprintReceived = false;
+
+            foreach (int[] receivedBlueprint in instance.blueprintsReceived)
+            {
+                if (IngredientsMatch(ingredients, receivedBlueprint))
+                {
+                    blueprintReceived = true;
+                    break;
+                }
+            }
+
+            if (!blueprintReceived)
+            {
+                __result = 101;
             }
             
+        }
+
+        private static bool IngredientsMatch(int[] a, int[] b)
+        {
+            if (a == null || b == null || a.Length != b.Length)
+            {
+                return false;
+            }
+
+            int[] sortedA = a;
+            int[] sortedB = b;
+            
+            Array.Sort(sortedA);
+            Array.Sort(sortedB);
+
+            for (int i = 0; i < sortedA.Length; i++)
+            {
+                if (sortedA[i] != sortedB[i])
+                    return false;
+            }
+
+            return true;
+
         }
     }
     
