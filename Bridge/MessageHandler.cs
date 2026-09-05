@@ -200,6 +200,11 @@ namespace TheEscAPists2Bridge
                             ScoutHintToServer(hintPacket.locationName);
                             break;
                         }
+                        case Packet.HintPacket.TypeOfHint.Payphone:
+                        {
+                            ScoutPayphoneHintToServer();
+                            break;
+                        }
                     }
                     break;
                 }
@@ -268,6 +273,12 @@ namespace TheEscAPists2Bridge
         private void ScoutHintToServer(string hintPacketHintName)
         {
             ArchipelagoClient.instance.ScoutHint(hintPacketHintName);
+        }
+        
+        //Payphone Scout Hint
+        private void ScoutPayphoneHintToServer()
+        {
+            ArchipelagoClient.instance.ScoutPayphoneHint();
         }
         
         #endregion

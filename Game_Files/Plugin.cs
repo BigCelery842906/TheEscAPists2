@@ -470,7 +470,13 @@ public class Plugin : BaseUnityPlugin
     {
         Packet.CheckPacket checkPacket = new Packet.CheckPacket(slotName, check, isID);
         SerialiseAndSend(checkPacket);
-        
+
+    }
+
+    void SendPayphoneHintToBridge()
+    {
+        Packet.HintPacket hintPacket = new Packet.HintPacket(Packet.HintPacket.TypeOfHint.Payphone);
+        SerialiseAndSend(hintPacket);
     }
 
     void SendAllPacketsToBridge()
@@ -1278,7 +1284,6 @@ public class Plugin : BaseUnityPlugin
         //TODO: Replace (IT'S ALL WRONG)
         // A master list of the most important progression blueprints and their ingame IDs (Mostly just placeholder for now)
         public static Dictionary<string, int> blueprintNamesToID = new Dictionary<string, int>()
-        {
             { "Blueprint: Fake Audio Equipment", 182 },
             { "Blueprint: Civilian Clothes", 136 },
             { "Blueprint: Fake Carrot", 322 },
@@ -1286,8 +1291,6 @@ public class Plugin : BaseUnityPlugin
             { "Blueprint: Complete Crossbow", 140 },
             { "Blueprint: Makeshift Rocket Thruster", 268 },
             { "Blueprint: Makeshift Ladder", 265 },
-            { "Blueprint: Makeshift Breathing Apparatus", 259 },
-            { "Blueprint: Bed Dummy", 113 },
             { "Blueprint: Guard Outfit", 426 },
             { "Blueprint: Security Pass", 343 },
             { "Blueprint: Plastic Red Key", 313 },
@@ -1295,14 +1298,8 @@ public class Plugin : BaseUnityPlugin
             { "Blueprint: Key Mould Red", 420 },
             { "Blueprint: Key Mould Cyan", 417 },
             { "Blueprint: Makeshift Harness", 264 },
-            { "Blueprint: Parachute", 300 },
-            { "Blueprint: Lightweight Cutters", 249 }
-        };
-
         static bool Prefix(PayphoneMenu __instance, int index)
         {
-            if (!configEnabled.Value || !isConnected) return true;
-
             Player player = Gamer.GetPrimaryGamer()?.m_PlayerObject;
             if (player != null && player.m_CharacterStats != null)
             {
@@ -1310,29 +1307,17 @@ public class Plugin : BaseUnityPlugin
 
                 if (player.m_CharacterStats.Money >= hintCost)
                 {
-                    // 1. Figure out what the player actually needs
-                    List<string> availableHints = new List<string>();
-                    foreach (var kvp in blueprintNamesToID)
                     {
                         // If the ID is NOT in our unlocked blueprints, it's still needed
-                        if (!unlockedBlueprints.Contains(kvp.Value))
-                        {
-                            availableHints.Add(kvp.Key);
                         }
                     }
 
                     if (availableHints.Count > 0)
                     {
-
-                        string chosenHint = availableHints[UnityEngine.Random.Range(0, availableHints.Count)];
-
-
                         player.m_CharacterStats.DecreaseMoney(hintCost);
                         AkSoundEngine.PostEvent("Play_UI_Payphone_Purchase", __instance.gameObject);
+                        //     { Text = $"!hint {chosenHint}" };
 
-
-                        if (isConnected)
-                        {
                             //TODO: Replace this with hint scouting, accept the hint packet, and then funnel it back into this somehow without running into a null error
                             // var sayPacket = new Archipelago.MultiClient.Net.Packets.SayPacket()
                             //     { Text = $"!hint {chosenHint}" };
@@ -1351,7 +1336,7 @@ public class Plugin : BaseUnityPlugin
                 else
                 {
                     AkSoundEngine.PostEvent("Play_UI_Unavailable", __instance.gameObject);
-                    Plugin.instance.logging.SendChatMessage($"You need ${hintCost} to phone the multiverse!");
+                    instance.logging.SendChatMessage($"You need ${hintCost} to phone the multiverse!");
                 }
 
                 // Force the screen to close and unlock the player's movement

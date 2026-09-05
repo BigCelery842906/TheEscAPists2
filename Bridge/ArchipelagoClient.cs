@@ -613,6 +613,21 @@ namespace TheEscAPists2Bridge
             ConsoleLogging.LogDebug("Hint should be scouted");
         }
         
+        public void ScoutPayphoneHint()
+        {
+            ConsoleLogging.LogDebug("Starting to Scout Hint");
+
+            Random random = new Random();
+            
+            int randID = random.Next(0, missingLocations.Count);
+            string itemToHint = Session.Locations.GetLocationNameFromId(randID);
+
+            ConsoleLogging.LogDebug($"Searching for: {itemToHint}. Returned ID: {randID}");
+            Session.Locations.ScoutLocationsAsync(true, randID);
+
+            ConsoleLogging.LogDebug("Hint should be scouted");
+        }
+        
         static void LoadFile()
         {
             string pathToCheck = Directory.GetCurrentDirectory();
@@ -659,5 +674,7 @@ namespace TheEscAPists2Bridge
             
             File.WriteAllLines(pathToSave, lineToSave);
         }
+
+        
     }
 }

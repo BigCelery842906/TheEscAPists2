@@ -156,16 +156,16 @@ namespace BC_Dual_Ref_Library
 
         public class HintPacket : Packet
         {
-            public enum TypeOfHint { Normal, Scout}
+            public enum TypeOfHint { Normal, Scout, Payphone}
 
             public TypeOfHint hintType = TypeOfHint.Normal;
             // public string slotName = "";
             
             public string locationName = "";
             public string itemName = "";
-            public HintPacket()
+            public HintPacket(TypeOfHint hintType = TypeOfHint.Normal)
             {
-                hintType = TypeOfHint.Normal;
+                this.hintType = hintType;
                 Type = PacketType.Hint;
             }
 
