@@ -127,6 +127,7 @@ namespace TheEscAPists2Bridge
 
         public List<long> missingLocations;
         public SlotData slotData;
+        private List<long> uniqueEscapesCompleted = new List<long>();
 
         public ConnectionInfo GetConnectionInfo()
         {
@@ -203,9 +204,7 @@ namespace TheEscAPists2Bridge
             //RoomInfo Packet Received - Do parse on incoming packets
             //Optional GetDataPackage - Also Do parse on incoming packet if this is the case
             //TODO: https://alwaysintreble.github.io/Archipelago/network%20protocol.html#receiveditems
-
-            seed = Session.RoomState.Seed;
-            ConsoleLogging.LogDebug(Session.RoomState.Seed);
+            
             LoginResult loginResult = null;
             try
             {
@@ -219,6 +218,7 @@ namespace TheEscAPists2Bridge
                 
                 SubscribeToServerPackets();
                 loginResult = Session.TryConnectAndLogin(connectionInfo.game, connectionInfo.slotName, ItemsHandlingFlags.AllItems, connectionInfo.gameVersion, tags, "", connectionInfo.password);
+                seed = Session.RoomState.Seed;
             }
             catch (Exception e)
             {
@@ -297,18 +297,36 @@ namespace TheEscAPists2Bridge
                     MessageHandler.instance.ScoutHintToGame(Session.Locations.GetLocationNameFromId(locationInfoPacket.Locations[0].Location, ModInfo.GameName), Session.Items.GetItemName(locationInfoPacket.Locations[0].Item, ModInfo.GameName));
                 }
 
-                if (packet.PacketType == ArchipelagoPacketType.Connected)
-                {
-                    
-                    ConnectedPacket connectedPacket = (ConnectedPacket)packet;
-                    
-                    checkedLocations = new List<long>(connectedPacket.LocationsChecked);
+                    if (packet.PacketType == ArchipelagoPacketType.Connected)
+                    {
+                        
+                        ConnectedPacket connectedPacket = (ConnectedPacket)packet;
+                        
+                        checkedLocations = new List<long>(connectedPacket.LocationsChecked);
 
-                    missingLocations = new List<long>(connectedPacket.MissingChecks);
+                        missingLocations = new List<long>(connectedPacket.MissingChecks);
 
-                    slotData = new SlotData(connectedPacket.SlotData);
-                    
-                }
+                        slotData = new SlotData(connectedPacket.SlotData);
+                        
+                        foreach (long id in checkedLocations)
+                        {
+                            if (!uniqueEscapesCompleted.Contains(id))
+                            {
+                                string locationID = id.ToString();
+
+                                locationID = locationID.Remove(0, 2);
+
+                                char[] locationIDChar = locationID.ToCharArray();
+                                if (locationIDChar[0] == '1')
+                                {
+                                    uniqueEscapesCompleted.Add(id);
+                                    ConsoleLogging.LogDebug($"Escapes: {uniqueEscapesCompleted.Count}, Last {uniqueEscapesCompleted[uniqueEscapesCompleted.Count - 1]}");
+                                    CheckGoalAndSendToServer();
+                                }
+
+                            }
+                        }
+                    }
 
                 if (packet.PacketType == ArchipelagoPacketType.ReceivedItems)
                 {
@@ -481,8 +499,30 @@ namespace TheEscAPists2Bridge
             if (id == -1)
             {
                 ConsoleLogging.LogError(ConsoleLogging.ErrorCode.CheckSendFailure,"Check came back as ID '-1', aborting check send.");
+                return;
             }
 
+            if (!uniqueEscapesCompleted.Contains(id))
+            {
+                string locationID = id.ToString();
+
+                locationID = locationID.Remove(0, 2);
+
+                char[] locationIDChar = locationID.ToCharArray();
+                if (locationIDChar[0] == '1')
+                {
+                    ConsoleLogging.LogDebug("Escape not in the unique escapes completed, parsing and appending now.");
+                    uniqueEscapesCompleted.Add(id);
+                    ConsoleLogging.LogDebug($"Escapes: {uniqueEscapesCompleted}, Last {uniqueEscapesCompleted[uniqueEscapesCompleted.Count - 1]}");
+                }
+                
+                CheckGoalAndSendToServer();
+            }
+            else
+            {
+                ConsoleLogging.LogDebug("Escape already in the unique escapes. Checking goal condition.");
+            }
+            
             if (checkedLocations.Contains(id))
             {
                 return;
@@ -495,6 +535,8 @@ namespace TheEscAPists2Bridge
                 //TODO: Set up actual check sending - Difference between CompleteLocationChecks and CompleteLocationChecksAsync
                 ConsoleLogging.LogSend("Check Send: " + Session.Locations.GetLocationNameFromId(id));
                 Session.Locations.CompleteLocationChecks(checkedLocations.Except(Session.Locations.AllLocationsChecked).ToArray());
+                
+                
                 SaveFile();
             }
             else
@@ -502,6 +544,9 @@ namespace TheEscAPists2Bridge
                 ConsoleLogging.LogError(ConsoleLogging.ErrorCode.CheckSendFailure, "Check not found in list of locations yet to be sent");
             }
 
+         
+            CheckGoalAndSendToServer();
+            
         }
 
         public void SendDeathLinkToServer(string slot, string reason)
@@ -510,14 +555,19 @@ namespace TheEscAPists2Bridge
             DeathLinkService.SendDeathLink(deathlink);
         }
 
-        public void SendGoalToServer()
+        public void CheckGoalAndSendToServer()
         {
-            ConsoleLogging.LogSuccess("Slot Goaled. Congratulations!");
             //TODO: DO GOAL CHECK (CHECK LOCATIONS SENT FOR NUMBERS OF ESCAPES - IF EQUAL TO UNIQUE ESCAPES REQUIRED -> GOAL
             // Take Each location id as it comes in - Check against where the escape ids are within each prison (Get rid of first 2 digits, then take the last 3 as whether its an escape location, add to a counter, then check each time a location gets sent
             // Example: 81101 is Perimeter on Center Perks
             // So remove 81, if the first digit is a 1, assume its an escape, and then increment a counter for current escapes. Do this on runtime (Rather than storing on the server)
-            Session.SetGoalAchieved();
+
+            ConsoleLogging.LogDebug($"{uniqueEscapesCompleted.Count}, {slotData.UniqueEscapesRequired}");
+            if (uniqueEscapesCompleted.Count >= slotData.UniqueEscapesRequired)
+            {
+                ConsoleLogging.LogSuccess("Slot Goaled. Congratulations!");
+                Session.SetGoalAchieved();
+            }
         }
 
         private void StealthLinkHandling(BouncedPacket bouncedPacket)
@@ -566,7 +616,9 @@ namespace TheEscAPists2Bridge
         static void LoadFile()
         {
             string pathToCheck = Directory.GetCurrentDirectory();
+            pathToCheck = pathToCheck.Remove(pathToCheck.Length - 4);
             pathToCheck += instance.connectionInfo.slotName + instance.seed + ".json";
+            
             if (!File.Exists(pathToCheck))
             {
                 ConsoleLogging.LogDebug("No File found, loading nothing.");
@@ -596,9 +648,8 @@ namespace TheEscAPists2Bridge
         {
             ConsoleLogging.LogDebug("SAVING FILE");
             string pathToSave =  Directory.GetCurrentDirectory();
-            pathToSave.Remove(pathToSave.Length - 4);
+            pathToSave = pathToSave.Remove(pathToSave.Length - 4);
             pathToSave += instance.connectionInfo.slotName + instance.seed + ".json";
-
             ConsoleLogging.LogDebug($"Saving to {pathToSave}");
             string[] lineToSave = new string[4];
             lineToSave[0] = instance.lastStrength.ToString();

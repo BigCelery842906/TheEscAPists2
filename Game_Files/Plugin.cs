@@ -1716,9 +1716,20 @@ public class Plugin : BaseUnityPlugin
     
     void CalculateStats()
     {
-        synced_strength = base_Stat + (strength_prog_count * strength_step);
-        synced_stamina = base_Stat + (stamina_prog_count * stamina_step);
-        synced_intellect = base_Stat + (intellect_prog_count * intellect_step);
+        if (strength_step != 0)
+            synced_strength = base_Stat + (strength_prog_count * strength_step);
+        else
+            synced_strength = 100;
+
+        if (stamina_step != 0)
+            synced_stamina = base_Stat + (stamina_prog_count * stamina_step);
+        else
+            synced_stamina = 100;
+
+        if (intellect_step != 0)
+            synced_intellect = base_Stat + (intellect_prog_count * intellect_step);
+        else
+            synced_intellect = 100;
     }
 
     void SetStats()

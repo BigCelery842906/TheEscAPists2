@@ -252,7 +252,7 @@ namespace TheEscAPists2Bridge
         {
             //TODO: TEST
             ConsoleLogging.LogSend("Sending Goal to server.");
-            ArchipelagoClient.instance.SendGoalToServer();
+            ArchipelagoClient.instance.CheckGoalAndSendToServer();
         }
 
         //Send the Slot name to the game, for returning packets

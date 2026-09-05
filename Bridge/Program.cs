@@ -179,7 +179,7 @@ namespace TheEscAPists2Bridge
                     {
                         if (ConsoleLogging.debugMode)
                         {
-                            ArchipelagoClient.instance.SendGoalToServer();
+                            ArchipelagoClient.instance.CheckGoalAndSendToServer();
                         }
 
                         break;
