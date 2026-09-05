@@ -615,10 +615,9 @@ namespace TheEscAPists2Bridge
             Random random = new Random();
             
             int randID = random.Next(0, missingLocations.Count);
-            string itemToHint = Session.Locations.GetLocationNameFromId(randID);
-
-            ConsoleLogging.LogDebug($"Searching for: {itemToHint}. Returned ID: {randID}");
-            Session.Locations.ScoutLocationsAsync(true, randID);
+            
+            long locationID = missingLocations[randID];
+            Session.Locations.ScoutLocationsAsync(true, locationID);
 
             ConsoleLogging.LogDebug("Hint should be scouted");
         }

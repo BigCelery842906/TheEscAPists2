@@ -435,7 +435,7 @@ namespace BC_Dual_Ref_Library
                 case PacketType.Hint:
                 {
                     string hintType = jsonParts[1].Remove(0, 10);
-                    Packet.HintPacket.TypeOfHint hintTyp = (Packet.HintPacket.TypeOfHint)int.Parse(hintType);
+                    Packet.HintPacket.TypeOfHint hintTyp = (Packet.HintPacket.TypeOfHint)Enum.Parse(typeof(Packet.HintPacket.TypeOfHint), hintType);
                     string hintName = jsonParts[2].Remove(0, 10);
                     
                     Packet.HintPacket hintPacket = new Packet.HintPacket(hintName, hintTyp);
