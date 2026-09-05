@@ -270,13 +270,11 @@ public class Plugin : BaseUnityPlugin
             case PacketType.Hint:
             {
                 Packet.HintPacket hintPacket = (Packet.HintPacket)message;
-                logging.instance.SendChatMessage("Hint Packet Received but not implemented");
                 break;
             }
             case PacketType.Item:
             {
                 Packet.ItemPacket itemPacket = (Packet.ItemPacket)message;
-                logging.instance.SendChatMessage("Item Packet Received but not implemented - NEXT THING TO DO");
 
                 ProcessItem(itemPacket);
                 break;
@@ -288,9 +286,6 @@ public class Plugin : BaseUnityPlugin
                 strength_step = slotDataPacket.strength_step;
                 stamina_step = slotDataPacket.stamina_step;
                 intellect_step = slotDataPacket.intellect_step;
-
-                logging.SendChatMessage(
-                    $"Strength Step: {strength_step},  Stamina Step: {stamina_step}, Intellect Step: {intellect_step}");
 
                 break;
             }
@@ -406,32 +401,26 @@ public class Plugin : BaseUnityPlugin
 
         if (itemName.Contains("Trap"))
         {
-            logging.SendChatMessage("Contains the word trap, going to handle it as a custom item");
             HandleCustomAPTrap(itemName);
         }
         else if (itemName.Contains("Blueprint"))
         {
-            logging.SendChatMessage("Contains the word Blueprint, going to handle it as a custom item");
             HandleCustomAPBlueprint(itemName);
         }
         else if (itemName.Contains("Progressive"))
         {
-            logging.SendChatMessage("Contains the word Progressive, going to handle it as a custom item");
             HandleCustomAPProgressiveStat(itemName);
         }
         else if (itemName.Contains("Prison Unlock"))
         {
-            logging.SendChatMessage("Contains the phrase Prison Unlock, going to handle it as a custom item");
             HandleCustomAPPrisonUnlock(itemName);
         }
         else if (itemName.Contains("Coins"))
         {
-            logging.SendChatMessage("Contains the word Coins, going to add it to the users wallet");
             moneyToAdd += 50;
         }
         else
         {
-            logging.SendChatMessage("Not triggered any of the catches, going to treat as a vanilla game item");
             HandleGameItem(itemName);
         }
     }
@@ -531,6 +520,7 @@ public class Plugin : BaseUnityPlugin
             }
             case "Cell Search Trap":
             {
+                instance.logging.SendChatMessage("Cell Search Trap Triggered!");
                 SearchPlayersDesk();
                 break;
             }
@@ -552,7 +542,6 @@ public class Plugin : BaseUnityPlugin
                 break;
             }
             default:
-                logging.SendChatMessage($"Not a trap but item has been recognised as {customItem}");
                 break;
         }
     }
@@ -567,7 +556,6 @@ public class Plugin : BaseUnityPlugin
         }
 
         string cutBlueprintName = blueprintName.Remove(0, 11);
-        instance.logging.SendChatMessage($"Reduced {blueprintName} to {cutBlueprintName}");
 
         int[] recipeIngredients = References.GetRecipeIngredientsFromName(cutBlueprintName);
 
@@ -626,9 +614,7 @@ public class Plugin : BaseUnityPlugin
 
     void HandleGameItem(string gameItem)
     {
-        instance.logging.SendChatMessage($"Handle Game Item Function Entered for {gameItem}");
         int itemID = References.GetItemIDFromName(gameItem);
-        instance.logging.SendChatMessage($"Returned an id: {itemID} from {gameItem}");
         if (itemID == -1)
         {
             instance.logging.SendChatMessage("No Vanilla Game Item found, please notify BigCelery842906 if you see this!");
@@ -670,7 +656,6 @@ public class Plugin : BaseUnityPlugin
                 if (itemManager != null)
                 {
                     itemManager.AssignItemRPC(playerNetID, itemID, OnItemReceivedFromAP, ref dummyRequestID, -1);
-                    instance.logging.SendChatMessage($"Item {itemID} should have been given to the player - DequeueItemQueue");
                 }
             }
         }
@@ -688,9 +673,7 @@ public class Plugin : BaseUnityPlugin
                 string safeName = string.IsNullOrEmpty(item.m_ItemData.name)
                     ? "Archipelago Item"
                     : item.m_ItemData.name;
-                instance.logging.SendChatMessage($"Received {safeName}!");
                 AkSoundEngine.PostEvent("Play_UI_Take_Item", localPlayer.gameObject);
-                instance.logging.SendChatMessage($"Item {safeName} should have been given to the player - OnItemReceivedFromAP");
             }
             else
             {
@@ -1381,22 +1364,12 @@ public class Plugin : BaseUnityPlugin
                     // Check if the AP Server actually generated this location
                     if (isConnected)
                     {
-                        Plugin.instance.SendCheckToBridge(apLocationId.ToString(), true);
-                        instance.logging.SendChatMessage($"Searched Desk! (Sent ID: {apLocationId})");
+                        instance.SendCheckToBridge(apLocationId.ToString(), true);
                     }
-                    // else if (isConnected &&
-                    //          APManager.Session.Locations.AllLocationsChecked.Contains(apLocationId))
-                    // {
-                    //     instance.logging.SendChatMessage("Desk already searched in previous session!");
-                    // }
-                    // else
-                    // { 
-                    //     instance.logging.SendChatMessage($"[ERROR] Desk ID {apLocationId} is NOT in your AP World!");
-                    // }
                 }
                 else
                 {
-                    instance.Logger.LogWarning($"[AP UNMAPPED DESK] Missing desk! Copy this exact string: \"{uniqueDeskKey}\"");
+                    instance.Logger.LogWarning($"[AP UNMAPPED DESK] Missing desk! NOTIFY BIGCELERY842906 IF YOU SEE THIS - Copy this exact string: \"{uniqueDeskKey}\"");
                 }
 
                 checkedDesks.Add(deskInstanceID);
@@ -1527,14 +1500,12 @@ public class Plugin : BaseUnityPlugin
 
             if (instance.KeysRequiredObject == null)
             {
-                instance.logging.SendChatMessage("No Keys Required Object found, looking again");
                 instance.KeysRequiredObject = GameObject.Find("FrontendParent/RootMenu/SlideBottom/SafeZone/MenuBody/CampaignMenu/PanelLeft/Column_01/PrisonSelect/PrisonPreviewImage/KeysRequired");
                 return;
             }
 
             if (instance.KeysRequiredText == null)
             {
-                instance.logging.SendChatMessage("No Keys Required Text found, looking again");
                 instance.KeysRequiredText = instance.KeysRequiredObject.GetComponent<T17Text>();
                 return;
             }
@@ -1623,7 +1594,6 @@ public class Plugin : BaseUnityPlugin
 
     void DoPlayerStats()
     {
-        instance.logging.SendChatMessage("Doing the player stats now!!!");
         instance.SetStats();
         instance.inGame = true;
     }
@@ -1807,13 +1777,11 @@ public class Plugin : BaseUnityPlugin
     {
         static void Postfix(CraftManager __instance, int recipeID, ref int __result)
         {
-            instance.logging.SendChatMessage($"Recipe id trying to send is: {recipeID}");
             
             CraftManager.Recipe recipe = __instance.GetRecipeByID(recipeID);
 
             if (recipe == null || recipe.m_Ingredients == null)
             {
-                instance.logging.SendChatMessage("Recipe or Ingredients are null");
                 return;
             }
             
@@ -1830,7 +1798,6 @@ public class Plugin : BaseUnityPlugin
                 }
             }
             
-            instance.logging.SendChatMessage($"Recipe Ingredients: [{ingredients[0]}, {ingredients[1]}, {ingredients[2]}]");
 
             int[] matchingBlueprint = null;
 
@@ -1840,14 +1807,12 @@ public class Plugin : BaseUnityPlugin
                 {
                     matchingBlueprint = blueprint.Value;
                     
-                    instance.logging.SendChatMessage($"Found AP Blueprint: {blueprint.Key}");
                     break;
                 }
             }
 
             if (matchingBlueprint == null)
             {
-                instance.logging.SendChatMessage("Recipe not found in the apworld blueprints");
                 return;
             }
 
