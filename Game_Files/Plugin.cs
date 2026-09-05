@@ -302,7 +302,8 @@ public class Plugin : BaseUnityPlugin
         }
     }
 
-
+    private bool isDeskDetecting = false;
+    private Player localPlayer;
     private void Update()
     {
         if (inGame)
@@ -312,15 +313,34 @@ public class Plugin : BaseUnityPlugin
             if (pendingStealthLink)
             {
                 pendingStealthLink = false;
-                
+
                 lastStealthLinkTime = Time.time;
 
                 TriggerLockdown(true);
             }
-            
+
             if (itemQueue.Count != 0 || moneyToAdd != 0)
             {
                 DequeueItemQueue();
+            }
+
+            if (Input.GetKeyDown(KeyCode.F4))
+            {
+                isDeskDetecting = !isDeskDetecting;
+                localPlayer = Gamer.GetPrimaryGamer().m_PlayerObject;
+                localPlayer.m_RigidBody.detectCollisions = !isDeskDetecting;
+            }
+
+            if (Input.GetKeyDown(KeyCode.F5))
+            {
+                Vector3 transform = localPlayer.m_Transform.position;
+                logging.SendChatMessage($"Transform: {transform.x}, {transform.y}, {transform.z}");
+            }
+            if (isDeskDetecting)
+            {
+                Vector3 transform = localPlayer.m_Transform.position;
+                logging.SendChatMessage($"Transform: {transform.x}, {transform.y}, {transform.z}");
+                
             }
         }
     }
