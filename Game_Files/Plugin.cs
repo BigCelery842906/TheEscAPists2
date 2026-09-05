@@ -541,19 +541,12 @@ public class Plugin : BaseUnityPlugin
             }
             case "Butterfingers Trap":
             {
-                //TODO: THIS CURRENTLY DROPS ONE OF THE ITEM BUT LETS THE PLAYER KEEP IT
                 Item equippedItem = localPlayer.GetEquippedItem();
                 if (equippedItem != null)
                 {
-                    localPlayer.m_ItemContainer.RemoveItemRPC(equippedItem, false, RPC_CallContexts.All);
-                    equippedItem.transform.position = localPlayer.transform.position;
-                    LevelScript.GetInstance().m_LevelItemContainer
-                        .AddItemRPC(equippedItem, false, RPC_CallContexts.All);
-                    if (equippedItem.MeshRendererProp != null) equippedItem.MeshRendererProp.enabled = true;
-                    if (equippedItem.BoxColliderProp != null) equippedItem.BoxColliderProp.enabled = true;
-                    equippedItem.AddToCullingSystem();
-                    equippedItem.ItemDropped();
+                    localPlayer.DropEquipedItem(localPlayer.m_Transform.position);
                     instance.logging.SendChatMessage("TRAP TRIGGERED! Butterfingers!");
+                    
                 }
 
                 break;
@@ -1450,7 +1443,6 @@ public class Plugin : BaseUnityPlugin
 
     void SetStats()
     {
-        //TODO: SET THIS TO TRIGGER ON ANY PRISON LOADED
         CalculateStats();
         
         Player localPlayer = Gamer.GetPrimaryGamer()?.m_PlayerObject;
