@@ -2,7 +2,7 @@
 
 public static class ConsoleLogging
 {
-    public static bool debugMode = true;
+    public static bool debugMode = false;
     public static void LogInfo(string info)
     {
         SetConsoleTextColor(ConsoleColor.White);

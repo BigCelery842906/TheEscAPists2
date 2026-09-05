@@ -200,6 +200,21 @@ namespace TheEscAPists2Bridge
                         break;
                     }
 
+                    case "apbugmode842":
+                    {
+                        if (ConsoleLogging.debugMode)
+                        {
+                            ConsoleLogging.LogDebug("Already in debug mode!");
+                        }
+                        else
+                        {
+                            ConsoleLogging.debugMode = true;
+                            ConsoleLogging.LogDebug("Debug Mode Enabled.");
+                        }
+
+                        break;
+                    }
+
                     default:
                     {
                         ConsoleLogging.LogWarning("Unknown Command");

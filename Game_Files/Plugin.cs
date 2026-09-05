@@ -187,7 +187,7 @@ public class Plugin : BaseUnityPlugin
 
                 if (message == null)
                 {
-                    Logger.LogWarning("Bridge disconnected. Holding Pipe for reconnect.");
+                    Logger.LogWarning("Bridge disconnected. Please restart both the bridge and the game.");
                     isConnected = false;
                     return;
                 }
@@ -574,6 +574,17 @@ public class Plugin : BaseUnityPlugin
         if (recipeIngredients == (int[])[-1, -1, -1])
         {
             instance.logging.SendChatMessage("Couldn't find the blueprint reference in the dictionary. Aborting. (NOTIFY BIGCELERY842906 IF YOU SEE THIS");
+            Logger.LogError($"Tried to get: {blueprintName} ({cutBlueprintName}). Ingredients got from that are:{recipeIngredients[0]}, {recipeIngredients[1]}, {recipeIngredients[2]}");
+            foreach (int[] blueprint in blueprintsReceived)
+            {
+                string stringToLog = "";
+                for (int i = 0; i < blueprint.Length; i++)
+                {
+                    stringToLog += blueprint[i] + ", ";
+                }
+                Logger.LogError(stringToLog);
+            }
+
             return;
         }
 
@@ -632,6 +643,7 @@ public class Plugin : BaseUnityPlugin
         if (itemID == -1)
         {
             instance.logging.SendChatMessage("No Vanilla Game Item found, please notify BigCelery842906 if you see this!");
+            Logger.LogError($"Tried to get: {gameItem}");
             return;
         }
 
@@ -1697,7 +1709,7 @@ public class Plugin : BaseUnityPlugin
 
                     if (prison == "")
                     {
-                        instance.logging.SendChatMessage("Prison Escape Check failed. Please report this to BigCelery842906 along with which escape you tried to complete.");
+                        instance.logging.SendChatMessage($"Prison Escape Check failed. Please report this to BigCelery842906 along with which escape you tried to complete, and the phrase: {escapeMethod}");
                         return;
                     }
                     
@@ -1752,7 +1764,7 @@ public class Plugin : BaseUnityPlugin
                     break;
                 
                 default:
-                    instance.logging.SendChatMessage("Prison Escape Check failed. Please report this to BigCelery842906 along with which escape you tried to complete.");
+                    instance.logging.SendChatMessage($"Prison Escape Check failed. Please report this to BigCelery842906 along with which escape you tried to complete, and the phrase: {escapeMethod}");
                     break;
             }
         }
