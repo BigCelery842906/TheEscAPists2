@@ -255,7 +255,6 @@ namespace TheEscAPists2Bridge
         //Goal
         void SendGoalToServer()
         {
-            //TODO: TEST
             ConsoleLogging.LogSend("Sending Goal to server.");
             ArchipelagoClient.instance.CheckGoalAndSendToServer();
         }

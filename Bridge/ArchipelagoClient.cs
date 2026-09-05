@@ -532,7 +532,7 @@ namespace TheEscAPists2Bridge
             {
                 checkedLocations.Add(id);
                 ConsoleLogging.LogDebug($"Added {id} to the checked locations, which sits at {checkedLocations.Count} items.");
-                //TODO: Set up actual check sending - Difference between CompleteLocationChecks and CompleteLocationChecksAsync
+                //TODO: Difference between CompleteLocationChecks and CompleteLocationChecksAsync
                 ConsoleLogging.LogSend("Check Send: " + Session.Locations.GetLocationNameFromId(id));
                 Session.Locations.CompleteLocationChecks(checkedLocations.Except(Session.Locations.AllLocationsChecked).ToArray());
                 
@@ -557,11 +557,6 @@ namespace TheEscAPists2Bridge
 
         public void CheckGoalAndSendToServer()
         {
-            //TODO: DO GOAL CHECK (CHECK LOCATIONS SENT FOR NUMBERS OF ESCAPES - IF EQUAL TO UNIQUE ESCAPES REQUIRED -> GOAL
-            // Take Each location id as it comes in - Check against where the escape ids are within each prison (Get rid of first 2 digits, then take the last 3 as whether its an escape location, add to a counter, then check each time a location gets sent
-            // Example: 81101 is Perimeter on Center Perks
-            // So remove 81, if the first digit is a 1, assume its an escape, and then increment a counter for current escapes. Do this on runtime (Rather than storing on the server)
-
             ConsoleLogging.LogDebug($"{uniqueEscapesCompleted.Count}, {slotData.UniqueEscapesRequired}");
             if (uniqueEscapesCompleted.Count >= slotData.UniqueEscapesRequired)
             {
