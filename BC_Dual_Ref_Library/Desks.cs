@@ -38,7 +38,7 @@ namespace BC_Dual_Ref_Library
             { "Centre_Perks|Desk_D_01 (33.5, 3.5, 0.0)", 81029 },               //Contraband Desk (Red Door & Guard outfit)
             { "Centre_Perks|Desk_D_01 (9) (-41.5, -1.5, 0.0)", 81030 },         //Maintenance Desk Floor 0 next to infirmary
             { "Centre_Perks|Desk_D_01 (2) (-7.5, 28.5, -6.0)", 81031 },         //Room above gym Floor 1
-            { "Centre_Perks|Desk_D_01 (1) (41.5, 26.5, -6.0)", 81032 },         // Maintenance Desk Floor 1 Right Hand Side
+            { "Centre_Perks|Desk_D_01 (1) (41.5, 26.5, -6.0)", 81032 },         //Maintenance Desk Floor 1 Right Hand Side
             { "Centre_Perks|Desk_D_01 (1) (6.5, -11.5, -6.0)", 81033 },         //Classroom Desk Floor 1
             { "Centre_Perks|Desk_D_01 (3) (-19.5, 27.5, -6.0)", 81034 },        //Meet the Crew Desk
             { "Centre_Perks|Desk_L_01 (-38.5, 1.5, -6.0)", 81035 },             //Medic Desk Floor 1 (Need nurse outfit?)
@@ -46,44 +46,44 @@ namespace BC_Dual_Ref_Library
             //ALSO A MULTIPLAYER DESK NOT MAPPED
             
             // === RATTLESNAKE SPRINGS (OldWestFort) ===
-            { "OldWestFort|Desk_D_01 (31.5, 9.5, 0.0)", 82001 },                //
-            { "OldWestFort|Desk_U_01 (-28.5, 5.5, 0.0)", 82002 },               //
-            { "OldWestFort|Desk_D_01 (8) (21.5, 14.5, -6.0)", 82003 },          //
-            { "OldWestFort|Desk_U_01 (-29.5, -12.5, 0.0)", 82004 },             //
-            { "OldWestFort|Desk_R_01 (1) (-15.5, 38.5, 0.0)", 82005 },          //
-            { "OldWestFort|Desk_D_01 (11.5, 14.5, -6.0)", 82006 },              //
-            { "OldWestFort|Desk_U_01 (-29.5, -18.5, 0.0)", 82007 },             //
-            { "OldWestFort|Cutlery_Tray_Down (29.5, -23.5, 0.0)", 82008 },      //
-            { "OldWestFort|Desk_D_01 (6) (-4.5, -28.5, -6.0)", 82009 },         //
-            { "OldWestFort|Desk_U_01 (24.5, 5.5, 0.0)", 82010 },                //
-            { "OldWestFort|Desk_R_01 (-15.5, 37.5, 0.0)", 82011 },              //
-            { "OldWestFort|Desk_U_01 (-29.5, -24.5, 0.0)", 82012 },             //
-            { "OldWestFort|Desk_D_01 (10) (-10.5, 43.5, -6.0)", 82013 },        //
-            { "OldWestFort|Desk_D_01 (26.5, 45.5, -6.0)", 82014 },              //
-            { "OldWestFort|Desk_U_01 (1) (-33.5, 25.5, 0.0)", 82015 },          //
-            { "OldWestFort|Desk_R_01 (-21.5, -31.5, -6.0)", 82016 },            //
-            { "OldWestFort|Desk_R_01 (-33.5, 14.5, -6.0)", 82017 },             //
-            { "OldWestFort|Desk_D_01 (-28.5, -2.5, 0.0)", 82018 },              //
+            { "OldWestFort|Desk_D_01 (31.5, 9.5, 0.0)", 82001 },                //Maintenance Floor 1
+            { "OldWestFort|Desk_U_01 (-28.5, 5.5, 0.0)", 82002 },               //Cell 11
+            { "OldWestFort|Desk_D_01 (8) (21.5, 14.5, -6.0)", 82003 },          //Floor 3 Up From Infirmary
+            { "OldWestFort|Desk_U_01 (-29.5, -12.5, 0.0)", 82004 },             //Cell 5
+            { "OldWestFort|Desk_R_01 (1) (-15.5, 38.5, 0.0)", 82005 },          //Floor 1 Top Guard Desk (Red Door)
+            { "OldWestFort|Desk_D_01 (11.5, 14.5, -6.0)", 82006 },              //Maintenance Desk Floor 2 (Cyan Door)
+            { "OldWestFort|Desk_U_01 (-29.5, -18.5, 0.0)", 82007 },             //Cell 3
+            { "OldWestFort|Cutlery_Tray_Down (29.5, -23.5, 0.0)", 82008 },      //Cutlery Tray
+            { "OldWestFort|Desk_D_01 (6) (-4.5, -28.5, -6.0)", 82009 },         //Bottom Left Hallway Floor 2
+            { "OldWestFort|Desk_U_01 (24.5, 5.5, 0.0)", 82010 },                //Medic Desk (Infirmary Outfit)
+            { "OldWestFort|Desk_R_01 (-15.5, 37.5, 0.0)", 82011 },              //Bottom Guard Desk Floor 1 (Red Door)
+            { "OldWestFort|Desk_U_01 (-29.5, -24.5, 0.0)", 82012 },             //Cell 1
+            { "OldWestFort|Desk_D_01 (10) (-10.5, 43.5, -6.0)", 82013 },        //Central Guard Desk Floor 2 (Red Door)
+            { "OldWestFort|Desk_D_01 (26.5, 45.5, -6.0)", 82014 },              //Floor 2 Right Guard Desk (Red Door)
+            { "OldWestFort|Desk_U_01 (1) (-33.5, 25.5, 0.0)", 82015 },          //Generator Room Desk (Red Door)
+            { "OldWestFort|Desk_R_01 (-21.5, -31.5, -6.0)", 82016 },            //Down From Cells Floor 2
+            { "OldWestFort|Desk_R_01 (-33.5, 14.5, -6.0)", 82017 },             //Floor 2 Right of Red Door (Red Door)
+            { "OldWestFort|Desk_D_01 (-28.5, -2.5, 0.0)", 82018 },              //Cell 8
             { "OldWestFort|Desk_D_01 (13) (16.5, 12.5, -12.0)", 82019 },        //
-            { "OldWestFort|Desk_D_01 (11) (3.5, 48.5, -6.0)", 82020 },          //
-            { "OldWestFort|Desk_D_01 (-29.5, 9.5, 0.0)", 82021 },               //
-            { "OldWestFort|Desk_D_01 (37.5, 26.5, 0.0)", 82022 },               //
-            { "OldWestFort|Desk_D_01 (-30.5, 3.5, 0.0)", 82023 },               //
-            { "OldWestFort|Desk_D_01 (-30.5, -20.5, 0.0)", 82024 },             //
-            { "OldWestFort|Desk_D_01 (-18.5, 43.5, -6.0)", 82025 },             //
-            { "OldWestFort|Desk_D_01 (5) (14.5, -30.5, -6.0)", 82026 },         //
-            { "OldWestFort|Desk_D_01 (2) (11.5, 1.5, -6.0)", 82027 },           //
-            { "OldWestFort|Desk_D_01 (3) (-25.5, 25.5, -6.0)", 82028 },         //
-            { "OldWestFort|Desk_D_01 (-30.5, -8.5, 0.0)", 82029 },              //
-            { "OldWestFort|Desk_U_01 (-29.5, -0.5, 0.0)", 82030 },              //
-            { "OldWestFort|Desk_D_01 (12) (2.5, 49.5, -12.0)", 82031 },         //
-            { "OldWestFort|Desk_D_01 (9) (0.5, -0.5, -6.0)", 82032 },           //
+            { "OldWestFort|Desk_D_01 (11) (3.5, 48.5, -6.0)", 82020 },          //Floor 2 Top Guard Desk (Red Door)
+            { "OldWestFort|Desk_D_01 (-29.5, 9.5, 0.0)", 82021 },               //Cell 12
+            { "OldWestFort|Desk_D_01 (37.5, 26.5, 0.0)", 82022 },               //Contraband Desk (Red Door)
+            { "OldWestFort|Desk_D_01 (-30.5, 3.5, 0.0)", 82023 },               //Cell 10
+            { "OldWestFort|Desk_D_01 (-30.5, -20.5, 0.0)", 82024 },             //Cell 2
+            { "OldWestFort|Desk_D_01 (-18.5, 43.5, -6.0)", 82025 },             //Floor 2 Left Guard Desk (Red Door)
+            { "OldWestFort|Desk_D_01 (5) (14.5, -30.5, -6.0)", 82026 },         //Floor 2 Bottom Right
+            { "OldWestFort|Desk_D_01 (2) (11.5, 1.5, -6.0)", 82027 },           //Floor 2 Left From Infirmary
+            { "OldWestFort|Desk_D_01 (3) (-25.5, 25.5, -6.0)", 82028 },         //Floor 2 Up from Red Door (Red Door)
+            { "OldWestFort|Desk_D_01 (-30.5, -8.5, 0.0)", 82029 },              //Cell 6
+            { "OldWestFort|Desk_U_01 (-29.5, -0.5, 0.0)", 82030 },              //Cell 9
+            { "OldWestFort|Desk_D_01 (12) (2.5, 49.5, -12.0)", 82031 },         //Floor 3 Guard Desk (Red Door)
+            { "OldWestFort|Desk_D_01 (9) (0.5, -0.5, -6.0)", 82032 },           //Floor 2 Left of Central Stairs
             { "OldWestFort|Desk_D_01 (5.5, 27.5, 3.0)", 82033 },                //
-            { "OldWestFort|Desk_D_01 (14) (28.5, 6.5, -12.0)", 82034 },         //
-            { "OldWestFort|Desk_D_01 (-29.5, -14.5, 0.0)", 82035 },             //
+            { "OldWestFort|Desk_D_01 (14) (28.5, 6.5, -12.0)", 82034 },         //Floor 3 Room Right of stairs
+            { "OldWestFort|Desk_D_01 (-29.5, -14.5, 0.0)", 82035 },             //Cell 4
             { "OldWestFort|Desk_D_01 (1) (34.5, 20.5, -6.0)", 82036 },          //
-            { "OldWestFort|Desk_D_01 (4) (-4.5, -42.5, -6.0)", 82037 },         //
-            { "OldWestFort|Desk_U_01 (-29.5, -6.5, 0.0)", 82038 },              //
+            { "OldWestFort|Desk_D_01 (4) (-4.5, -42.5, -6.0)", 82037 },         //Floor 2 Bottom Left
+            { "OldWestFort|Desk_U_01 (-29.5, -6.5, 0.0)", 82038 },              //Cell 7
  
             // === K.A.P.O.W. CAMP (POW_Camp) ===
             { "POW_Camp|Desk_U_01 (1) (-14.5, -21.5, 0.0)", 83001 },            //Cell 4 Desk 4
@@ -151,42 +151,42 @@ namespace BC_Dual_Ref_Library
             { "Oil_Rig|Desk_U_01 (-23.5, 0.5, -18.0)", 84034 },                 //
  
             // === FORT TUNDRA (Gulag_Prison) ===
-            { "Gulag_Prison|Desk_L_01 (3) (14.5, 0.5, 0.0)", 85001 },           //
-            { "Gulag_Prison|Desk_L_01 (5) (14.5, 6.5, 0.0)", 85002 },           //
-            { "Gulag_Prison|Desk_L_01 (5) (14.5, 7.5, -6.0)", 85003 },          //
-            { "Gulag_Prison|Desk_R_01 (5) (-21.5, 0.5, 0.0)", 85004 },          //
-            { "Gulag_Prison|Desk_R_01 (-21.5, -15.5, 0.0)", 85005 },            //
-            { "Gulag_Prison|Cutlery_Tray_Down (-21.5, -32.5, 0.0)", 85006 },    //
-            { "Gulag_Prison|Desk_L_01 (4) (14.5, 3.5, 0.0)", 85007 },           //
-            { "Gulag_Prison|Desk_D_01 (5.5, -23.5, -6.0)", 85008 },             //
-            { "Gulag_Prison|Desk_R_01 (1) (-21.5, -12.5, 0.0)", 85009 },        //
-            { "Gulag_Prison|Desk_L_01 (4) (14.5, 4.5, -6.0)", 85010 },          //
-            { "Gulag_Prison|Desk_D_01 (1) (21.5, 25.5, 0.0)", 85011 },          //
-            { "Gulag_Prison|Desk_R_01 (3) (-21.5, 7.5, -6.0)", 85012 },         //
-            { "Gulag_Prison|Desk_L_01 (1) (14.5, -12.5, 0.0)", 85013 },         //
-            { "Gulag_Prison|Desk_R_01 (4) (-21.5, 3.5, 0.0)", 85014 },          //
-            { "Gulag_Prison|Desk_D_01 (-32.5, -2.5, 0.0)", 85015 },             //
-            { "Gulag_Prison|Desk_D_01 (34.5, 0.5, 0.0)", 85016 },               //
-            { "Gulag_Prison|Desk_R_01 (32.5, 28.5, 0.0)", 85017 },              //
-            { "Gulag_Prison|Desk_D_01 (12.5, -35.5, 0.0)", 85018 },             //
-            { "Gulag_Prison|Desk_R_01 (4) (-21.5, 4.5, -6.0)", 85019 },         //
-            { "Gulag_Prison|Desk_R_01 (2) (-21.5, -9.5, 0.0)", 85020 },         //
-            { "Gulag_Prison|Desk_R_01 (1) (-21.5, -11.5, -6.0)", 85021 },       //
-            { "Gulag_Prison|Desk_D_01 (-27.5, 13.5, 0.0)", 85022 },             //
-            { "Gulag_Prison|Desk_R_01 (2) (-21.5, -8.5, -6.0)", 85023 },        //
-            { "Gulag_Prison|Desk_D_01 (1) (29.5, 43.5, 0.0)", 85024 },          //
-            { "Gulag_Prison|Desk_L_01 (2) (14.5, -9.5, 0.0)", 85025 },          //
-            { "Gulag_Prison|Desk_L_01 (2) (14.5, -8.5, -6.0)", 85026 },         //
-            { "Gulag_Prison|Desk_D_01 (1) (20.5, -35.5, 0.0)", 85027 },         //
-            { "Gulag_Prison|Desk_D_01 (1) (11.5, -23.5, -6.0)", 85028 },        //
-            { "Gulag_Prison|Desk_L_01 (14.5, -14.5, -6.0)", 85029 },            //
-            { "Gulag_Prison|Desk_R_01 (-21.5, -14.5, -6.0)", 85030 },           //
-            { "Gulag_Prison|Desk_R_01 (5) (-21.5, 1.5, -6.0)", 85031 },         //
-            { "Gulag_Prison|Desk_R_01 (3) (-21.5, 6.5, 0.0)", 85032 },          //
-            { "Gulag_Prison|Desk_D_01 (2) (25.5, 13.5, -6.0)", 85033 },         //
-            { "Gulag_Prison|Desk_L_01 (3) (14.5, 1.5, -6.0)", 85034 },          //
-            { "Gulag_Prison|Desk_L_01 (14.5, -15.5, 0.0)", 85035 },             //
-            { "Gulag_Prison|Desk_L_01 (1) (14.5, -11.5, -6.0)", 85036 },        //
+            { "Gulag_Prison|Desk_L_01 (3) (14.5, 0.5, 0.0)", 85001 },           //North East Cell Lower Desk Floor 1
+            { "Gulag_Prison|Desk_L_01 (5) (14.5, 6.5, 0.0)", 85002 },           //North East Cell Upper Desk Floor 1
+            { "Gulag_Prison|Desk_L_01 (5) (14.5, 7.5, -6.0)", 85003 },          //North East Cell Upper Desk Floor 2
+            { "Gulag_Prison|Desk_R_01 (5) (-21.5, 0.5, 0.0)", 85004 },          //North West Cell Lower Desk Floor 1
+            { "Gulag_Prison|Desk_R_01 (-21.5, -15.5, 0.0)", 85005 },            //South West Cell Lower Desk Floor 1
+            { "Gulag_Prison|Cutlery_Tray_Down (-21.5, -32.5, 0.0)", 85006 },    //Cutlery Tray
+            { "Gulag_Prison|Desk_L_01 (4) (14.5, 3.5, 0.0)", 85007 },           //North East Cell Middle Desk Floor 1
+            { "Gulag_Prison|Desk_D_01 (5.5, -23.5, -6.0)", 85008 },             //Guard Bedroom Lower Area Floor 2 (Red Door)
+            { "Gulag_Prison|Desk_R_01 (1) (-21.5, -12.5, 0.0)", 85009 },        //South West Cell Middle Desk Floor 1
+            { "Gulag_Prison|Desk_L_01 (4) (14.5, 4.5, -6.0)", 85010 },          //North East Cell Middle Desk Floor 2
+            { "Gulag_Prison|Desk_D_01 (1) (21.5, 25.5, 0.0)", 85011 },          //Social Room Floor 1
+            { "Gulag_Prison|Desk_R_01 (3) (-21.5, 7.5, -6.0)", 85012 },         //North West Cell Upper Desk Floor 2
+            { "Gulag_Prison|Desk_L_01 (1) (14.5, -12.5, 0.0)", 85013 },         //South East Cell Middle Desk Floor 1
+            { "Gulag_Prison|Desk_R_01 (4) (-21.5, 3.5, 0.0)", 85014 },          //North West Cell Middle Desk Floor 1
+            { "Gulag_Prison|Desk_D_01 (-32.5, -2.5, 0.0)", 85015 },             //Medic Desk (Infirmary Outfit)
+            { "Gulag_Prison|Desk_D_01 (34.5, 0.5, 0.0)", 85016 },               //Contraband Desk (Red Door AND Guard Outfit)
+            { "Gulag_Prison|Desk_R_01 (32.5, 28.5, 0.0)", 85017 },              //Maintenance Room (Cyan Door)
+            { "Gulag_Prison|Desk_D_01 (12.5, -35.5, 0.0)", 85018 },             //Lower Pat of the Map Left Desk Floor 1 (Red Door)
+            { "Gulag_Prison|Desk_R_01 (4) (-21.5, 4.5, -6.0)", 85019 },         //North West Cell Middle Desk Floor 2
+            { "Gulag_Prison|Desk_R_01 (2) (-21.5, -9.5, 0.0)", 85020 },         //South West Cell Upper Desk Floor 1
+            { "Gulag_Prison|Desk_R_01 (1) (-21.5, -11.5, -6.0)", 85021 },       //South Wes Cell Middle Desk Floor 2
+            { "Gulag_Prison|Desk_D_01 (-27.5, 13.5, 0.0)", 85022 },             //Above Nurse Office, Next to maintenance Floor 1
+            { "Gulag_Prison|Desk_R_01 (2) (-21.5, -8.5, -6.0)", 85023 },        //South West Cell Upper Desk Floor 2
+            { "Gulag_Prison|Desk_D_01 (1) (29.5, 43.5, 0.0)", 85024 },          //Multiplayer
+            { "Gulag_Prison|Desk_L_01 (2) (14.5, -9.5, 0.0)", 85025 },          //South East Cell Upper Desk Floor 1
+            { "Gulag_Prison|Desk_L_01 (2) (14.5, -8.5, -6.0)", 85026 },         //South East Cell Upper Desk Floor 2
+            { "Gulag_Prison|Desk_D_01 (1) (20.5, -35.5, 0.0)", 85027 },         //Lower Part of the Map Right Desk (Red Door)
+            { "Gulag_Prison|Desk_D_01 (1) (11.5, -23.5, -6.0)", 85028 },        //Guard Break Room Lower Area Floor 2 (Red Key)
+            { "Gulag_Prison|Desk_L_01 (14.5, -14.5, -6.0)", 85029 },            //South East Cell Lower Desk Floor 2
+            { "Gulag_Prison|Desk_R_01 (-21.5, -14.5, -6.0)", 85030 },           //South West Cell Lower Desk Floor 2
+            { "Gulag_Prison|Desk_R_01 (5) (-21.5, 1.5, -6.0)", 85031 },         //North West Cell Lower Desk Floor 2
+            { "Gulag_Prison|Desk_R_01 (3) (-21.5, 6.5, 0.0)", 85032 },          //North West Cell Upper Desk Floor 1
+            { "Gulag_Prison|Desk_D_01 (2) (25.5, 13.5, -6.0)", 85033 },         //Above Power Generator Floor 2 (Red Door)
+            { "Gulag_Prison|Desk_L_01 (3) (14.5, 1.5, -6.0)", 85034 },          //North East Cell: Lower Desk 
+            { "Gulag_Prison|Desk_L_01 (14.5, -15.5, 0.0)", 85035 },             //South East Cell Lower Desk Floor 1
+            { "Gulag_Prison|Desk_L_01 (1) (14.5, -11.5, -6.0)", 85036 },        //South East Cell Middle Desk Floor 2
  
             // === AREA 17 (Area_17) ===
             { "Area_17|Desk_U_01 (4) (-14.5, -17.5, 3.0)", 86001 },             //Desk Outside Infirmary (Underground)
@@ -225,34 +225,34 @@ namespace BC_Dual_Ref_Library
  
           
             // === U.S.S. ANOMALY (Space Prison) ===
-            { "Space Prison|Desk_D_01 (-12.5, 8.5, 0.0)", 87001 },              //
-            { "Space Prison|Desk_U_01 (8) (6.5, -33.5, 0.0)", 87002 },          //
-            { "Space Prison|Desk_U_01 (11) (-20.5, -33.5, 0.0)", 87003 },       //
-            { "Space Prison|Desk_U_01 (1) (-14.5, -23.5, 0.0)", 87004 },        //
-            { "Space Prison|Desk_D_01 (1) (-9.5, 29.5, 0.0)", 87005 },          //
-            { "Space Prison|Desk_D_01 (40.5, -12.5, 0.0)", 87006 },             //
-            { "Space Prison|Desk_U_01 (5) (18.5, -23.5, 0.0)", 87007 },         //
-            { "Space Prison|Desk_U_01 (-20.5, -23.5, 0.0)", 87008 },            //
-            { "Space Prison|Desk_D_01 (1) (45.5, 6.5, -6.0)", 87009 },          //
-            { "Space Prison|Desk_D_01 (34.5, -12.5, 0.0)", 87010 },             //
-            { "Space Prison|Desk_D_01 (4) (13.5, 25.5, -6.0)", 87011 },         //
-            { "Space Prison|Desk_U_01 (3) (6.5, -23.5, 0.0)", 87012 },          //
-            { "Space Prison|Desk_D_01 (1) (49.5, -27.5, -6.0)", 87013 },        //
-            { "Space Prison|Desk_D_01 (-11.5, 43.5, -6.0)", 87014 },            //
-            { "Space Prison|Desk_U_01 (2) (-8.5, -23.5, 0.0)", 87015 },         //
-            { "Space Prison|Desk_U_01 (9) (-8.5, -33.5, 0.0)", 87016 },         //
-            { "Space Prison|Desk_D_01 (36.5, -16.5, -0.3)", 87017 },            //
-            { "Space Prison|Desk_U_01 (-6.5, 8.5, 0.0)", 87018 },               //
-            { "Space Prison|Desk_U_01 (4) (12.5, -23.5, 0.0)", 87019 },         //
-            { "Space Prison|Desk_U_01 (10) (-14.5, -33.5, 0.0)", 87020 },       //
-            { "Space Prison|Desk_D_01 (2) (-35.5, -16.5, 0.0)", 87021 },        //
-            { "Space Prison|Desk_U_01 (7) (12.5, -33.5, 0.0)", 87022 },         //
-            { "Space Prison|Cutlery_Tray_Down (18.5, 5.3, 0.0)", 87023 },       //
-            { "Space Prison|Desk_D_01 (6.5, 8.5, 0.0)", 87024 },                //
-            { "Space Prison|Desk_D_01 (3) (-18.5, 11.5, -6.0)", 87025 },        //
-            { "Space Prison|Desk_D_01 (2) (-35.5, 13.5, -6.0)", 87026 },        //
-            { "Space Prison|Desk_U_01 (6) (18.5, -33.5, 0.0)", 87027 },         //
-            { "Space Prison|Desk_D_01 (3) (45.5, 12.5, 0.0)", 87028 },          //
+            { "Space Prison|Desk_D_01 (-12.5, 8.5, 0.0)", 87001 },              //Medic Desk
+            { "Space Prison|Desk_U_01 (8) (6.5, -33.5, 0.0)", 87002 },          //Eastern Cell 4
+            { "Space Prison|Desk_U_01 (11) (-20.5, -33.5, 0.0)", 87003 },       //Western Cell 4
+            { "Space Prison|Desk_U_01 (1) (-14.5, -23.5, 0.0)", 87004 },        //Western Cell 2
+            { "Space Prison|Desk_D_01 (1) (-9.5, 29.5, 0.0)", 87005 },          //Northern Storage Desk
+            { "Space Prison|Desk_D_01 (40.5, -12.5, 0.0)", 87006 },             //Contraband Desk (Red Door AND Guard Outfit)
+            { "Space Prison|Desk_U_01 (5) (18.5, -23.5, 0.0)", 87007 },         //Eastern Cell 3
+            { "Space Prison|Desk_U_01 (-20.5, -23.5, 0.0)", 87008 },            //Western Cell 1
+            { "Space Prison|Desk_D_01 (1) (45.5, 6.5, -6.0)", 87009 },          //Jetpack/Forcefield Desk
+            { "Space Prison|Desk_D_01 (34.5, -12.5, 0.0)", 87010 },             //Eastern Storage Desk
+            { "Space Prison|Desk_D_01 (4) (13.5, 25.5, -6.0)", 87011 },         //Northern Stray Desk
+            { "Space Prison|Desk_U_01 (3) (6.5, -23.5, 0.0)", 87012 },          //Eastern Cell 1
+            { "Space Prison|Desk_D_01 (1) (49.5, -27.5, -6.0)", 87013 },        //Generator Stray Desk
+            { "Space Prison|Desk_D_01 (-11.5, 43.5, -6.0)", 87014 },            //Northern Hidden Stray Desk (Cutting Tool)
+            { "Space Prison|Desk_U_01 (2) (-8.5, -23.5, 0.0)", 87015 },         //Western Cell 3
+            { "Space Prison|Desk_U_01 (9) (-8.5, -33.5, 0.0)", 87016 },         //Western Cell 6
+            { "Space Prison|Desk_D_01 (36.5, -16.5, -0.3)", 87017 },            //Eastern Maintenance Desk (Cyan Door)
+            { "Space Prison|Desk_U_01 (-6.5, 8.5, 0.0)", 87018 },               //Central Maintenance Desk (Cyan Door)
+            { "Space Prison|Desk_U_01 (4) (12.5, -23.5, 0.0)", 87019 },         //Eastern Cell 2
+            { "Space Prison|Desk_U_01 (10) (-14.5, -33.5, 0.0)", 87020 },       //Western Cell 5
+            { "Space Prison|Desk_D_01 (2) (-35.5, -16.5, 0.0)", 87021 },        //Kennels Desk
+            { "Space Prison|Desk_U_01 (7) (12.5, -33.5, 0.0)", 87022 },         //Eastern Cell 5
+            { "Space Prison|Cutlery_Tray_Down (18.5, 5.3, 0.0)", 87023 },       //Cutlery Tray
+            { "Space Prison|Desk_D_01 (6.5, 8.5, 0.0)", 87024 },                //Storage Desk near Kitchen
+            { "Space Prison|Desk_D_01 (3) (-18.5, 11.5, -6.0)", 87025 },        //Inmate Lounge Desk
+            { "Space Prison|Desk_D_01 (2) (-35.5, 13.5, -6.0)", 87026 },        //Western Office Desk
+            { "Space Prison|Desk_U_01 (6) (18.5, -33.5, 0.0)", 87027 },         //Eastern Cell 6
+            { "Space Prison|Desk_D_01 (3) (45.5, 12.5, 0.0)", 87028 },          //Guard Pod Room Desk
             
             
             // === COUGAR CREEK RAILROAD (Transport_Train) ===
