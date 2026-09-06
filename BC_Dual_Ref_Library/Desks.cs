@@ -4,6 +4,10 @@ namespace BC_Dual_Ref_Library
 {
     public class Desks
     {
+        //Guard Outfit - 40 Intellect and Blueprint
+        //Infirmary Outfit - 50 Intellect
+        //Red Key - Blueprints and 60 Intellect
+        //Cyan Key - Blueprints and 60 Intellect
         public static Dictionary<string, long> deskLocationIDs = new Dictionary<string, long>()
         {
             // === CENTER PERKS (Centre_Perks) ===
@@ -41,71 +45,71 @@ namespace BC_Dual_Ref_Library
             { "Centre_Perks|Desk_D_01 (1) (41.5, 26.5, -6.0)", 81032 },         //Maintenance Desk Floor 1 Right Hand Side
             { "Centre_Perks|Desk_D_01 (1) (6.5, -11.5, -6.0)", 81033 },         //Classroom Desk Floor 1
             { "Centre_Perks|Desk_D_01 (3) (-19.5, 27.5, -6.0)", 81034 },        //Meet the Crew Desk
-            { "Centre_Perks|Desk_L_01 (-38.5, 1.5, -6.0)", 81035 },             //Medic Desk Floor 1 (Need nurse outfit?)
+            { "Centre_Perks|Desk_L_01 (-38.5, 1.5, -6.0)", 81035 },             //Medic Desk Floor 1 (Need Infirmary Outfit)
             { "Centre_Perks|Desk_D_01 (-0.5, 30.5, -12.0)", 81036 },            //Center North on Roof (Red Door)
             //ALSO A MULTIPLAYER DESK NOT MAPPED
             
             // === RATTLESNAKE SPRINGS (OldWestFort) ===
             { "OldWestFort|Desk_D_01 (31.5, 9.5, 0.0)", 82001 },                //Maintenance Floor 1
-            { "OldWestFort|Desk_U_01 (-28.5, 5.5, 0.0)", 82002 },               //Cell 11
+            { "OldWestFort|Desk_U_01 (-28.5, 5.5, 0.0)", 82002 },               //Cell 2
             { "OldWestFort|Desk_D_01 (8) (21.5, 14.5, -6.0)", 82003 },          //Floor 3 Up From Infirmary
-            { "OldWestFort|Desk_U_01 (-29.5, -12.5, 0.0)", 82004 },             //Cell 5
+            { "OldWestFort|Desk_U_01 (-29.5, -12.5, 0.0)", 82004 },             //Cell 8
             { "OldWestFort|Desk_R_01 (1) (-15.5, 38.5, 0.0)", 82005 },          //Floor 1 Top Guard Desk (Red Door)
             { "OldWestFort|Desk_D_01 (11.5, 14.5, -6.0)", 82006 },              //Maintenance Desk Floor 2 (Cyan Door)
-            { "OldWestFort|Desk_U_01 (-29.5, -18.5, 0.0)", 82007 },             //Cell 3
+            { "OldWestFort|Desk_U_01 (-29.5, -18.5, 0.0)", 82007 },             //Cell 10
             { "OldWestFort|Cutlery_Tray_Down (29.5, -23.5, 0.0)", 82008 },      //Cutlery Tray
             { "OldWestFort|Desk_D_01 (6) (-4.5, -28.5, -6.0)", 82009 },         //Bottom Left Hallway Floor 2
             { "OldWestFort|Desk_U_01 (24.5, 5.5, 0.0)", 82010 },                //Medic Desk (Infirmary Outfit)
             { "OldWestFort|Desk_R_01 (-15.5, 37.5, 0.0)", 82011 },              //Bottom Guard Desk Floor 1 (Red Door)
-            { "OldWestFort|Desk_U_01 (-29.5, -24.5, 0.0)", 82012 },             //Cell 1
+            { "OldWestFort|Desk_U_01 (-29.5, -24.5, 0.0)", 82012 },             //Cell 12
             { "OldWestFort|Desk_D_01 (10) (-10.5, 43.5, -6.0)", 82013 },        //Central Guard Desk Floor 2 (Red Door)
             { "OldWestFort|Desk_D_01 (26.5, 45.5, -6.0)", 82014 },              //Floor 2 Right Guard Desk (Red Door)
             { "OldWestFort|Desk_U_01 (1) (-33.5, 25.5, 0.0)", 82015 },          //Generator Room Desk (Red Door)
             { "OldWestFort|Desk_R_01 (-21.5, -31.5, -6.0)", 82016 },            //Down From Cells Floor 2
             { "OldWestFort|Desk_R_01 (-33.5, 14.5, -6.0)", 82017 },             //Floor 2 Right of Red Door (Red Door)
-            { "OldWestFort|Desk_D_01 (-28.5, -2.5, 0.0)", 82018 },              //Cell 8
-            { "OldWestFort|Desk_D_01 (13) (16.5, 12.5, -12.0)", 82019 },        //
+            { "OldWestFort|Desk_D_01 (-28.5, -2.5, 0.0)", 82018 },              //Cell 5
+            { "OldWestFort|Desk_D_01 (13) (16.5, 12.5, -12.0)", 82019 },        //Floor 3 Next to stairs
             { "OldWestFort|Desk_D_01 (11) (3.5, 48.5, -6.0)", 82020 },          //Floor 2 Top Guard Desk (Red Door)
-            { "OldWestFort|Desk_D_01 (-29.5, 9.5, 0.0)", 82021 },               //Cell 12
+            { "OldWestFort|Desk_D_01 (-29.5, 9.5, 0.0)", 82021 },               //Cell 1
             { "OldWestFort|Desk_D_01 (37.5, 26.5, 0.0)", 82022 },               //Contraband Desk (Red Door)
-            { "OldWestFort|Desk_D_01 (-30.5, 3.5, 0.0)", 82023 },               //Cell 10
-            { "OldWestFort|Desk_D_01 (-30.5, -20.5, 0.0)", 82024 },             //Cell 2
+            { "OldWestFort|Desk_D_01 (-30.5, 3.5, 0.0)", 82023 },               //Cell 3
+            { "OldWestFort|Desk_D_01 (-30.5, -20.5, 0.0)", 82024 },             //Cell 11
             { "OldWestFort|Desk_D_01 (-18.5, 43.5, -6.0)", 82025 },             //Floor 2 Left Guard Desk (Red Door)
             { "OldWestFort|Desk_D_01 (5) (14.5, -30.5, -6.0)", 82026 },         //Floor 2 Bottom Right
             { "OldWestFort|Desk_D_01 (2) (11.5, 1.5, -6.0)", 82027 },           //Floor 2 Left From Infirmary
             { "OldWestFort|Desk_D_01 (3) (-25.5, 25.5, -6.0)", 82028 },         //Floor 2 Up from Red Door (Red Door)
-            { "OldWestFort|Desk_D_01 (-30.5, -8.5, 0.0)", 82029 },              //Cell 6
-            { "OldWestFort|Desk_U_01 (-29.5, -0.5, 0.0)", 82030 },              //Cell 9
+            { "OldWestFort|Desk_D_01 (-30.5, -8.5, 0.0)", 82029 },              //Cell 7
+            { "OldWestFort|Desk_U_01 (-29.5, -0.5, 0.0)", 82030 },              //Cell 4
             { "OldWestFort|Desk_D_01 (12) (2.5, 49.5, -12.0)", 82031 },         //Floor 3 Guard Desk (Red Door)
             { "OldWestFort|Desk_D_01 (9) (0.5, -0.5, -6.0)", 82032 },           //Floor 2 Left of Central Stairs
-            { "OldWestFort|Desk_D_01 (5.5, 27.5, 3.0)", 82033 },                //
+            { "OldWestFort|Desk_D_01 (5.5, 27.5, 3.0)", 82033 },                //Multiplayer
             { "OldWestFort|Desk_D_01 (14) (28.5, 6.5, -12.0)", 82034 },         //Floor 3 Room Right of stairs
-            { "OldWestFort|Desk_D_01 (-29.5, -14.5, 0.0)", 82035 },             //Cell 4
-            { "OldWestFort|Desk_D_01 (1) (34.5, 20.5, -6.0)", 82036 },          //
+            { "OldWestFort|Desk_D_01 (-29.5, -14.5, 0.0)", 82035 },             //Cell 9
+            { "OldWestFort|Desk_D_01 (1) (34.5, 20.5, -6.0)", 82036 },          //Multiplayer
             { "OldWestFort|Desk_D_01 (4) (-4.5, -42.5, -6.0)", 82037 },         //Floor 2 Bottom Left
-            { "OldWestFort|Desk_U_01 (-29.5, -6.5, 0.0)", 82038 },              //Cell 7
+            { "OldWestFort|Desk_U_01 (-29.5, -6.5, 0.0)", 82038 },              //Cell 6
  
             // === K.A.P.O.W. CAMP (POW_Camp) ===
             { "POW_Camp|Desk_U_01 (1) (-14.5, -21.5, 0.0)", 83001 },            //Cell 4 Desk 4
-            { "POW_Camp|Desk_D_01 (-18.5, -15.5, 0.0)", 83002 },                // Cell 4 Desk 1
-            { "POW_Camp|Desk_D_01 (4) (-18.5, 8.5, 0.0)", 83003 },              // Cell 2 Desk 1
-            { "POW_Camp|Desk_D_01 (20.5, 26.5, -6.0)", 83004 },                 // Left Guard Room Desk Floor 2 (Red Door) 
+            { "POW_Camp|Desk_D_01 (-18.5, -15.5, 0.0)", 83002 },                //Cell 4 Desk 1
+            { "POW_Camp|Desk_D_01 (4) (-18.5, 8.5, 0.0)", 83003 },              //Cell 2 Desk 1
+            { "POW_Camp|Desk_D_01 (20.5, 26.5, -6.0)", 83004 },                 //Left Guard Room Desk Floor 2 (Red Door) 
             { "POW_Camp|Desk_U_01 (7) (-18.5, 14.5, 0.0)", 83005 },             //Cell 1 Desk 3
             { "POW_Camp|Desk_D_01 (1) (21.5, 25.5, 0.0)", 83006 },              //Contraband Desk (Red Door AND Guard Outfit)
             { "POW_Camp|Desk_D_01 (2) (-14.5, -3.5, 0.0)", 83007 },             //Cell 3 Desk 2
-            { "POW_Camp|Desk_U_01 (-16.5, 30.5, 0.0)", 83008 },                 //Maintenance Desk Floor 1(Cyan Door)
+            { "POW_Camp|Desk_U_01 (-16.5, 30.5, 0.0)", 83008 },                 //Maintenance Desk Floor 1 (Cyan Door)
             { "POW_Camp|Desk_R_01 (9.5, 12.5, -6.0)", 83009 },                  //Green Lounge Desk Floor 2
             { "POW_Camp|Desk_D_01 (-8.5, 35.5, 0.0)", 83010 },                  //Medic Desk Floor 1 (Infirmary Outfit)
             { "POW_Camp|Desk_D_01 (39.5, 0.5, -6.0)", 83011 },                  //Maintenance Desk Floor 2 (Cyan Door)
             { "POW_Camp|Desk_U_01 (2) (-14.5, -9.5, 0.0)", 83012 },             //Cell 3 Desk 4
             { "POW_Camp|Desk_D_01 (6) (-14.5, 20.5, 0.0)", 83013 },             //Cell 1 Desk 2
-            { "POW_Camp|Desk_D_01 (2) (-32.5, -30.4, 0.0)", 83014 },            //Motorcycle Room Desk (Vent Tools)
+            { "POW_Camp|Desk_D_01 (2) (-32.5, -30.4, 0.0)", 83014 },            //Motorcycle Room Desk (Makeshift Ladder)
             { "POW_Camp|Desk_D_01 (5) (-14.5, 8.5, 0.0)", 83015 },              //Cell 2 Desk 2
             { "POW_Camp|Desk_U_01 (4) (-18.5, 2.5, 0.0)", 83016 },              //Cell 2 Desk 3
             { "POW_Camp|Desk_D_01 (3) (11.5, -22.5, 0.0)", 83017 },             //Southern Storage Desk Floor 1
             { "POW_Camp|Desk_U_01 (6) (-14.5, 14.5, 0.0)", 83018 },             //Cell 1 Desk 4
             { "POW_Camp|Desk_D_01 (1) (-14.5, -15.5, 0.0)", 83019 },            //Cell 4 Desk 2
-            { "POW_Camp|Desk_U_01 (-18.5, -21.5, 0.0)", 83020 },                //Cell 4 Desk 2? (Check which one is supposed to be 3)
+            { "POW_Camp|Desk_U_01 (-18.5, -21.5, 0.0)", 83020 },                //Cell 4 Desk 3
             { "POW_Camp|Desk_D_01 (1) (-30.5, 34.5, 0.0)", 83021 },             //Multiplayer
             { "POW_Camp|Cutlery_Tray_Down (16.5, 6.5, 0.0)", 83022 },           //Cutlery Tray
             { "POW_Camp|Desk_D_01 (3) (-18.5, -3.5, 0.0)", 83023 },             //Cell 3 Desk 1
@@ -115,40 +119,40 @@ namespace BC_Dual_Ref_Library
             { "POW_Camp|Desk_U_01 (5) (-14.5, 2.5, 0.0)", 83027 },              //Cell 2 Desk 4
             
             // === HMP OFFSHORE (Oil_Rig) ===
-            { "Oil_Rig|Desk_U_01 (3) (-18.5, -11.5, -18.0)", 84001 },           //
-            { "Oil_Rig|Desk_U_01 (13) (-40.5, 19.5, -24.0)", 84002 },           //
+            { "Oil_Rig|Desk_U_01 (3) (-18.5, -11.5, -18.0)", 84001 },           //Bottom Right Cell Floor 6
+            { "Oil_Rig|Desk_U_01 (13) (-40.5, 19.5, -24.0)", 84002 },           //Middle Left Top of Stairs Floor 7
             { "Oil_Rig|Desk_R_01 (0.5, 11.5, -24.0)", 84003 },                  //Maintenance Desk South East Map Floor 7 (Cyan Door)
             { "Oil_Rig|Desk_U_01 (-44.5, 11.5, -3.0)", 84004 },                 //Bottom of Left Stairwell (Red Door)
-            { "Oil_Rig|Desk_U_01 (5) (-18.5, 0.5, -18.0)", 84005 },             //
-            { "Oil_Rig|Desk_U_01 (10) (-18.5, -4.5, -24.0)", 84006 },           //
-            { "Oil_Rig|Desk_U_01 (11) (-18.5, -10.5, -24.0)", 84007 },          //
+            { "Oil_Rig|Desk_U_01 (5) (-18.5, 0.5, -18.0)", 84005 },             //Top Right Cell Floor 6
+            { "Oil_Rig|Desk_U_01 (10) (-18.5, -4.5, -24.0)", 84006 },           //Middle Right Cell Floor 7
+            { "Oil_Rig|Desk_U_01 (11) (-18.5, -10.5, -24.0)", 84007 },          //Bottom Right Cell Floor 7
             { "Oil_Rig|Desk_D_01 (-11.5, 41.5, -36.0)", 84008 },                //Maintenance Desk North Map (Next to Cyan Key Card room) Floor 9 (Cyan Door)
             { "Oil_Rig|Desk_R_01 (1) (-43.5, 20.5, -12.0)", 84009 },            //Left Stairwell (Red Door)
             { "Oil_Rig|Desk_D_01 (-40.5, 35.5, -24.0)", 84010 },                //Multiplayer
-            { "Oil_Rig|Desk_R_01 (17.5, -34.5, -12.0)", 84011 },                //Maintenance Desk In Security Area (Cyan AND Red Door)
+            { "Oil_Rig|Desk_R_01 (17.5, -34.5, -12.0)", 84011 },                //Maintenance Desk In Security Area (Cyan Key AND Red Door)
             { "Oil_Rig|Desk_R_01 (2.5, 27.5, -18.0)", 84012 },                  //Multiplayer
             { "Oil_Rig|Desk_D_01 (6.5, 13.5, -6.0)", 84013 },                   //Right Stairwell (Red Door)
             { "Oil_Rig|Desk_U_01 (1) (21.5, -26.5, -18.0)", 84014 },            //Guard Area (Red Door)
-            { "Oil_Rig|Desk_R_01 (-14.5, 29.5, -30.0)", 84015 },                //Medic Desk next to job office (Nurses outfit)
-            { "Oil_Rig|Desk_U_01 (2) (-23.5, -11.5, -18.0)", 84016 },           //
-            { "Oil_Rig|Cutlery_Tray_Down (-19.6, 29.5, -24.0)", 84017 },        //
-            { "Oil_Rig|Desk_U_01 (12) (-37.5, 4.5, -24.0)", 84018 },            //
+            { "Oil_Rig|Desk_R_01 (-14.5, 29.5, -30.0)", 84015 },                //Medic Desk next to job office (Infirmary outfit)
+            { "Oil_Rig|Desk_U_01 (2) (-23.5, -11.5, -18.0)", 84016 },           //Bottom Left Cell Floor 6
+            { "Oil_Rig|Cutlery_Tray_Down (-19.6, 29.5, -24.0)", 84017 },        //Cutlery Tray
+            { "Oil_Rig|Desk_U_01 (12) (-37.5, 4.5, -24.0)", 84018 },            //Bottom Left Building Library Floor 7
             { "Oil_Rig|Desk_R_01 (-41.5, 41.5, -18.0)", 84019 },                //Maintenance Desk Floor 6 (Cyan Door)
-            { "Oil_Rig|Desk_U_01 (7) (-23.5, -4.5, -24.0)", 84020 },            //
-            { "Oil_Rig|Desk_U_01 (6) (-31.5, 32.5, -18.0)", 84021 },            //
+            { "Oil_Rig|Desk_U_01 (7) (-23.5, -4.5, -24.0)", 84020 },            //Middle Left Cell Floor 7
+            { "Oil_Rig|Desk_U_01 (6) (-31.5, 32.5, -18.0)", 84021 },            //Library Floor 6 
             { "Oil_Rig|Desk_U_01 (21.5, -20.5, -18.0)", 84022 },                //Guard Area (Red Door)
-            { "Oil_Rig|Desk_U_01 (4) (-18.5, -5.5, -18.0)", 84023 },            //
-            { "Oil_Rig|Desk_U_01 (8) (-23.5, -10.5, -24.0)", 84024 },           //
+            { "Oil_Rig|Desk_U_01 (4) (-18.5, -5.5, -18.0)", 84023 },            //Middle Right Cell Floor 6
+            { "Oil_Rig|Desk_U_01 (8) (-23.5, -10.5, -24.0)", 84024 },           //Bottom Left Cell Floor 7
             { "Oil_Rig|Desk_D_01 (1.5, 30.5, -18.0)", 84025 },                  //Multiplayer
             { "Oil_Rig|Desk_D_01 (30.5, -32.5, -12.0)", 84026 },                //Contraband Desk (Red Door AND Guard Outfit)
             { "Oil_Rig|Desk_U_01 (-41.5, 28.5, -24.0)", 84027 },                //Multiplayer
             { "Oil_Rig|Desk_R_01 (1) (-34.5, 37.5, -36.0)", 84028 },            //Multiplayer
-            { "Oil_Rig|Desk_U_01 (9) (-18.5, 1.5, -24.0)", 84029 },             //
-            { "Oil_Rig|Desk_U_01 (6) (-23.5, 1.5, -24.0)", 84030 },             //
-            { "Oil_Rig|Desk_R_01 (-27.5, 38.5, -36.0)", 84031 },                //
-            { "Oil_Rig|Desk_U_01 (1) (-23.5, -5.5, -18.0)", 84032 },            //
-            { "Oil_Rig|Desk_U_01 (14) (7.5, 17.5, -24.0)", 84033 },             //
-            { "Oil_Rig|Desk_U_01 (-23.5, 0.5, -18.0)", 84034 },                 //
+            { "Oil_Rig|Desk_U_01 (9) (-18.5, 1.5, -24.0)", 84029 },             //Top Right Cell Floor 7
+            { "Oil_Rig|Desk_U_01 (6) (-23.5, 1.5, -24.0)", 84030 },             //Top Left Cell Floor 7
+            { "Oil_Rig|Desk_R_01 (-27.5, 38.5, -36.0)", 84031 },                //Top Building Top of Stairs Floor 9
+            { "Oil_Rig|Desk_U_01 (1) (-23.5, -5.5, -18.0)", 84032 },            //Middle Left Cell Floor 6
+            { "Oil_Rig|Desk_U_01 (14) (7.5, 17.5, -24.0)", 84033 },             //Middle Right Building Middle of Stairs Floor 7
+            { "Oil_Rig|Desk_U_01 (-23.5, 0.5, -18.0)", 84034 },                 //Top Left Cell Floor 6
  
             // === FORT TUNDRA (Gulag_Prison) ===
             { "Gulag_Prison|Desk_L_01 (3) (14.5, 0.5, 0.0)", 85001 },           //North East Cell Lower Desk Floor 1
@@ -193,10 +197,10 @@ namespace BC_Dual_Ref_Library
             { "Area_17|Desk_R_01 (30.5, 26.5, -6.0)", 86002 },                  //Cell 4 Floor 2
             { "Area_17|Desk_U_01 (2) (27.5, 34.5, -6.0)", 86003 },              //Cell 3 Floor 2
             { "Area_17|Desk_U_01 (3) (-36.5, 3.5, 3.0)", 86004 },               //Western Stray Underground
-            { "Area_17|Desk_L_01 (34.5, 10.5, 3.0)", 86005 },                   //Maintenance Desk Underground (Check for red key vs Cyan)
+            { "Area_17|Desk_L_01 (34.5, 10.5, 3.0)", 86005 },                   //Maintenance Desk Underground (Cyan Door)
             { "Area_17|Desk_D_01 (3) (31.5, 0.5, -6.0)", 86006 },               //Guard Lounge Floor 2 (Red Door)
             { "Area_17|Desk_D_01 (1) (2.5, -11.5, 3.0)", 86007 },               //Medic Desk Underground (Infirmary Outfit)
-            { "Area_17|Desk_D_01 (2) (-2.5, 9.5, 0.0)", 86008 },                //Musician Guard Desk Floor 1 (Red Door)
+            { "Area_17|Desk_D_01 (2) (-2.5, 9.5, 0.0)", 86008 },                //Musical Room Guard Desk Floor 1 (Red Door)
             { "Area_17|Desk_R_01 (30.5, 25.5, 0.0)", 86009 },                   //Cell 4 Floor 1
             { "Area_17|Desk_U_01_Lunar (-33.5, 15.6, 0.0)", 86010 },            //Multiplayer
             { "Area_17|Desk_L_01 (11.5, -13.5, 0.0)", 86011 },                  //Outdoor Maintenance Desk Floor 1 (Red Key)
@@ -212,13 +216,13 @@ namespace BC_Dual_Ref_Library
             { "Area_17|Desk_U_01 (13.5, 33.5, 0.0)", 86021 },                   //Floor 1 Cell 2
             { "Area_17|Desk_D_01 (33.5, -4.5, 0.0)", 86022 },                   //Floor 1 Southern Guard Storage Desk
             { "Area_17|Desk_U_01 (1) (38.5, -3.5, 3.0)", 86023 },               //Eastern Stray Underground
-            { "Area_17|Desk_D_01 (4) (4.5, 10.5, -6.0)", 86024 },               //Guard Storage Floor 2 (Check for Red Door)
+            { "Area_17|Desk_D_01 (4) (4.5, 10.5, -6.0)", 86024 },               //Guard Storage Floor 2 (Red Door)
             { "Area_17|Desk_U_01 (2) (-21.5, -11.5, 3.0)", 86025 },             //Multiplayer
             { "Area_17|Desk_R_01 (-4.5, 10.5, 3.0)", 86026 },                   //Contraband Desk Underground (Red door and Guard outfit)
             { "Area_17|Desk_U_01 (5) (22.5, 42.5, 0.0)", 86027 },               //Cell Outskirts: Northern Desk Floor 1 (Red Door)
             { "Area_17|Desk_U_01 (6) (2.5, 21.5, -6.0)", 86028 },               //Cell Outskirts South West Desk Floor 2 (Red Key)
             { "Area_17|Desk_U_01 (7) (1.5, -25.5, 0.0)", 86029 },               //UFO Room Desk Floor 1
-            { "Area_17|Desk_D_01 (1) (13.5, 13.5, -6.0)", 86030 },              //Guard Office Desk Floor 2
+            { "Area_17|Desk_D_01 (1) (13.5, 13.5, -6.0)", 86030 },              //Guard Office Desk Floor 2 (Red Door)
             { "Area_17|Desk_U_01 (1) (44.5, 31.5, 3.0)", 86031 },               //Alien Pod Room Guard Desk Underground (Red Door)
             { "Area_17|Desk_L_01 (10.5, 25.5, 0.0)", 86032 },                   //Cell 1 Floor 1
             { "Area_17|Desk_U_01 (2) (26.5, -27.5, 3.0)", 86033 },              //Multiplayer
@@ -267,25 +271,25 @@ namespace BC_Dual_Ref_Library
             //THERE IS ONE BEHIND THE MULTIPLAYER DOOR BUT IT'S NOT MAPPED
             
             // === H.M.S. ORCA (Transport_Boat) ===
-            { "Transport_Boat|Desk_D_01 (12.5, 4.5, -3.0)", 89001 },            // Guard Rest Room Floor 3
+            { "Transport_Boat|Desk_D_01 (12.5, 4.5, -3.0)", 89001 },            //Guard Rest Room Floor 3
             { "Transport_Boat|Desk_U_01 (-9.5, -3.5, -3.0)", 89002 },           //Room to right of control panel Desk 1 (Left) Floor 3
-            { "Transport_Boat|Desk_R_01 (-20.5, 1.5, 0.0)", 89003 },            // CANT ACCESS IN SINGLE PLAYER (FLOOR 2)
-            { "Transport_Boat|Desk_R_01 (-12.5, -8.5, 0.0)", 89004 },           // By Cells Next to Stairs Floor 2
+            { "Transport_Boat|Desk_R_01 (-20.5, 1.5, 0.0)", 89003 },            //CANT ACCESS IN SINGLE PLAYER (FLOOR 2)
+            { "Transport_Boat|Desk_R_01 (-12.5, -8.5, 0.0)", 89004 },           //By Cells Next to Stairs Floor 2
             { "Transport_Boat|Desk_D_01 (17.5, -0.5, 3.0)", 89005 },            //Engine Room Left Desk Floor 1
             { "Transport_Boat|Desk_D_01 (9.5, -8.5, 3.0)", 89006 },             //Office to left of engine room Desk Floor 1
-            { "Transport_Boat|Desk_U_01 (12.5, -4.5, 0.0)", 89007 },            // Medic Desk Floor 2
+            { "Transport_Boat|Desk_U_01 (12.5, -4.5, 0.0)", 89007 },            //Medic Desk Floor 2
             { "Transport_Boat|Desk_R_01 (-12.5, -7.5, -3.0)", 89008 },          //Room 'below' control panel Floor 3
             { "Transport_Boat|Desk_D_01 (3.5, -7.5, -3.0)", 89009 },            //Room to right of control panel Desk 1 (Right) Floor 3
             { "Transport_Boat|Desk_R_01 (5.5, -4.5, -3.0)", 89010 },            //Room to left of the 2 staircases Floor 3
-            { "Transport_Boat|Desk_D_01 (-23.5, -7.5, 3.0)", 89011 },           // Library Desk Floor 1
+            { "Transport_Boat|Desk_D_01 (-23.5, -7.5, 3.0)", 89011 },           //Library Desk Floor 1
             { "Transport_Boat|Desk_U_01 (-14.5, -3.5, 3.0)", 89012 },           //Solitary Office Desk Floor 1
             { "Transport_Boat|Desk_D_01 (9.5, 2.5, 3.0)", 89013 },              //Desk in top of corridor Floor 1
-            { "Transport_Boat|Desk_U_01 (-5.5, -11.5, 0.0)", 89014 },           // Contrband Desk Floor 2
+            { "Transport_Boat|Desk_U_01 (-5.5, -11.5, 0.0)", 89014 },           //Contraband Desk Floor 2
             { "Transport_Boat|Desk_D_01 (1) (24.5, -9.5, 3.0)", 89015 },        //Engine Room Right Desk Floor 1
             
             // === AIR FORCE CON (Transport_Plane)
             { "Transport_Plane|Desk_R_01 (0.5, 16.5, -3.0)", 90001 },           //Guard Rest Room Floor 3
-            { "Transport_Plane|Desk_L_01 (2) (4.5, 9.5, 0.0)", 90002 },         // Mid Plane floor 2
+            { "Transport_Plane|Desk_L_01 (2) (4.5, 9.5, 0.0)", 90002 },         //Mid Plane floor 2
             { "Transport_Plane|Desk_R_01 (1) (-4.5, 38.5, 0.0)", 90003 },       //Next to control panel top of plane Floor 2
             { "Transport_Plane|Desk_D_01 (-3.5, 11.5, 3.0)", 90004 },           //Room below solitary floor 1
             { "Transport_Plane|Desk_L_01 (1) (4.5, -6.5, -3.0)", 90005 },       //Hallway above kitchen Floor 3
