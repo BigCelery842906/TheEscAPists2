@@ -207,7 +207,6 @@ namespace BC_Dual_Ref_Library
             { "Area_17|Desk_D_01 (1) (2.5, -11.5, 3.0)", 86007 },               //Medic Desk Underground (Infirmary Outfit)
             { "Area_17|Desk_D_01 (2) (-2.5, 9.5, 0.0)", 86008 },                //Musical Room Guard Desk Floor 1 (Red Door)
             { "Area_17|Desk_R_01 (30.5, 25.5, 0.0)", 86009 },                   //Cell 4 Floor 1
-            { "Area_17|Desk_U_01_Lunar (-33.5, 15.6, 0.0)", 86010 },            //Multiplayer
             { "Area_17|Desk_L_01 (11.5, -13.5, 0.0)", 86011 },                  //Outdoor Maintenance Desk Floor 1 (Red Key)
             { "Area_17|Desk_U_01 (5) (38.5, 43.5, -6.0)", 86012 },              //Cell Outskirts North east Floor 2 (Red Door)
             { "Area_17|Cutlery_Tray_Down (-12.0, 26.9, 3.0)", 86013 },          //Cutlery Tray
@@ -217,12 +216,10 @@ namespace BC_Dual_Ref_Library
             { "Area_17|Desk_U_01 (1) (27.5, 33.5, 0.0)", 86017 },               //Cell 3 Floor 1
             { "Area_17|Desk_D_01 (1) (33.5, 14.5, 0.0)", 86018 },               //Northern Guard Storage Floor 1 (Red Door)
             { "Area_17|Desk_U_01 (6) (39.5, 21.5, 0.0)", 86019 },               //Cell Outskirts South East Desk Floor 1 (Red Door)
-            { "Area_17|Desk_U_01 (3) (29.5, -26.5, 3.0)", 86020 },              //Multiplayer
             { "Area_17|Desk_U_01 (13.5, 33.5, 0.0)", 86021 },                   //Floor 1 Cell 2
             { "Area_17|Desk_D_01 (33.5, -4.5, 0.0)", 86022 },                   //Floor 1 Southern Guard Storage Desk
             { "Area_17|Desk_U_01 (1) (38.5, -3.5, 3.0)", 86023 },               //Eastern Stray Underground
             { "Area_17|Desk_D_01 (4) (4.5, 10.5, -6.0)", 86024 },               //Guard Storage Floor 2 (Red Door)
-            { "Area_17|Desk_U_01 (2) (-21.5, -11.5, 3.0)", 86025 },             //Multiplayer
             { "Area_17|Desk_R_01 (-4.5, 10.5, 3.0)", 86026 },                   //Contraband Desk Underground (Red door and Guard outfit)
             { "Area_17|Desk_U_01 (5) (22.5, 42.5, 0.0)", 86027 },               //Cell Outskirts: Northern Desk Floor 1 (Red Door)
             { "Area_17|Desk_U_01 (6) (2.5, 21.5, -6.0)", 86028 },               //Cell Outskirts South West Desk Floor 2 (Red Key)
@@ -230,8 +227,11 @@ namespace BC_Dual_Ref_Library
             { "Area_17|Desk_D_01 (1) (13.5, 13.5, -6.0)", 86030 },              //Guard Office Desk Floor 2 (Red Door)
             { "Area_17|Desk_U_01 (1) (44.5, 31.5, 3.0)", 86031 },               //Alien Pod Room Guard Desk Underground (Red Door)
             { "Area_17|Desk_L_01 (10.5, 25.5, 0.0)", 86032 },                   //Cell 1 Floor 1
-            { "Area_17|Desk_U_01 (2) (26.5, -27.5, 3.0)", 86033 },              //Multiplayer
  
+            // { "Area_17|Desk_U_01_Lunar (-33.5, 15.6, 0.0)", 86010 },            //Multiplayer
+            // { "Area_17|Desk_U_01 (3) (29.5, -26.5, 3.0)", 86020 },              //Multiplayer
+            // { "Area_17|Desk_U_01 (2) (-21.5, -11.5, 3.0)", 86025 },             //Multiplayer
+            // { "Area_17|Desk_U_01 (2) (26.5, -27.5, 3.0)", 86033 },              //Multiplayer
           
             // === U.S.S. ANOMALY (Space Prison) ===
             { "Space Prison|Desk_D_01 (-12.5, 8.5, 0.0)", 87001 },              //Medic Desk
@@ -278,7 +278,6 @@ namespace BC_Dual_Ref_Library
             // === H.M.S. ORCA (Transport_Boat) ===
             { "Transport_Boat|Desk_D_01 (12.5, 4.5, -3.0)", 89001 },            //Guard Rest Room Floor 3
             { "Transport_Boat|Desk_U_01 (-9.5, -3.5, -3.0)", 89002 },           //Room to right of control panel Desk 1 (Left) Floor 3
-            { "Transport_Boat|Desk_R_01 (-20.5, 1.5, 0.0)", 89003 },            //CANT ACCESS IN SINGLE PLAYER (FLOOR 2)
             { "Transport_Boat|Desk_R_01 (-12.5, -8.5, 0.0)", 89004 },           //By Cells Next to Stairs Floor 2
             { "Transport_Boat|Desk_D_01 (17.5, -0.5, 3.0)", 89005 },            //Engine Room Left Desk Floor 1
             { "Transport_Boat|Desk_D_01 (9.5, -8.5, 3.0)", 89006 },             //Office to left of engine room Desk Floor 1
@@ -292,6 +291,9 @@ namespace BC_Dual_Ref_Library
             { "Transport_Boat|Desk_U_01 (-5.5, -11.5, 0.0)", 89014 },           //Contraband Desk Floor 2
             { "Transport_Boat|Desk_D_01 (1) (24.5, -9.5, 3.0)", 89015 },        //Engine Room Right Desk Floor 1
             
+            // { "Transport_Boat|Desk_R_01 (-20.5, 1.5, 0.0)", 89003 },            //CANT ACCESS IN SINGLE PLAYER (FLOOR 2)
+            
+            
             // === AIR FORCE CON (Transport_Plane)
             { "Transport_Plane|Desk_R_01 (0.5, 16.5, -3.0)", 90001 },           //Guard Rest Room Floor 3
             { "Transport_Plane|Desk_L_01 (2) (4.5, 9.5, 0.0)", 90002 },         //Mid Plane floor 2
@@ -299,13 +301,13 @@ namespace BC_Dual_Ref_Library
             { "Transport_Plane|Desk_D_01 (-3.5, 11.5, 3.0)", 90004 },           //Room below solitary floor 1
             { "Transport_Plane|Desk_L_01 (1) (4.5, -6.5, -3.0)", 90005 },       //Hallway above kitchen Floor 3
             { "Transport_Plane|Desk_L_01 (1) (1.5, -10.5, 0.0)", 90006 },       //Contraband Desk in guards room Floor 2
-            { "Transport_Plane|Desk_L_01 (1) (4.5, -4.5, 3.0)", 90007 },        //CANT ACCESS IN SINGLE PLAYER (FLOOR 1)
             { "Transport_Plane|Desk_U_01 (1) (1.5, -19.5, -3.0)", 90008 },      //Below Kitchen Floor 3
             { "Transport_Plane|Desk_U_01 (4.5, 3.5, -3.0)", 90009 },            //Medic Desk Floor 3
             { "Transport_Plane|Desk_R_01 (-5.5, 28.5, -3.0)", 90010 },          //Office Floor 3
             { "Transport_Plane|Desk_R_01 (-5.5, 1.5, 3.0)", 90011 },            //Left room on double doors Floor 1
             { "Transport_Plane|Desk_D_01 (-5.5, -1.5, -3.0)", 90012 },          //Contraband Desk Floor 3
 
+            // { "Transport_Plane|Desk_L_01 (1) (4.5, -4.5, 3.0)", 90007 },        //CANT ACCESS IN SINGLE PLAYER (FLOOR 1)
         };
     }
 }
