@@ -1289,7 +1289,7 @@ public class Plugin : BaseUnityPlugin
             
             { "Oil_Rig|Desk_D_01 (30.5, -32.5, -12.0)", 84028 },                //Contraband Desk (Red Door AND Guard Outfit)
             
-            { "Oil_Rig|Cutlery_Tray_Down (-19.6, 29.5, -24.0)", 84019 },        //Cutlery Tray
+            { "Oil_Rig|Cutlery_Tray_Down (-19.6, 29.5, -24.0)", 84029 },        //Cutlery Tray
  
             // { "Oil_Rig|Desk_D_01 (-40.5, 35.5, -24.0)", 84010 },                //Multiplayer
             // { "Oil_Rig|Desk_R_01 (2.5, 27.5, -18.0)", 84012 },                  //Multiplayer
