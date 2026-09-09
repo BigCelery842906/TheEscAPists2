@@ -1392,34 +1392,41 @@ public class Plugin : BaseUnityPlugin
             // { "Area_17|Desk_U_01 (2) (26.5, -27.5, 3.0)", 86033 },              //Multiplayer
           
             // === U.S.S. ANOMALY (Space Prison) ===
-            { "Space Prison|Desk_D_01 (-12.5, 8.5, 0.0)", 87001 },              //Medic Desk
-            { "Space Prison|Desk_U_01 (8) (6.5, -33.5, 0.0)", 87002 },          //Eastern Cell 4
-            { "Space Prison|Desk_U_01 (11) (-20.5, -33.5, 0.0)", 87003 },       //Western Cell 4
-            { "Space Prison|Desk_U_01 (1) (-14.5, -23.5, 0.0)", 87004 },        //Western Cell 2
-            { "Space Prison|Desk_D_01 (1) (-9.5, 29.5, 0.0)", 87005 },          //Northern Storage Desk
-            { "Space Prison|Desk_D_01 (40.5, -12.5, 0.0)", 87006 },             //Contraband Desk (Red Door AND Guard Outfit)
-            { "Space Prison|Desk_U_01 (5) (18.5, -23.5, 0.0)", 87007 },         //Eastern Cell 3
-            { "Space Prison|Desk_U_01 (-20.5, -23.5, 0.0)", 87008 },            //Western Cell 1
-            { "Space Prison|Desk_D_01 (1) (45.5, 6.5, -6.0)", 87009 },          //Jetpack/Forcefield Desk
-            { "Space Prison|Desk_D_01 (34.5, -12.5, 0.0)", 87010 },             //Eastern Storage Desk
-            { "Space Prison|Desk_D_01 (4) (13.5, 25.5, -6.0)", 87011 },         //Northern Stray Desk
-            { "Space Prison|Desk_U_01 (3) (6.5, -23.5, 0.0)", 87012 },          //Eastern Cell 1
-            { "Space Prison|Desk_D_01 (1) (49.5, -27.5, -6.0)", 87013 },        //Generator Stray Desk
-            { "Space Prison|Desk_D_01 (-11.5, 43.5, -6.0)", 87014 },            //Northern Hidden Stray Desk (Cutting Tool)
-            { "Space Prison|Desk_U_01 (2) (-8.5, -23.5, 0.0)", 87015 },         //Western Cell 3
-            { "Space Prison|Desk_U_01 (9) (-8.5, -33.5, 0.0)", 87016 },         //Western Cell 6
-            { "Space Prison|Desk_D_01 (36.5, -16.5, -0.3)", 87017 },            //Eastern Maintenance Desk (Cyan Door)
-            { "Space Prison|Desk_U_01 (-6.5, 8.5, 0.0)", 87018 },               //Central Maintenance Desk (Cyan Door)
-            { "Space Prison|Desk_U_01 (4) (12.5, -23.5, 0.0)", 87019 },         //Eastern Cell 2
-            { "Space Prison|Desk_U_01 (10) (-14.5, -33.5, 0.0)", 87020 },       //Western Cell 5
-            { "Space Prison|Desk_D_01 (2) (-35.5, -16.5, 0.0)", 87021 },        //Kennels Desk
-            { "Space Prison|Desk_U_01 (7) (12.5, -33.5, 0.0)", 87022 },         //Eastern Cell 5
-            { "Space Prison|Cutlery_Tray_Down (18.5, 5.3, 0.0)", 87023 },       //Cutlery Tray
-            { "Space Prison|Desk_D_01 (6.5, 8.5, 0.0)", 87024 },                //Storage Desk near Kitchen
-            { "Space Prison|Desk_D_01 (3) (-18.5, 11.5, -6.0)", 87025 },        //Inmate Lounge Desk
-            { "Space Prison|Desk_D_01 (2) (-35.5, 13.5, -6.0)", 87026 },        //Western Office Desk
-            { "Space Prison|Desk_U_01 (6) (18.5, -33.5, 0.0)", 87027 },         //Eastern Cell 6
-            { "Space Prison|Desk_D_01 (3) (45.5, 12.5, 0.0)", 87028 },          //Guard Pod Room Desk
+            // === U.S.S. ANOMALY (Space Prison) ===
+            { "Space Prison|Desk_U_01 (3) (6.5, -23.5, 0.0)", 87001 },          //Eastern Cell 1
+            { "Space Prison|Desk_U_01 (4) (12.5, -23.5, 0.0)", 87002 },         //Eastern Cell 2
+            { "Space Prison|Desk_U_01 (5) (18.5, -23.5, 0.0)", 87003 },         //Eastern Cell 3
+            { "Space Prison|Desk_U_01 (8) (6.5, -33.5, 0.0)", 87004 },          //Eastern Cell 4
+            { "Space Prison|Desk_U_01 (7) (12.5, -33.5, 0.0)", 87005 },         //Eastern Cell 5
+            { "Space Prison|Desk_U_01 (6) (18.5, -33.5, 0.0)", 87006 },         //Eastern Cell 6
+            
+            { "Space Prison|Desk_U_01 (-20.5, -23.5, 0.0)", 87007 },            //Western Cell 1
+            { "Space Prison|Desk_U_01 (1) (-14.5, -23.5, 0.0)", 87008 },        //Western Cell 2
+            { "Space Prison|Desk_U_01 (2) (-8.5, -23.5, 0.0)", 87009 },         //Western Cell 3
+            { "Space Prison|Desk_U_01 (11) (-20.5, -33.5, 0.0)", 87010 },       //Western Cell 4
+            { "Space Prison|Desk_U_01 (10) (-14.5, -33.5, 0.0)", 87011 },       //Western Cell 5
+            { "Space Prison|Desk_U_01 (9) (-8.5, -33.5, 0.0)", 87012 },         //Western Cell 6
+            
+            { "Space Prison|Desk_D_01 (-12.5, 8.5, 0.0)", 87013 },              //Medic Desk
+            { "Space Prison|Desk_D_01 (1) (-9.5, 29.5, 0.0)", 870014 },          //Northern Storage Desk
+            { "Space Prison|Desk_D_01 (1) (45.5, 6.5, -6.0)", 87015 },          //Jetpack/Forcefield Desk
+            { "Space Prison|Desk_D_01 (34.5, -12.5, 0.0)", 87016 },             //Eastern Storage Desk
+            { "Space Prison|Desk_D_01 (4) (13.5, 25.5, -6.0)", 87017 },         //Northern Stray Desk
+            { "Space Prison|Desk_D_01 (1) (49.5, -27.5, -6.0)", 87018 },        //Generator Stray Desk
+            { "Space Prison|Desk_D_01 (2) (-35.5, -16.5, 0.0)", 87019 },        //Kennels Desk
+            { "Space Prison|Desk_D_01 (6.5, 8.5, 0.0)", 87020 },                //Storage Desk near Kitchen
+            { "Space Prison|Desk_D_01 (3) (-18.5, 11.5, -6.0)", 87021 },        //Inmate Lounge Desk
+            { "Space Prison|Desk_D_01 (2) (-35.5, 13.5, -6.0)", 87022 },        //Western Office Desk
+            { "Space Prison|Desk_D_01 (3) (45.5, 12.5, 0.0)", 87023 },          //Guard Pod Room Desk
+            
+            { "Space Prison|Desk_D_01 (-11.5, 43.5, -6.0)", 87024 },            //Northern Hidden Stray Desk (Cutting Tool)
+            
+            { "Space Prison|Desk_D_01 (36.5, -16.5, -0.3)", 87025 },            //Eastern Maintenance Desk (Cyan Door)
+            { "Space Prison|Desk_U_01 (-6.5, 8.5, 0.0)", 87026 },               //Central Maintenance Desk (Cyan Door)
+            
+            { "Space Prison|Desk_D_01 (40.5, -12.5, 0.0)", 87027 },             //Contraband Desk (Red Door AND Guard Outfit)
+            
+            { "Space Prison|Cutlery_Tray_Down (18.5, 5.3, 0.0)", 87028 },       //Cutlery Tray
             
             
             // === COUGAR CREEK RAILROAD (Transport_Train) ===
