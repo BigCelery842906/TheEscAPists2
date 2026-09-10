@@ -519,7 +519,7 @@ public static class References
         { "Medicine", 274 },
         { "Medikit", 275 },
         { "MetalBaton", 277 },
-        { "BottleofMilk", 278 },
+        { "BottleOfMilk", 278 },
         { "MimeIdle", 279 },
         { "MoltenChoc", 281 },
         { "MoltenPlastic", 282 },

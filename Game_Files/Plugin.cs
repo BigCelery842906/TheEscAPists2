@@ -1408,7 +1408,7 @@ public class Plugin : BaseUnityPlugin
             { "Space Prison|Desk_U_01 (9) (-8.5, -33.5, 0.0)", 87012 },         //Western Cell 6
             
             { "Space Prison|Desk_D_01 (-12.5, 8.5, 0.0)", 87013 },              //Medic Desk
-            { "Space Prison|Desk_D_01 (1) (-9.5, 29.5, 0.0)", 870014 },          //Northern Storage Desk
+            { "Space Prison|Desk_D_01 (1) (-9.5, 29.5, 0.0)", 87014 },          //Northern Storage Desk
             { "Space Prison|Desk_D_01 (1) (45.5, 6.5, -6.0)", 87015 },          //Jetpack/Forcefield Desk
             { "Space Prison|Desk_D_01 (34.5, -12.5, 0.0)", 87016 },             //Eastern Storage Desk
             { "Space Prison|Desk_D_01 (4) (13.5, 25.5, -6.0)", 87017 },         //Northern Stray Desk
