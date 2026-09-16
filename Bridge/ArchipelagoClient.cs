@@ -338,10 +338,13 @@ namespace TheEscAPists2Bridge
                     foreach (NetworkItem item in receivedItemsPacket.Items)
                     {
                         ConsoleLogging.LogDebug($"Received Item Item: {item.Item.ToString()}"); //This is the bit I want, except I want the name not the id
+                        ConsoleLogging.LogDebug($"Received Item Flags: {item.Flags.ToString()}");
+                        ConsoleLogging.LogDebug($"Received Item Location: {item.Location.ToString()}");
+                        ConsoleLogging.LogDebug($"Received Item Player: {item.Player.ToString()}");
                         
                         string itemName = Session.Items.GetItemName(item.Item, ModInfo.GameName);
                         localIndexReceived++;
-                        ConsoleLogging.LogDebug($"Item gets returned as: {Session.Items.GetItemName(item.Item)}");
+                        ConsoleLogging.LogDebug($"Item gets returned as: {itemName}");
                         
                         incomingItemsQueue.Enqueue(itemName);
                         incomingItemsIndexQueue.Enqueue(localIndexReceived);
@@ -489,7 +492,7 @@ namespace TheEscAPists2Bridge
             if (!isID)
             {
                 id = Session.Locations.GetLocationIdFromName(connectionInfo.game, check);
-                // ConsoleLogging.LogDebug($"{check} comes back as ID: {id}");
+                ConsoleLogging.LogDebug($"{check} comes back as ID: {id}");
             }
             if (isID)
             {

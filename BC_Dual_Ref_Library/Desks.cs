@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿    using System.Collections.Generic;
 
 namespace BC_Dual_Ref_Library
 {
@@ -254,16 +254,16 @@ namespace BC_Dual_Ref_Library
             
             { "Area_17|Desk_U_01 (4) (-14.5, -17.5, 3.0)", 86009 },             //Desk Outside Infirmary (Underground)
             { "Area_17|Desk_U_01 (3) (-36.5, 3.5, 3.0)", 86010 },               //Western Stray Underground
-            { "Area_17|Desk_D_01 (33.5, -4.5, 0.0)", 86011 },                   //Floor 1 Southern Guard Storage Desk
-            { "Area_17|Desk_U_01 (1) (38.5, -3.5, 3.0)", 86012 },               //Eastern Stray Underground
-            { "Area_17|Desk_U_01 (7) (1.5, -25.5, 0.0)", 86013 },               //UFO Room Desk Floor 1
+            { "Area_17|Desk_U_01 (1) (38.5, -3.5, 3.0)", 86011 },               //Eastern Stray Underground
+            { "Area_17|Desk_U_01 (7) (1.5, -25.5, 0.0)", 86012 },               //UFO Room Desk Floor 1
             
-            { "Area_17|Desk_D_01 (1) (2.5, -11.5, 3.0)", 86014 },               //Medic Desk Underground (Infirmary Outfit)
+            { "Area_17|Desk_D_01 (1) (2.5, -11.5, 3.0)", 86013 },               //Medic Desk Underground (Infirmary Outfit)
             
-            { "Area_17|Desk_L_01 (34.5, 10.5, 3.0)", 86015 },                   //Maintenance Desk Underground (Cyan Door)
+            { "Area_17|Desk_L_01 (34.5, 10.5, 3.0)", 86014 },                   //Maintenance Desk Underground (Cyan Door)
             
-            { "Area_17|Desk_U_01 (1) (44.5, 31.5, 3.0)", 86016 },               //Alien Pod Room Guard Desk Underground (Red Door)
+            { "Area_17|Desk_U_01 (1) (44.5, 31.5, 3.0)", 86015 },               //Alien Pod Room Guard Desk Underground (Red Door)
             
+            { "Area_17|Desk_D_01 (33.5, -4.5, 0.0)", 86016 },                   //Floor 1 Southern Guard Storage Desk
             { "Area_17|Desk_D_01 (2) (-2.5, 9.5, 0.0)", 86017 },                //Musical Room Guard Desk Floor 1 (Red Door)
             { "Area_17|Desk_L_01 (11.5, -13.5, 0.0)", 86018 },                  //Outdoor Maintenance Desk Floor 1 (Red Door)
             { "Area_17|Desk_D_01 (29.5, 4.5, 0.0)", 86019 },                    //Guard Lounge Floor 1 (Red Door)
