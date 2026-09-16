@@ -1379,19 +1379,19 @@ public class Plugin : BaseUnityPlugin
 
         { "Area_17|Desk_L_01 (34.5, 10.5, 3.0)", 86014 }, //Maintenance Desk Underground (Cyan Door)
 
-        { "Area_17|Desk_U_01 (1) (44.5, 31.5, 3.0)", 86015 }, //Alien Pod Room Guard Desk Underground (Red Door)
+        { "Area_17|Desk_U_01 (1) (44.5, 31.5, 3.0)", 86015 }, //Alien Pod Room Guard Desk Underground (Red Door OR Infirmary Outfit)
 
         { "Area_17|Desk_D_01 (33.5, -4.5, 0.0)", 86016 }, //Floor 1 Southern Guard Storage Desk
-        { "Area_17|Desk_D_01 (2) (-2.5, 9.5, 0.0)", 86017 }, //Musical Room Guard Desk Floor 1 (Red Door)
+        { "Area_17|Desk_D_01 (2) (-2.5, 9.5, 0.0)", 86017 }, //Musical Room Guard Desk Floor 1 (Red Door OR Infirmary Outfit)
         { "Area_17|Desk_L_01 (11.5, -13.5, 0.0)", 86018 }, //Outdoor Maintenance Desk Floor 1 (Red Door)
-        { "Area_17|Desk_D_01 (29.5, 4.5, 0.0)", 86019 }, //Guard Lounge Floor 1 (Red Door)
-        { "Area_17|Desk_D_01 (1) (33.5, 14.5, 0.0)", 86020 }, //Northern Guard Storage Floor 1 (Red Door)
+        { "Area_17|Desk_D_01 (29.5, 4.5, 0.0)", 86019 }, //Guard Lounge Floor 1 (Red Door OR Infirmary Outfit)
+        { "Area_17|Desk_D_01 (1) (33.5, 14.5, 0.0)", 86020 }, //Northern Guard Storage Floor 1 (Red Door OR Infirmary Outfit)
         { "Area_17|Desk_U_01 (6) (39.5, 21.5, 0.0)", 86021 }, //Cell Outskirts South East Desk Floor 1 (Red Door)
         { "Area_17|Desk_U_01 (5) (22.5, 42.5, 0.0)", 86022 }, //Cell Outskirts: Northern Desk Floor 1 (Red Door)
 
         { "Area_17|Desk_U_01 (5) (38.5, 43.5, -6.0)", 86023 }, //Cell Outskirts North east Floor 2 (Red Door)
-        { "Area_17|Desk_D_01 (3) (31.5, 0.5, -6.0)", 86024 }, //Guard Lounge Floor 2 (Red Door)
-        { "Area_17|Desk_D_01 (4) (4.5, 10.5, -6.0)", 86025 }, //Guard Storage Floor 2 (Red Door)
+        { "Area_17|Desk_D_01 (3) (31.5, 0.5, -6.0)", 86024 }, //Guard Lounge Floor 2 (Red Door OR Infirmary Outfit)
+        { "Area_17|Desk_D_01 (4) (4.5, 10.5, -6.0)", 86025 }, //Guard Storage Floor 2 (Red Door OR Infirmary Outfit)
         { "Area_17|Desk_U_01 (6) (2.5, 21.5, -6.0)", 86026 }, //Cell Outskirts South West Desk Floor 2 (Red Door)
         { "Area_17|Desk_D_01 (1) (13.5, 13.5, -6.0)", 86027 }, //Guard Office Desk Floor 2 (Red Door)
 
