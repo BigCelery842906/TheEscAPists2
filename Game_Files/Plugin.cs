@@ -320,6 +320,11 @@ public class Plugin : BaseUnityPlugin
             {
                 DequeueItemQueue();
             }
+
+            if (trapQueue.Count != 0)
+            {
+                HandleCustomAPTrap();
+            }
             
             // if (Input.GetKeyDown(KeyCode.F4))
             // {
@@ -430,7 +435,7 @@ public class Plugin : BaseUnityPlugin
         if (itemName.Contains("Trap"))
         {
             Logger.LogInfo("Contains the word trap, going to handle it as a custom item");
-            HandleCustomAPTrap(itemName);
+            trapQueue.Enqueue(itemName);
         }
         else if (itemName.Contains("Blueprint"))
         {
@@ -537,8 +542,12 @@ public class Plugin : BaseUnityPlugin
         }
     }
 
-    void HandleCustomAPTrap(string customItem)
+    void HandleCustomAPTrap()
     {
+        if (trapQueue.Count == 0) return;
+        
+        string customItem = trapQueue.Dequeue();
+        
         Player localPlayer = Gamer.GetPrimaryGamer()?.m_PlayerObject;
         if (localPlayer == null || localPlayer.m_CharacterStats == null) return;
 
@@ -678,6 +687,7 @@ public class Plugin : BaseUnityPlugin
     bool inGame = false;
     Queue<int> itemQueue = new Queue<int>();
     int moneyToAdd = 0;
+    Queue<string> trapQueue = new Queue<string>();
 
     void DequeueItemQueue()
     {

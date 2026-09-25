@@ -3,6 +3,7 @@
 public static class ConsoleLogging
 {
     public static bool debugMode = false;
+    private static List<string> debugStatements = new List<string>();
     public static void LogInfo(string info)
     {
         SetConsoleTextColor(ConsoleColor.White);
@@ -49,6 +50,7 @@ public static class ConsoleLogging
 
     public static void LogDebug(string debugInfo)
     {
+        debugStatements.Add(debugInfo);
         if (!debugMode) { return; }
         
         SetConsoleTextColor(ConsoleColor.Cyan);
@@ -121,4 +123,14 @@ public static class ConsoleLogging
             LogError(ErrorCode.NoGameConnection, "Game to Bridge Pipe not connected.");
         }
 }
+
+    public static void LogDebugs()
+    {
+        SetConsoleTextColor(ConsoleColor.Cyan);
+        foreach (string debugStatement in debugStatements)
+        {
+            Console.WriteLine(debugStatement);
+        }
+        SetConsoleTextColor(ConsoleColor.White);
+    }
 }

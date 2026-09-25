@@ -160,13 +160,13 @@ namespace TheEscAPists2Bridge
 
                 int index = incomingItemsIndexQueue.Dequeue();
                 string itemName = incomingItemsQueue.Dequeue();
-                ConsoleLogging.LogDebug($"{lastItemIndexReceived} >= {index}");
+                ConsoleLogging.LogDebug($"{lastItemIndexReceived} >= {index} (Item: {itemName})");
 
                 if (!(itemName.Contains("Progressive") || itemName.Contains("Prison Unlock") || itemName.Contains("Blueprint")))
                 {
                     if (lastItemIndexReceived >= index)
                     {
-                        ConsoleLogging.LogDebug($"DID NOT SEND ITEM DUE TO ITEM INDEX, WHICH IS {index}");
+                        ConsoleLogging.LogDebug($"DID NOT SEND ITEM DUE TO ITEM INDEX, WHICH IS {index} (Item: {itemName}");
                         return;
                     }
                 }
@@ -177,7 +177,8 @@ namespace TheEscAPists2Bridge
                 }
 
                 MessageHandler.instance.SendItemToGame(itemName, false);
-
+                SaveFile();
+                DequeueItems();
             }
         }
 

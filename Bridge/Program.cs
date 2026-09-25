@@ -92,6 +92,12 @@ namespace TheEscAPists2Bridge
                         break;
                     }
 
+                    case "/bcasked":
+                    {
+                        OutputDebugLogs();
+                        break;
+                    }
+
                     case "/test":
                     {
                         if (ConsoleLogging.debugMode)
@@ -288,11 +294,13 @@ namespace TheEscAPists2Bridge
         {
             ConsoleLogging.LogInfo("");
             ConsoleLogging.LogInfo("--- Help Menu ---");
-            ConsoleLogging.LogInfo("/connect (arg) - Default is both to game and the server, AP is for the server, bridge is for the game.");
-            ConsoleLogging.LogInfo("/disconnect (arg) - Default is both to game and the server, AP is for the server, bridge is for the game.");
+            // ConsoleLogging.LogInfo("/connect (arg) - Default is both to game and the server, AP is for the server, bridge is for the game.");
+            // ConsoleLogging.LogInfo("/disconnect (arg) - Default is both to game and the server, AP is for the server, bridge is for the game.");
+            ConsoleLogging.LogInfo("If the game or bridge disconnects for any reason, you will need to close and reopen everything. I apologise for this, it will be fixed for a future update - BC");
             ConsoleLogging.LogInfo("/help - Displays this help message.");
             ConsoleLogging.LogInfo("/status - Log the current status of the bridge connections");
-            ConsoleLogging.LogInfo("/exit - Close the bridge safely");
+            // ConsoleLogging.LogInfo("/exit - Close the bridge safely");
+            ConsoleLogging.LogInfo("/bcasked - Print out a list of debug statements for debugging purposes");
 
             if (ConsoleLogging.debugMode)
             {
@@ -329,6 +337,11 @@ namespace TheEscAPists2Bridge
             ArchipelagoClient.instance.SetConnectionValues(ModInfo.GameName, slotName, serverAddress, password, ModInfo.GameVersion);
             
             settingConnectionValue = false;
+        }
+        
+        private static void OutputDebugLogs()
+        {
+            ConsoleLogging.LogDebugs();
         }
     }
     
