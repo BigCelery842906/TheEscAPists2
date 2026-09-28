@@ -53,6 +53,8 @@ namespace TheEscAPists2Bridge
             return GetSlotOption(slotData, slotDataName) != 0;
         }
 
+        public bool DeathLink;
+        public bool StealthLink;
         public bool CenterPerks2;
         public bool CougarCreekRailroad;
         public bool RattlesnakeSprings;
@@ -71,6 +73,8 @@ namespace TheEscAPists2Bridge
 
         public SlotData(Dictionary<string, object> connectedPacketSlotData)
         {
+            DeathLink = GetSlotOptionBool(connectedPacketSlotData, "deathlink");
+            StealthLink = GetSlotOptionBool(connectedPacketSlotData, "stealthlink");
             CenterPerks2 = GetSlotOptionBool(connectedPacketSlotData, "center_perks");
             CougarCreekRailroad = GetSlotOptionBool(connectedPacketSlotData, "cougar_creek_railroad");
             RattlesnakeSprings = GetSlotOptionBool(connectedPacketSlotData, "rattlesnake_springs");
@@ -120,7 +124,7 @@ namespace TheEscAPists2Bridge
         private int localIndexReceived = 0;
         private string seed = "";
 
-        public List<long> checkedLocations;
+        public List<long> checkedLocations = new List<long>();
         private int lastStrength = 30; //Want to send 30 first time round
         private int lastStamina = 30; //Want to send 30 first time round
         private int lastIntellect = 30; //Want to send 30 first time round
@@ -194,7 +198,7 @@ namespace TheEscAPists2Bridge
         {
             if (connectedToServer)
             {
-                Session.Socket.DisconnectAsync();
+                Disconnect();
                 connectedToServer = false;
             }
 
@@ -229,7 +233,7 @@ namespace TheEscAPists2Bridge
                 //TODO: Send Chat Failure
 
                 connectedToServer = false;
-                Session.Socket.DisconnectAsync();
+                Disconnect();
 
                 return false;
             }
@@ -372,13 +376,14 @@ namespace TheEscAPists2Bridge
         {
             Session.Socket.SocketClosed += (reason) =>
             {
+                SaveFile();
                 connectedToServer = false;
                 Session = null;
                 ConsoleLogging.LogWarning($"Connection lost: {reason}");
                 incomingChatQueue.Enqueue($"Connection lost to server: {reason}");
                 MessageHandler.instance.ProcessChatQueue();
+                Disconnect();
                 
-                SaveFile();
             };
         }
 
@@ -394,6 +399,7 @@ namespace TheEscAPists2Bridge
         {
             if (connectedToServer)
             {
+                SaveFile();
                 Session.Socket.DisconnectAsync();
                 if (DeathLinkService != null)
                 {
@@ -404,7 +410,21 @@ namespace TheEscAPists2Bridge
                 ConsoleLogging.LogInfo("Disconnected from Server.");
             }
 
-            SaveFile();
+            incomingChatQueue = new Queue<string>();
+            incomingItemsQueue = new Queue<string>();
+            incomingItemsIndexQueue = new Queue<int>();
+            hasLoaded = false;
+            lastItemIndexReceived = 0;
+            localIndexReceived = 0;
+            seed = "";
+            checkedLocations = new List<long>();
+            lastStrength = 30; //Want to send 30 first time round
+            lastStamina = 30; //Want to send 30 first time round
+            lastIntellect = 30; //Want to send 30 first time round
+
+            missingLocations = new List<long>();
+            slotData = null;
+            uniqueEscapesCompleted = new List<long>();
             return true;
         }
 
@@ -431,7 +451,7 @@ namespace TheEscAPists2Bridge
                     return;
                 }
                 
-                
+                //TODO: IF THIS STAT CHECK HAS BEEN SENT DON'T SEND THE ERROR
                 string stat = "n/a";
                 int lastStat = -1;
                 int statToParse = int.Parse(checkParts[1]);

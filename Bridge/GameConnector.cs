@@ -65,7 +65,14 @@ namespace TheEscAPists2Bridge
                 return;
             }
 
-            pipeGameToBridge = new NamedPipeServerStream("EscAPists2PipeToBridge", PipeDirection.In);
+            try
+            {
+                pipeGameToBridge = new NamedPipeServerStream("EscAPists2PipeToBridge", PipeDirection.In);
+            }
+            catch (Exception e)
+            {
+                // ConsoleLogging.LogWarning(e.ToString());
+            }
 
             ConsoleLogging.LogInfo("(ToBridge) Pipe Created, Waiting for connection...");
             pipeGameToBridge.WaitForConnection();
@@ -83,9 +90,16 @@ namespace TheEscAPists2Bridge
             {
                 return;
             }
-            
-            pipeBridgeToGame = new NamedPipeServerStream("EscAPists2PipeToGame", PipeDirection.Out);
-            
+
+            try
+            {
+                pipeBridgeToGame = new NamedPipeServerStream("EscAPists2PipeToGame", PipeDirection.Out);
+            }
+            catch (Exception e)
+            {
+                // ConsoleLogging.LogWarning(e.ToString());
+            }
+
             ConsoleLogging.LogInfo("(ToGame) Pipe Created, Waiting for connection...");
             pipeBridgeToGame.WaitForConnection();
 
@@ -111,6 +125,7 @@ namespace TheEscAPists2Bridge
                     if (message == null)
                     {
                         ConsoleLogging.LogWarning("Game disconnected. Please restart both the bridge and the game.");
+                        RestartPipes();
                         return;
                     }
 
@@ -123,21 +138,36 @@ namespace TheEscAPists2Bridge
             }
         }
 
+        void RestartPipes()
+        {
+            DisconnectFromGame();
+            StartConnectionToGame();
+        }
+
         void EndPipe()
         {
-            pipeGameToBridge?.Dispose();
-            pipeGameToBridge = null;
-            
-            pipeBridgeToGame?.Dispose();
-            pipeBridgeToGame = null;
+            if (pipeBridgeToGame != null)
+            {
+                pipeBridgeToGame.Disconnect();
+                ConsoleLogging.LogSuccess($"Pipe Bridge to game closed. {pipeBridgeToGame.IsConnected}");
+                // pipeClientForBridge.Close();
+                // pipeBridgeToGame = null;
+            }
+            if (pipeGameToBridge != null)
+            {
+                pipeGameToBridge.Disconnect();
+                ConsoleLogging.LogSuccess($"Pipe game to bridge closed. {pipeGameToBridge.IsConnected}");
+                // pipeClientForGame.Close();
+                // pipeGameToBridge = null;
+            }
 
-            writer?.Dispose();
-            writer = null;
-
-            reader?.Dispose();
-            reader = null;
-
-            instance = null;
+            // writer?.Dispose();
+            // writer = null;
+            //
+            // reader?.Dispose();
+            // reader = null;
+            //
+            Program.RestartGameConnector();
         }
 
         public void SendToGame(string message)

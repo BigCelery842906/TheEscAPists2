@@ -76,24 +76,30 @@ namespace TheEscAPists2Bridge
         //Receive Deathlink
         public void SendDeathlinkToGame(DeathLink deathLinkObject)
         {
-            if (deathLinkObject.Source != ArchipelagoClient.instance.GetConnectionInfo().slotName)
+            if (ArchipelagoClient.instance.slotData.DeathLink)
             {
-                ConsoleLogging.LogSend($"DeathLink Received - {deathLinkObject.Cause}");
-                Packet.DeathLinkPacket deathLinkPacket = new Packet.DeathLinkPacket(deathLinkObject.Source, deathLinkObject.Cause);
-                SerialiseAndSend(deathLinkPacket);
-                return;
+                if (deathLinkObject.Source != ArchipelagoClient.instance.GetConnectionInfo().slotName)
+                {
+                    ConsoleLogging.LogSend($"DeathLink Received - {deathLinkObject.Cause}");
+                    Packet.DeathLinkPacket deathLinkPacket = new Packet.DeathLinkPacket(deathLinkObject.Source, deathLinkObject.Cause);
+                    SerialiseAndSend(deathLinkPacket);
+                    return;
+                }
             }
         }
 
         public void SendStealthLinkToGame(string slotResponsible)
         {
-            if (slotResponsible != ArchipelagoClient.instance.GetConnectionInfo().slotName)
+            if (ArchipelagoClient.instance.slotData.StealthLink)
             {
-                ConsoleLogging.LogSend($"StealthLink Received From: {slotResponsible}");
-                Packet.StealthLinkPacket stealthLinkPacket = new Packet.StealthLinkPacket(slotResponsible);
+                if (slotResponsible != ArchipelagoClient.instance.GetConnectionInfo().slotName)
+                {
+                    ConsoleLogging.LogSend($"StealthLink Received From: {slotResponsible}");
+                    Packet.StealthLinkPacket stealthLinkPacket = new Packet.StealthLinkPacket(slotResponsible);
 
-                SerialiseAndSend(stealthLinkPacket);
-                return;
+                    SerialiseAndSend(stealthLinkPacket);
+                    return;
+                }
             }
         }
 
@@ -241,17 +247,23 @@ namespace TheEscAPists2Bridge
         //Send Deathlink
         void SendDeathLinkToServer(string slot, string reason)
         {
-            ConsoleLogging.LogSend("Deathlink Send: " + reason);
-            ArchipelagoClient.instance.SendDeathLinkToServer(slot, reason);
+            if (ArchipelagoClient.instance.slotData.DeathLink)
+            {
+                ConsoleLogging.LogSend("Deathlink Send: " + reason);
+                ArchipelagoClient.instance.SendDeathLinkToServer(slot, reason);
+            }
         }
 
         //Send StealthLink
         void SendStealthLinkToServer(string slot)
         {
-            ConsoleLogging.LogSend("StealhLink Send: " + slot);
-            ArchipelagoClient.instance.SendStealthLink(slot);
+            if (ArchipelagoClient.instance.slotData.StealthLink)
+            {
+                ConsoleLogging.LogSend("StealhLink Send: " + slot);
+                ArchipelagoClient.instance.SendStealthLink(slot);
+            }
         }
-        
+
         //Goal
         void SendGoalToServer()
         {

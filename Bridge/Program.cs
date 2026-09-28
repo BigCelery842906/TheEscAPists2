@@ -5,13 +5,23 @@ namespace TheEscAPists2Bridge
     
     public class Program
     {
+        public static Program instance;
+        MessageHandler messageHandler = new MessageHandler();
+        ArchipelagoClient archipelagoClient = new ArchipelagoClient();
+        GameConnector gameConnector = new GameConnector();
+        
         public static void Main(string[] args)
         {
             Console.WriteLine("Starting the EscAPists 2 Bridge...");
 
-            MessageHandler messageHandler = new MessageHandler();
-            ArchipelagoClient archipelagoClient = new ArchipelagoClient();
-            GameConnector gameConnector = new GameConnector();
+            if (instance != null)
+            {
+                return;
+            }
+            else
+            {
+                instance = new Program();
+            }
 
             PrintHelp();
             
@@ -37,27 +47,27 @@ namespace TheEscAPists2Bridge
                 curLine = curLine.ToLower();
                 switch (curLine)
                 {
-                    case "/connect":
-                    {
-                        ConnectBridge();
-                        StartConnectionInfo();
-                        break;
-                    }
-                    case "/connect ap":
-                    {
-                        StartConnectionInfo();
-                        break;
-                    }
-                    case "/connect bridge":
-                    {
-                        ConnectBridge();
-                        break;
-                    }
+                    // case "/connect":
+                    // {
+                    //     ConnectBridge();
+                    //     StartConnectionInfo();
+                    //     break;
+                    // }
+                    // case "/connect ap":
+                    // {
+                    //     StartConnectionInfo();
+                    //     break;
+                    // }
+                    // case "/connect bridge":
+                    // {
+                    //     ConnectBridge();
+                    //     break;
+                    // }
 
                     case "/disconnect":
                     {
                         DisconnectAP();
-                        DisconnectBridge();
+                        // DisconnectBridge();
                         break;
                     }
                     case "/disconnect ap":
@@ -65,9 +75,39 @@ namespace TheEscAPists2Bridge
                         DisconnectAP();
                         break;
                     }
-                    case "/disconnect bridge":
+                    // case "/disconnect bridge":
+                    // {
+                    //     DisconnectBridge();
+                    //     break;
+                    // }
+
+                    case "/deathlink":
                     {
-                        DisconnectBridge();
+                        if (ArchipelagoClient.instance.slotData != null)
+                        {
+                            ArchipelagoClient.instance.slotData.DeathLink = !ArchipelagoClient.instance.slotData.DeathLink;
+                            string result = (ArchipelagoClient.instance.slotData.DeathLink) ? "Enabled" : "Disabled";
+                            ConsoleLogging.LogSuccess($"DeathLink {result}.");
+                        }
+                        else
+                        {
+                            ConsoleLogging.LogInfo("Not Connected, Nothing to toggle.");
+                        }
+                        break;
+                    }
+
+                    case "/stealthlink":
+                    {
+                        if (ArchipelagoClient.instance.slotData != null)
+                        {
+                            ArchipelagoClient.instance.slotData.StealthLink = !ArchipelagoClient.instance.slotData.StealthLink;
+                            string result = (ArchipelagoClient.instance.slotData.StealthLink) ? "Enabled" : "Disabled";
+                            ConsoleLogging.LogSuccess($"StealthLink {result}.");
+                        }
+                        else
+                        {
+                            ConsoleLogging.LogInfo("Not Connected, Nothing to toggle.");
+                        }
                         break;
                     }
 
@@ -206,20 +246,20 @@ namespace TheEscAPists2Bridge
                         break;
                     }
 
-                    case "apbugmode842":
-                    {
-                        if (ConsoleLogging.debugMode)
-                        {
-                            ConsoleLogging.LogDebug("Already in debug mode!");
-                        }
-                        else
-                        {
-                            ConsoleLogging.debugMode = true;
-                            ConsoleLogging.LogDebug("Debug Mode Enabled.");
-                        }
-
-                        break;
-                    }
+                    // case "apbugmode842":
+                    // {
+                    //     if (ConsoleLogging.debugMode)
+                    //     {
+                    //         ConsoleLogging.LogDebug("Already in debug mode!");
+                    //     }
+                    //     else
+                    //     {
+                    //         ConsoleLogging.debugMode = true;
+                    //         ConsoleLogging.LogDebug("Debug Mode Enabled.");
+                    //     }
+                    //
+                    //     break;
+                    // }
 
                     default:
                     {
@@ -297,6 +337,8 @@ namespace TheEscAPists2Bridge
             // ConsoleLogging.LogInfo("/connect (arg) - Default is both to game and the server, AP is for the server, bridge is for the game.");
             // ConsoleLogging.LogInfo("/disconnect (arg) - Default is both to game and the server, AP is for the server, bridge is for the game.");
             ConsoleLogging.LogInfo("If the game or bridge disconnects for any reason, you will need to close and reopen everything. I apologise for this, it will be fixed for a future update - BC");
+            ConsoleLogging.LogInfo("/deathlink - Toggle DeathLink");
+            ConsoleLogging.LogInfo("/steathlink - Toggle SteathLink");
             ConsoleLogging.LogInfo("/help - Displays this help message.");
             ConsoleLogging.LogInfo("/status - Log the current status of the bridge connections");
             // ConsoleLogging.LogInfo("/exit - Close the bridge safely");

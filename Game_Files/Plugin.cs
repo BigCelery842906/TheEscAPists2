@@ -164,6 +164,8 @@ public class Plugin : BaseUnityPlugin
         catch (Exception ex)
         {
             Logger.LogError("(ForBridge) Failed to connect to bridge.");
+            pipeClientForBridge = null;
+            return;
         }
 
         writer = new StreamWriter(pipeClientForBridge)
@@ -189,6 +191,8 @@ public class Plugin : BaseUnityPlugin
                 {
                     Logger.LogWarning("Bridge disconnected. Please restart both the bridge and the game.");
                     isConnected = false;
+                    ClosePipes();
+                    
                     return;
                 }
 
@@ -365,14 +369,26 @@ public class Plugin : BaseUnityPlugin
         KillEverything();
     }
 
+    void ClosePipes()
+    {
+        if (pipeClientForBridge.IsConnected)
+        {
+            pipeClientForBridge.Dispose();
+            // pipeClientForBridge.Close();
+            pipeClientForBridge = null;
+            
+            
+        }
+        if (pipeClientForGame.IsConnected)
+        {
+            pipeClientForGame.Dispose();
+            // pipeClientForGame.Close();
+            pipeClientForGame = null;
+        }
+    }
     void KillEverything()
     {
         bridgeProcess?.Kill();
-        pipeClientForBridge?.Dispose();
-        pipeClientForBridge = null;
-
-        pipeClientForGame?.Dispose();
-        pipeClientForGame = null;
 
         writer?.Dispose();
         writer = null;
