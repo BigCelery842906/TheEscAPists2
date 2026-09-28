@@ -93,8 +93,16 @@ public class Plugin : BaseUnityPlugin
             return;
         }
 
-        bridgeProcess = Process.Start(new ProcessStartInfo
-            { FileName = bridgePath, WorkingDirectory = pluginDir, UseShellExecute = true });
+        ProcessStartInfo startInfo = new ProcessStartInfo
+        {
+            FileName = "cmd.exe",
+            Arguments = $"/c start \"The EscAPists 2 Bridge\" \"{bridgePath}\"",
+            WorkingDirectory = Path.GetDirectoryName(bridgePath),
+            UseShellExecute = true,
+            CreateNoWindow = false,
+        };
+
+        bridgeProcess = Process.Start(startInfo);
 
         if (bridgeProcess != null)
         {

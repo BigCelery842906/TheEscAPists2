@@ -167,7 +167,6 @@ namespace TheEscAPists2Bridge
             // reader?.Dispose();
             // reader = null;
             //
-            Program.RestartGameConnector();
         }
 
         public void SendToGame(string message)
