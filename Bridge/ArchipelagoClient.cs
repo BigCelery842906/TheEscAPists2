@@ -129,7 +129,8 @@ namespace TheEscAPists2Bridge
         private int lastStamina = 30; //Want to send 30 first time round
         private int lastIntellect = 30; //Want to send 30 first time round
 
-        public List<long> missingLocations;
+        public List<long> missingLocations = new List<long>();
+        public List<long> nonValidLocations = new List<long>();
         public SlotData slotData;
         private List<long> uniqueEscapesCompleted = new List<long>();
 
@@ -153,7 +154,7 @@ namespace TheEscAPists2Bridge
             }
         }
 
-        void DequeueItems()
+        public void DequeueItems()
         {
             if (hasLoaded)
             {
@@ -244,8 +245,17 @@ namespace TheEscAPists2Bridge
                 MessageHandler.instance.SendSlotnameToGame();
                 MessageHandler.instance.SendConnectionStatus();
                 SubscribeToServerEvents();
-                
-                LoadFile();
+
+                for (int i = 0; i < 5; i++)
+                {
+                    bool result = LoadFile();
+                    if (result)
+                    {
+                        DequeueItems();
+                        break;
+                    }
+                }
+
                 return true;
             }
 
@@ -302,36 +312,36 @@ namespace TheEscAPists2Bridge
                     MessageHandler.instance.ScoutHintToGame(Session.Locations.GetLocationNameFromId(locationInfoPacket.Locations[0].Location, ModInfo.GameName), Session.Items.GetItemName(locationInfoPacket.Locations[0].Item, ModInfo.GameName));
                 }
 
-                    if (packet.PacketType == ArchipelagoPacketType.Connected)
+                if (packet.PacketType == ArchipelagoPacketType.Connected)
+                {
+                    
+                    ConnectedPacket connectedPacket = (ConnectedPacket)packet;
+
+                    checkedLocations = new List<long>(connectedPacket.LocationsChecked);
+
+                    missingLocations = new List<long>(connectedPacket.MissingChecks);
+
+                    slotData = new SlotData(connectedPacket.SlotData);
+
+                    foreach (long id in checkedLocations)
                     {
-                        
-                        ConnectedPacket connectedPacket = (ConnectedPacket)packet;
-                        
-                        checkedLocations = new List<long>(connectedPacket.LocationsChecked);
-
-                        missingLocations = new List<long>(connectedPacket.MissingChecks);
-
-                        slotData = new SlotData(connectedPacket.SlotData);
-                        
-                        foreach (long id in checkedLocations)
+                        if (!uniqueEscapesCompleted.Contains(id))
                         {
-                            if (!uniqueEscapesCompleted.Contains(id))
+                            string locationID = id.ToString();
+
+                            locationID = locationID.Remove(0, 2);
+
+                            char[] locationIDChar = locationID.ToCharArray();
+                            if (locationIDChar[0] == '1')
                             {
-                                string locationID = id.ToString();
-
-                                locationID = locationID.Remove(0, 2);
-
-                                char[] locationIDChar = locationID.ToCharArray();
-                                if (locationIDChar[0] == '1')
-                                {
-                                    uniqueEscapesCompleted.Add(id);
-                                    ConsoleLogging.LogDebug($"Escapes: {uniqueEscapesCompleted.Count}, Last {uniqueEscapesCompleted[uniqueEscapesCompleted.Count - 1]}");
-                                    CheckGoalAndSendToServer();
-                                }
-
+                                uniqueEscapesCompleted.Add(id);
+                                ConsoleLogging.LogDebug($"Escapes: {uniqueEscapesCompleted.Count}, Last {uniqueEscapesCompleted[uniqueEscapesCompleted.Count - 1]}");
+                                CheckGoalAndSendToServer();
                             }
+
                         }
                     }
+                }
 
                 if (packet.PacketType == ArchipelagoPacketType.ReceivedItems)
                 {
@@ -423,6 +433,7 @@ namespace TheEscAPists2Bridge
             lastIntellect = 30; //Want to send 30 first time round
 
             missingLocations = new List<long>();
+            nonValidLocations = new List<long>();
             slotData = null;
             uniqueEscapesCompleted = new List<long>();
             return true;
@@ -487,6 +498,7 @@ namespace TheEscAPists2Bridge
                     {
                         ConsoleLogging.LogError(ConsoleLogging.ErrorCode.CheckSendFailure, "Tried to Send a Stat Check but the stat reported was the default value (-1). Try to send another stat check");
                     }
+                    SaveFile();
                     for (int i = 30; i <= lastStat; i++)
                     {
                         if (i != 100)
@@ -547,7 +559,7 @@ namespace TheEscAPists2Bridge
                 ConsoleLogging.LogDebug("Escape already in the unique escapes. Checking goal condition.");
             }
             
-            if (checkedLocations.Contains(id))
+            if (checkedLocations.Contains(id) || nonValidLocations.Contains(id))
             {
                 return;
             }
@@ -560,12 +572,12 @@ namespace TheEscAPists2Bridge
                 ConsoleLogging.LogSend("Check Send: " + Session.Locations.GetLocationNameFromId(id));
                 Session.Locations.CompleteLocationChecks(checkedLocations.Except(Session.Locations.AllLocationsChecked).ToArray());
                 
-                
-                SaveFile();
             }
             else
             {
-                ConsoleLogging.LogError(ConsoleLogging.ErrorCode.CheckSendFailure, "Check not found in list of locations yet to be sent");
+                // ConsoleLogging.LogError(ConsoleLogging.ErrorCode.CheckSendFailure, "Check not found in list of locations yet to be sent");
+                nonValidLocations.Add(id);
+                ConsoleLogging.LogDebug($"Tried to send location {id}, but it wasn't in the missing locations");
             }
 
          
@@ -646,17 +658,17 @@ namespace TheEscAPists2Bridge
             ConsoleLogging.LogDebug("Hint should be scouted");
         }
         
-        static void LoadFile()
+        static bool LoadFile()
         {
             string pathToCheck = Directory.GetCurrentDirectory();
-            pathToCheck = pathToCheck.Remove(pathToCheck.Length - 4);
+            pathToCheck = pathToCheck.Remove(pathToCheck.Length - 6);
             pathToCheck += instance.connectionInfo.slotName + instance.seed + ".json";
             
             if (!File.Exists(pathToCheck))
             {
                 ConsoleLogging.LogDebug("No File found, loading nothing.");
                 instance.hasLoaded = true;
-                return;
+                return true;
             }
 
             try
@@ -671,17 +683,19 @@ namespace TheEscAPists2Bridge
             catch (Exception error)
             {
                 ConsoleLogging.LogError(ConsoleLogging.ErrorCode.LoadFailure, $"Tried to load file {pathToCheck} with error {error}");
+                return false;
             }
 
             instance.hasLoaded = true;
-            instance.DequeueItems();
+
+            return true;
         }
 
         static void SaveFile()
         {
             ConsoleLogging.LogDebug("SAVING FILE");
             string pathToSave =  Directory.GetCurrentDirectory();
-            pathToSave = pathToSave.Remove(pathToSave.Length - 4);
+            pathToSave = pathToSave.Remove(pathToSave.Length - 6);
             pathToSave += instance.connectionInfo.slotName + instance.seed + ".json";
             ConsoleLogging.LogDebug($"Saving to {pathToSave}");
             string[] lineToSave = new string[4];
@@ -690,6 +704,7 @@ namespace TheEscAPists2Bridge
             lineToSave[2] = instance.lastIntellect.ToString();
             lineToSave[3] = instance.lastItemIndexReceived.ToString();
             
+            ConsoleLogging.LogDebug($"Contents of save: {lineToSave[0]}, {lineToSave[1]}, {lineToSave[2]}, {lineToSave[3]}. Path: {pathToSave}");
             File.WriteAllLines(pathToSave, lineToSave);
         }
 

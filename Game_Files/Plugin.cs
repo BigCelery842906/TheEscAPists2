@@ -1730,12 +1730,15 @@ public class Plugin : BaseUnityPlugin
                 
                 instance.KeysRequiredObject.SetActive(true);
                 instance.KeysRequiredText.text = "Connect to Archipelago via the Console Window!";
+                return;
             }
 
             LevelScript.PRISON_ENUM prison_Enum = GlobalStart.GetInstance().GetCurrentSelectedPrisonData().m_LevelInfo.m_PrisonEnum;
 
             if (instance.prisonUnlocksReceived == null)
             { // Disable all buttons until connection
+                instance.KeysRequiredObject.SetActive(true);
+                instance.KeysRequiredText.text = "Haven't received any prison unlocks yet...";
                 ___m_ButtonClass.interactable = false;
                 ___m_ButtonClass.m_bCanInteractWithMouse = false;
                 return;

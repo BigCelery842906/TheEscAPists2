@@ -229,6 +229,7 @@ namespace TheEscAPists2Bridge
             ArchipelagoClient.instance.SetConnectionValues(Connection.game, Connection.slotName, Connection.serverAddress, Connection.password, Connection.version);
             ConsoleLogging.LogSend(ArchipelagoClient.instance.GetConnectionInfo().ToString());
             ArchipelagoClient.instance.TryToConnect();
+            ArchipelagoClient.instance.DequeueItems();
         }
         
         //Say

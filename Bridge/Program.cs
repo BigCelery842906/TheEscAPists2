@@ -53,11 +53,11 @@ namespace TheEscAPists2Bridge
                     //     StartConnectionInfo();
                     //     break;
                     // }
-                    // case "/connect ap":
-                    // {
-                    //     StartConnectionInfo();
-                    //     break;
-                    // }
+                    case "/connect ap":
+                    {
+                        StartConnectionInfo();
+                        break;
+                    }
                     // case "/connect bridge":
                     // {
                     //     ConnectBridge();
@@ -334,9 +334,11 @@ namespace TheEscAPists2Bridge
         {
             ConsoleLogging.LogInfo("");
             ConsoleLogging.LogInfo("--- Help Menu ---");
+            ConsoleLogging.LogInfo("This version may have some bugs ");
             // ConsoleLogging.LogInfo("/connect (arg) - Default is both to game and the server, AP is for the server, bridge is for the game.");
+            ConsoleLogging.LogInfo("/connect ap - Connect to the archipelago server");
             // ConsoleLogging.LogInfo("/disconnect (arg) - Default is both to game and the server, AP is for the server, bridge is for the game.");
-            ConsoleLogging.LogInfo("If the game or bridge disconnects for any reason, you will need to close and reopen everything. I apologise for this, it will be fixed for a future update - BC");
+            // ConsoleLogging.LogInfo("If the game or bridge disconnects for any reason, you will need to close and reopen everything. I apologise for this, it will be fixed for a future update - BC");
             ConsoleLogging.LogInfo("/deathlink - Toggle DeathLink");
             ConsoleLogging.LogInfo("/steathlink - Toggle SteathLink");
             ConsoleLogging.LogInfo("/help - Displays this help message.");
