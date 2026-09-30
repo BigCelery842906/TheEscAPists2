@@ -399,8 +399,6 @@ public class Plugin : BaseUnityPlugin
     }
     void KillEverything()
     {
-        bridgeProcess?.Kill();
-
         writer?.Dispose();
         writer = null;
 
