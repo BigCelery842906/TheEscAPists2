@@ -55,7 +55,6 @@ public class Plugin : BaseUnityPlugin
 
         logging = new Logging(Logger);
         StartBridge();
-        StartPipes();
         
 
         Harmony harmony = new Harmony("com.bigcelery842906.escapists2.archipelago.randomiser");
@@ -274,9 +273,13 @@ public class Plugin : BaseUnityPlugin
                 Packet.IsConnectedPacket isConnectedPacket = (Packet.IsConnectedPacket)message;
                 isConnected = isConnectedPacket.isConnected;
 
-                strength_prog_count = 0;
-                stamina_prog_count = 0;
-                intellect_prog_count = 0;
+                if (!isConnected)
+                {
+                    strength_prog_count = 0;
+                    stamina_prog_count = 0;
+                    intellect_prog_count = 0;
+                }
+
                 break;
             }
             case PacketType.Hint:
@@ -655,18 +658,21 @@ public class Plugin : BaseUnityPlugin
             case "Progressive Strength":
             {
                 strength_prog_count++;
+                Logger.LogInfo($"Progressive Strength Count: {strength_prog_count}");
                 break;
             }
 
             case "Progressive Stamina":
             {
                 stamina_prog_count++;
+                Logger.LogInfo($"Progressive Stamina Count: {stamina_prog_count}");
                 break;
             }
 
             case "Progressive Intellect":
             {
                 intellect_prog_count++;
+                Logger.LogInfo($"Progressive Intellect Count: {intellect_prog_count}");
                 break;
             }
             default:
@@ -1594,19 +1600,19 @@ public class Plugin : BaseUnityPlugin
     
     #region Stat Handling
     
-    private int strength_prog_count;
-    private int stamina_prog_count;
-    private int intellect_prog_count;
+    private int strength_prog_count = 0;
+    private int stamina_prog_count = 0;
+    private int intellect_prog_count = 0;
 
-    private int strength_step;
-    private int stamina_step;
-    private int intellect_step;
+    private int strength_step = 0;
+    private int stamina_step = 0;
+    private int intellect_step = 0;
 
     private int base_Stat = 30;
 
-    private int synced_strength;
-    private int synced_stamina;
-    private int synced_intellect;
+    private int synced_strength = 0;
+    private int synced_stamina = 0;
+    private int synced_intellect = 0;
     
     void CalculateStats()
     {
@@ -1624,6 +1630,9 @@ public class Plugin : BaseUnityPlugin
             synced_intellect = base_Stat + (intellect_prog_count * intellect_step);
         else
             synced_intellect = 100;
+        
+        Logger.LogInfo($"Calculated: {instance.synced_strength}, {instance.synced_stamina}, {instance.synced_intellect}");
+        Logger.LogInfo($"Prog Count: {instance.strength_prog_count}, {instance.stamina_prog_count}, {instance.intellect_prog_count}");
     }
 
     void SetStats()
@@ -1730,17 +1739,20 @@ public class Plugin : BaseUnityPlugin
                 
                 instance.KeysRequiredObject.SetActive(true);
                 instance.KeysRequiredText.text = "Connect to Archipelago via the Console Window!";
-                return;
             }
 
             LevelScript.PRISON_ENUM prison_Enum = GlobalStart.GetInstance().GetCurrentSelectedPrisonData().m_LevelInfo.m_PrisonEnum;
 
             if (instance.prisonUnlocksReceived == null)
             { // Disable all buttons until connection
-                instance.KeysRequiredObject.SetActive(true);
-                instance.KeysRequiredText.text = "Haven't received any prison unlocks yet...";
                 ___m_ButtonClass.interactable = false;
                 ___m_ButtonClass.m_bCanInteractWithMouse = false;
+                if (isConnected)
+                {
+                    instance.KeysRequiredObject.SetActive(true);
+                    instance.KeysRequiredText.text = "Haven't received any prison unlocks yet...";
+                }
+
                 return;
             }
 

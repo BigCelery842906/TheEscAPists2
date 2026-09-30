@@ -119,6 +119,10 @@ namespace TheEscAPists2Bridge
         public Queue<string> incomingChatQueue = new Queue<string>();
         public Queue<string> incomingItemsQueue = new Queue<string>();
         public Queue<int> incomingItemsIndexQueue = new Queue<int>();
+        public List<string> incomingItemsList = new List<string>();
+        public List<int> incomingItemsIndexList = new List<int>();
+        
+        
         private bool hasLoaded = false;
         private int lastItemIndexReceived = 0;
         private int localIndexReceived = 0;
@@ -156,34 +160,39 @@ namespace TheEscAPists2Bridge
 
         public void DequeueItems()
         {
-            if (hasLoaded)
+            lock (incomingItemsQueue)
             {
-                if (incomingItemsQueue.Count == 0 || incomingItemsQueue == null)
+                if (hasLoaded)
                 {
-                    return;
-                }
-
-                int index = incomingItemsIndexQueue.Dequeue();
-                string itemName = incomingItemsQueue.Dequeue();
-                ConsoleLogging.LogDebug($"{lastItemIndexReceived} >= {index} (Item: {itemName})");
-
-                if (!(itemName.Contains("Progressive") || itemName.Contains("Prison Unlock") || itemName.Contains("Blueprint")))
-                {
-                    if (lastItemIndexReceived >= index)
+                    if (incomingItemsQueue == null || incomingItemsIndexQueue == null || incomingItemsQueue.Count == 0 || incomingItemsIndexQueue.Count == 0)
                     {
-                        ConsoleLogging.LogDebug($"DID NOT SEND ITEM DUE TO ITEM INDEX, WHICH IS {index} (Item: {itemName}");
                         return;
                     }
-                }
 
-                if (!(lastItemIndexReceived >= index))
-                {
-                    lastItemIndexReceived = index;
-                }
+                    while (incomingItemsQueue.Count > 0)
+                    {
+                        int index = incomingItemsIndexQueue.Dequeue();
+                        string itemName = incomingItemsQueue.Dequeue();
+                        ConsoleLogging.LogDebug($"{lastItemIndexReceived} >= {index} (Item: {itemName})");
 
-                MessageHandler.instance.SendItemToGame(itemName, false);
-                SaveFile();
-                DequeueItems();
+                        if (!(itemName.Contains("Progressive") || itemName.Contains("Prison Unlock") || itemName.Contains("Blueprint")))
+                        {
+                            if (lastItemIndexReceived >= index)
+                            {
+                                ConsoleLogging.LogDebug($"DID NOT SEND ITEM DUE TO ITEM INDEX, WHICH IS {index} (Item: {itemName}), {incomingItemsQueue.Count} items left in queue.");
+                                continue;
+                            }
+                        }
+
+                        if (!(lastItemIndexReceived >= index))
+                        {
+                            lastItemIndexReceived = index;
+                        }
+
+                        MessageHandler.instance.SendItemToGame(itemName, false);
+                        SaveFile();
+                    }
+                }
             }
         }
 
@@ -242,8 +251,7 @@ namespace TheEscAPists2Bridge
             if (loginResult is LoginSuccessful loginSuccess)
             {
                 connectedToServer = true;
-                MessageHandler.instance.SendSlotnameToGame();
-                MessageHandler.instance.SendConnectionStatus();
+                GameConnector.instance.SendConnectionInfo();
                 SubscribeToServerEvents();
 
                 for (int i = 0; i < 5; i++)
@@ -363,6 +371,8 @@ namespace TheEscAPists2Bridge
                         
                         incomingItemsQueue.Enqueue(itemName);
                         incomingItemsIndexQueue.Enqueue(localIndexReceived);
+                        incomingItemsList.Add(itemName);
+                        incomingItemsIndexList.Add(localIndexReceived);
                         DequeueItems();
                     }
                     SaveFile();
@@ -423,6 +433,10 @@ namespace TheEscAPists2Bridge
             incomingChatQueue = new Queue<string>();
             incomingItemsQueue = new Queue<string>();
             incomingItemsIndexQueue = new Queue<int>();
+            incomingItemsList.Clear();
+            incomingItemsIndexList.Clear();
+            
+            
             hasLoaded = false;
             lastItemIndexReceived = 0;
             localIndexReceived = 0;
@@ -708,6 +722,24 @@ namespace TheEscAPists2Bridge
             File.WriteAllLines(pathToSave, lineToSave);
         }
 
-        
+
+        public void ResetQueues()
+        {
+            incomingItemsQueue.Clear();
+            incomingItemsIndexQueue.Clear();
+            if (incomingItemsList.Count == 0)
+            {
+                ConsoleLogging.LogDebug("Incoming Items List is empty, returning early.");
+                return;
+            }
+            ConsoleLogging.LogDebug($"{incomingItemsIndexList.Count} items in the list to add.");
+            for (int i = 0; i < incomingItemsList.Count; i++)
+            {
+                incomingItemsQueue.Enqueue(incomingItemsList[i]);
+                incomingItemsIndexQueue.Enqueue(incomingItemsIndexList[i]);
+            }
+            
+            ConsoleLogging.LogDebug($"Reset the queues for when the game reconnects. {incomingItemsQueue.Count} items have been added to the queue.");
+        }
     }
 }

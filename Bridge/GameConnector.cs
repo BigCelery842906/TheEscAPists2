@@ -140,8 +140,14 @@ namespace TheEscAPists2Bridge
 
         void RestartPipes()
         {
+            ConsoleLogging.LogDebug("Restarting Pipes due to game disconnect...");
             DisconnectFromGame();
             StartConnectionToGame();
+            if (ArchipelagoClient.instance.GetConnectedStatus())
+            {
+                ConsoleLogging.LogDebug("Resetting the queues for when the game reconnects.");
+                ArchipelagoClient.instance.ResetQueues();
+            }
         }
 
         void EndPipe()
@@ -202,6 +208,14 @@ namespace TheEscAPists2Bridge
             {
                 Program.StartConnectionInfo();
             }
+        }
+
+
+        public void SendConnectionInfo()
+        {
+            MessageHandler.instance.SendSlotnameToGame();
+            MessageHandler.instance.SendConnectionStatus();
+            ConsoleLogging.LogDebug("Sending the connection info to the game now.");
         }
     }
 }

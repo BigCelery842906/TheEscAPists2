@@ -361,6 +361,13 @@ namespace TheEscAPists2Bridge
 
         public static void StartConnectionInfo()
         {
+            if (ArchipelagoClient.instance.GetConnectedStatus())
+            {
+                GameConnector.instance.SendConnectionInfo();
+                MessageHandler.instance.SendSlotDataToGame(ArchipelagoClient.instance.slotData);
+                ArchipelagoClient.instance.DequeueItems();
+                return;
+            }
             settingConnectionValue = true;
             ConsoleLogging.LogInfoInput("Please Enter The Slot Name: ");
         }
