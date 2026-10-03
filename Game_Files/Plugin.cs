@@ -196,7 +196,7 @@ public class Plugin : BaseUnityPlugin
 
                 if (message == null)
                 {
-                    Logger.LogWarning("Bridge disconnected. Please restart both the bridge and the game.");
+                    Logger.LogWarning("Bridge disconnected. Please restart the bridge, and back out to the prison select screen.");
                     isConnected = false;
                     ClosePipes();
                     ResetStats();

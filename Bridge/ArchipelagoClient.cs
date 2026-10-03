@@ -409,7 +409,6 @@ namespace TheEscAPists2Bridge
 
         private void SetUpDeathlink()
         {
-            //TODO: Look at optional deathlink - Check player options/yaml etc
             DeathLinkService = Session.CreateDeathLinkService();
             DeathLinkService.EnableDeathLink();
             DeathLinkService.OnDeathLinkReceived += MessageHandler.instance.SendDeathlinkToGame;
@@ -476,7 +475,6 @@ namespace TheEscAPists2Bridge
                     return;
                 }
                 
-                //TODO: IF THIS STAT CHECK HAS BEEN SENT DON'T SEND THE ERROR
                 string stat = "n/a";
                 int lastStat = -1;
                 int statToParse = int.Parse(checkParts[1]);
@@ -640,10 +638,6 @@ namespace TheEscAPists2Bridge
                 Tags = new List<string> { "StealthLink", "StealthSource|" + slotName }
             };
             Session.Socket.SendPacket(bouncePacket);
-
-            // This is for diagnostics to see if the stealthlink works
-            //TODO: GET A SECOND CLIENT RUNNING TO TEST THIS PROPERLY
-            SayToServer($"[DEBUG ALERT] {slotName} just triggered a prison lockdown!");
         }
 
         public void ScoutHint(string hintPacketHintName)

@@ -124,7 +124,7 @@ namespace TheEscAPists2Bridge
 
                     if (message == null)
                     {
-                        ConsoleLogging.LogWarning("Game disconnected. Please restart both the bridge and the game.");
+                        ConsoleLogging.LogWarning("Game disconnected. Please restart your game.");
                         RestartPipes();
                         return;
                     }

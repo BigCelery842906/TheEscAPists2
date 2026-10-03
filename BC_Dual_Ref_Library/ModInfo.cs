@@ -7,11 +7,5 @@ namespace BC_Dual_Ref_Library
         //ACTUAL VALUES
         public static string GameName = "The Escapists 2";
         public static Version GameVersion = new Version(0, 6, 7);
-
-
-
-        //TESTING VALUES
-        //public static string GameName = "Clique";
-        //public static Version GameVersion = new Version(0, 6, 1);
     }
 }

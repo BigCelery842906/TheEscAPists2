@@ -54,7 +54,6 @@ namespace TheEscAPists2Bridge
 
         public void ProcessChatQueue()
         {
-            //TODO: Change this to all packets that need to be sent.
             lock (ArchipelagoClient.instance.incomingChatQueue)
             {
                 while (ArchipelagoClient.instance.incomingChatQueue.Count > 0)
@@ -231,7 +230,6 @@ namespace TheEscAPists2Bridge
         //Connection
         void TryConnectToServer(Packet.ConnectionPacket Connection)
         {
-            //TODO: SET VALUES CORRECTLY
             ArchipelagoClient.instance.SetConnectionValues(Connection.game, Connection.slotName, Connection.serverAddress, Connection.password, Connection.version);
             ConsoleLogging.LogSend(ArchipelagoClient.instance.GetConnectionInfo().ToString());
             ArchipelagoClient.instance.TryToConnect();
@@ -247,7 +245,6 @@ namespace TheEscAPists2Bridge
         //Checks
         void SendCheckToServer(string CheckName, bool isID)
         {
-            //TODO: SEND CHECK VALUES
             ArchipelagoClient.instance.SendCheck(CheckName, isID);
         }
         
