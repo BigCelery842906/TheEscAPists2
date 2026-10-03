@@ -1446,7 +1446,7 @@ public class Plugin : BaseUnityPlugin
 
         { "Area_17|Desk_L_01 (34.5, 10.5, 3.0)", 86014 }, //Maintenance Desk Underground (Cyan Door)
 
-        { "Area_17|Desk_U_01 (1) (44.5, 31.5, 3.0)", 86015 }, //Alien Pod Room Guard Desk Underground (Red Door OR Infirmary Outfit)
+        { "Area_17|Desk_U_01 (1) (44.5, 31.5, 3.0)", 86015 }, //Alien Pod Room Guard Desk Underground (Red Door)
 
         { "Area_17|Desk_D_01 (33.5, -4.5, 0.0)", 86016 }, //Floor 1 Southern Guard Storage Desk
         { "Area_17|Desk_D_01 (2) (-2.5, 9.5, 0.0)", 86017 }, //Musical Room Guard Desk Floor 1 (Red Door OR Infirmary Outfit)
