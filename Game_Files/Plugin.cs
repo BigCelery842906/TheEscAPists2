@@ -199,6 +199,7 @@ public class Plugin : BaseUnityPlugin
                     Logger.LogWarning("Bridge disconnected. Please restart both the bridge and the game.");
                     isConnected = false;
                     ClosePipes();
+                    ResetStats();
                     
                     return;
                 }
@@ -278,6 +279,8 @@ public class Plugin : BaseUnityPlugin
                     strength_prog_count = 0;
                     stamina_prog_count = 0;
                     intellect_prog_count = 0;
+
+                    ResetStats();
                 }
 
                 break;
@@ -312,6 +315,32 @@ public class Plugin : BaseUnityPlugin
                 break;
             }
         }
+    }
+
+    private void ResetStats()
+    {
+        slotName = "";
+        pendingDeathLink = false;
+        lastDeathLinkReason = "";
+        pendingStealthLink = false;
+        stealthLinkCulprit = "";
+
+        prisonUnlocksReceived = new List<string>();
+        blueprintsReceived = new List<int[]>();
+
+        itemQueue = new Queue<int>();
+        moneyToAdd = 0;
+        trapQueue = new Queue<string>();
+
+        strength_prog_count = 0;
+        stamina_prog_count = 0;
+        intellect_prog_count = 0;
+        strength_step = 0;
+        stamina_step = 0;
+        intellect_step = 0;
+        synced_strength = 0;
+        synced_stamina = 0;
+        synced_intellect = 0;
     }
 
     private bool isDeskDetecting = false;

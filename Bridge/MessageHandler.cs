@@ -109,6 +109,12 @@ namespace TheEscAPists2Bridge
             SerialiseAndSend(isConnectedPacket);
         }
         
+        public void SendNoConnection()
+        {
+            Packet.IsConnectedPacket isConnectedPacket = new Packet.IsConnectedPacket(false);
+            SerialiseAndSend(isConnectedPacket);
+        }
+        
         public void ScoutHintToGame(string location, string item)
         {
             Packet.HintPacket hintPacket = new Packet.HintPacket(location, Packet.HintPacket.TypeOfHint.Scout, item);
