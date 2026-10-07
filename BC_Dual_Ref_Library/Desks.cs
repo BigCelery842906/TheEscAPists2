@@ -2,7 +2,7 @@
 
 namespace BC_Dual_Ref_Library
 {
-    public class Desks
+    public static class Desks
     {
         //Guard Outfit - 40 Intellect and Blueprint
         //Infirmary Outfit - 50 Intellect
@@ -76,34 +76,34 @@ namespace BC_Dual_Ref_Library
         { "OldWestFort|Desk_D_01 (-30.5, -20.5, 0.0)", 82011 }, //Cell 11
         { "OldWestFort|Desk_U_01 (-29.5, -24.5, 0.0)", 82012 }, //Cell 12
 
-        { "OldWestFort|Desk_D_01 (6) (-4.5, -28.5, -6.0)", 820014 }, //Bottom Left Hallway Floor 2
-        { "OldWestFort|Desk_R_01 (-21.5, -31.5, -6.0)", 82015 }, //Down From Cells Floor 2
-        { "OldWestFort|Desk_D_01 (5) (14.5, -30.5, -6.0)", 82016 }, //Floor 2 Bottom Right
-        { "OldWestFort|Desk_D_01 (2) (11.5, 1.5, -6.0)", 82017 }, //Floor 2 Left From Infirmary
-        { "OldWestFort|Desk_D_01 (9) (0.5, -0.5, -6.0)", 82018 }, //Floor 2 Left of Central Stairs
-        { "OldWestFort|Desk_D_01 (4) (-4.5, -42.5, -6.0)", 82019 }, //Floor 2 Bottom Left
-        { "OldWestFort|Desk_D_01 (8) (21.5, 14.5, -6.0)", 82020 }, //Floor 3 Up From Infirmary
-        { "OldWestFort|Desk_D_01 (13) (16.5, 12.5, -12.0)", 82021 }, //Floor 3 Next to stairs
-        { "OldWestFort|Desk_D_01 (14) (28.5, 6.5, -12.0)", 82022 }, //Floor 3 Room Right of stairs
+        { "OldWestFort|Desk_D_01 (6) (-4.5, -28.5, -6.0)", 82013 }, //Bottom Left Hallway Floor 2
+        { "OldWestFort|Desk_R_01 (-21.5, -31.5, -6.0)", 82014 }, //Down From Cells Floor 2
+        { "OldWestFort|Desk_D_01 (5) (14.5, -30.5, -6.0)", 82015 }, //Floor 2 Bottom Right
+        { "OldWestFort|Desk_D_01 (2) (11.5, 1.5, -6.0)", 82016 }, //Floor 2 Left From Infirmary
+        { "OldWestFort|Desk_D_01 (9) (0.5, -0.5, -6.0)", 82017 }, //Floor 2 Left of Central Stairs
+        { "OldWestFort|Desk_D_01 (4) (-4.5, -42.5, -6.0)", 82018 }, //Floor 2 Bottom Left
+        { "OldWestFort|Desk_D_01 (8) (21.5, 14.5, -6.0)", 82019 }, //Floor 3 Up From Infirmary
+        { "OldWestFort|Desk_D_01 (13) (16.5, 12.5, -12.0)", 82020 }, //Floor 3 Next to stairs
+        { "OldWestFort|Desk_D_01 (14) (28.5, 6.5, -12.0)", 82021 }, //Floor 3 Room Right of stairs
 
-        { "OldWestFort|Desk_U_01 (24.5, 5.5, 0.0)", 82023 }, //Medic Desk (Infirmary Outfit)
+        { "OldWestFort|Desk_U_01 (24.5, 5.5, 0.0)", 82022 }, //Medic Desk (Infirmary Outfit)
 
-        { "OldWestFort|Desk_D_01 (31.5, 9.5, 0.0)", 82024 }, //Maintenance Floor 1 (Cyan Door)
-        { "OldWestFort|Desk_D_01 (11.5, 14.5, -6.0)", 82025 }, //Maintenance Desk Floor 2 (Cyan Door)
+        { "OldWestFort|Desk_D_01 (31.5, 9.5, 0.0)", 82023 }, //Maintenance Floor 1 (Cyan Door)
+        { "OldWestFort|Desk_D_01 (11.5, 14.5, -6.0)", 82024 }, //Maintenance Desk Floor 2 (Cyan Door)
 
-        { "OldWestFort|Desk_U_01 (1) (-33.5, 25.5, 0.0)", 82026 }, //Generator Room Desk (Red Door)
-        { "OldWestFort|Desk_R_01 (-15.5, 37.5, 0.0)", 82027 }, //Bottom Guard Desk Floor 1 (Red Door)
-        { "OldWestFort|Desk_R_01 (1) (-15.5, 38.5, 0.0)", 82028 }, //Floor 1 Top Guard Desk (Red Door)
-        { "OldWestFort|Desk_D_01 (10) (-10.5, 43.5, -6.0)", 82029 }, //Central Guard Desk Floor 2 (Red Door)
-        { "OldWestFort|Desk_D_01 (26.5, 45.5, -6.0)", 82030 }, //Floor 2 Right Guard Desk (Red Door)
-        { "OldWestFort|Desk_R_01 (-33.5, 14.5, -6.0)", 82031 }, //Floor 2 Right of Red Door (Red Door)
-        { "OldWestFort|Desk_D_01 (11) (3.5, 48.5, -6.0)", 82032 }, //Floor 2 Top Guard Desk (Red Door)
-        { "OldWestFort|Desk_D_01 (-18.5, 43.5, -6.0)", 82033 }, //Floor 2 Left Guard Desk (Red Door)
-        { "OldWestFort|Desk_D_01 (3) (-25.5, 25.5, -6.0)", 82034 }, //Floor 2 Up from Red Door (Red Door)
-        { "OldWestFort|Desk_D_01 (12) (2.5, 49.5, -12.0)", 82035 }, //Floor 3 Guard Desk (Red Door)
+        { "OldWestFort|Desk_U_01 (1) (-33.5, 25.5, 0.0)", 82025 }, //Generator Room Desk (Red Door)
+        { "OldWestFort|Desk_R_01 (-15.5, 37.5, 0.0)", 82026 }, //Bottom Guard Desk Floor 1 (Red Door)
+        { "OldWestFort|Desk_R_01 (1) (-15.5, 38.5, 0.0)", 82027 }, //Floor 1 Top Guard Desk (Red Door)
+        { "OldWestFort|Desk_D_01 (10) (-10.5, 43.5, -6.0)", 82028 }, //Central Guard Desk Floor 2 (Red Door)
+        { "OldWestFort|Desk_D_01 (26.5, 45.5, -6.0)", 82029 }, //Floor 2 Right Guard Desk (Red Door)
+        { "OldWestFort|Desk_R_01 (-33.5, 14.5, -6.0)", 82030 }, //Floor 2 Right of Red Door (Red Door)
+        { "OldWestFort|Desk_D_01 (11) (3.5, 48.5, -6.0)", 82031 }, //Floor 2 Top Guard Desk (Red Door)
+        { "OldWestFort|Desk_D_01 (-18.5, 43.5, -6.0)", 82032 }, //Floor 2 Left Guard Desk (Red Door)
+        { "OldWestFort|Desk_D_01 (3) (-25.5, 25.5, -6.0)", 82033 }, //Floor 2 Up from Red Door (Red Door)
+        { "OldWestFort|Desk_D_01 (12) (2.5, 49.5, -12.0)", 82034 }, //Floor 3 Guard Desk (Red Door)
 
-        { "OldWestFort|Desk_D_01 (37.5, 26.5, 0.0)", 82036 }, //Contraband Desk (Red Door)
-        { "OldWestFort|Cutlery_Tray_Down (29.5, -23.5, 0.0)", 82037 }, //Cutlery Tray
+        { "OldWestFort|Desk_D_01 (37.5, 26.5, 0.0)", 82035 }, //Contraband Desk (Red Door)
+        { "OldWestFort|Cutlery_Tray_Down (29.5, -23.5, 0.0)", 82036 }, //Cutlery Tray
 
 
         // { "OldWestFort|Desk_D_01 (5.5, 27.5, 3.0)", 82037 },                //Multiplayer
