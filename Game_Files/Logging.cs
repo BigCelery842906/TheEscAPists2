@@ -1,4 +1,5 @@
-﻿using BepInEx.Logging;
+﻿using BC_Dual_Ref_Library;
+using BepInEx.Logging;
 
 namespace TheEscAPists2;
 
@@ -25,7 +26,7 @@ public class Logging
         
         Logger = log;
         // Plugin startup logic
-        Logger.LogInfo($"Loading {MyPluginInfo.PLUGIN_GUID}!");
+        Logger.LogInfo($"Loading {ModInfo.PLUGIN_GUID}, Version: {ModInfo.PLUGIN_VERSION}!");
     }
 
     public void SendChatMessage(string message)

@@ -1,4 +1,6 @@
-﻿namespace TheEscAPists2Bridge;
+﻿using BC_Dual_Ref_Library;
+
+namespace TheEscAPists2Bridge;
 
 public static class ConsoleLogging
 {
@@ -74,6 +76,9 @@ public static class ConsoleLogging
 
     public static void LogSend(string thingToSend)
     {
+        debugStatements.Add(thingToSend);
+        if (!debugMode)
+        { return; }
         SetConsoleTextColor(ConsoleColor.DarkCyan);
         Console.WriteLine(thingToSend);
         SetConsoleTextColor(ConsoleColor.White);
@@ -127,6 +132,7 @@ public static class ConsoleLogging
     public static void LogDebugs()
     {
         SetConsoleTextColor(ConsoleColor.Cyan);
+        Console.WriteLine($"Mod Version: {ModInfo.PLUGIN_VERSION}");
         foreach (string debugStatement in debugStatements)
         {
             Console.WriteLine(debugStatement);

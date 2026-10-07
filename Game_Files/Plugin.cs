@@ -14,7 +14,7 @@ using Random = System.Random;
 
 namespace TheEscAPists2;
 
-[BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
+[BepInPlugin(ModInfo.PLUGIN_GUID, ModInfo.PLUGIN_NAME, ModInfo.PLUGIN_VERSION)]
 [BepInProcess("TheEscapists2.exe")] //Set Specifically for the Escapists 2
 public class Plugin : BaseUnityPlugin
 {
