@@ -64,12 +64,12 @@ namespace TheEscAPists2Bridge
                     //     break;
                     // }
 
-                    case "/disconnect":
-                    {
-                        DisconnectAP();
-                        // DisconnectBridge();
-                        break;
-                    }
+                    // case "/disconnect":
+                    // {
+                    //     DisconnectAP();
+                    //     // DisconnectBridge();
+                    //     break;
+                    // }
                     case "/disconnect ap":
                     {
                         DisconnectAP();
@@ -338,12 +338,13 @@ namespace TheEscAPists2Bridge
             // ConsoleLogging.LogInfo("/connect (arg) - Default is both to game and the server, AP is for the server, bridge is for the game.");
             ConsoleLogging.LogInfo("/connect ap - Connect to the archipelago server");
             // ConsoleLogging.LogInfo("/disconnect (arg) - Default is both to game and the server, AP is for the server, bridge is for the game.");
+            ConsoleLogging.LogInfo("/disconnect ap - Disconnect from the archipelago server.");
             // ConsoleLogging.LogInfo("If the game or bridge disconnects for any reason, you will need to close and reopen everything. I apologise for this, it will be fixed for a future update - BC");
             ConsoleLogging.LogInfo("/deathlink - Toggle DeathLink");
             ConsoleLogging.LogInfo("/steathlink - Toggle SteathLink");
             ConsoleLogging.LogInfo("/help - Displays this help message.");
             ConsoleLogging.LogInfo("/status - Log the current status of the bridge connections");
-            // ConsoleLogging.LogInfo("/exit - Close the bridge safely");
+            ConsoleLogging.LogInfo("/exit - Close the bridge safely (Note this may not work fully and you may need to force close)");
             ConsoleLogging.LogInfo("/bcasked - Print out a list of debug statements for debugging purposes");
 
             if (ConsoleLogging.debugMode)

@@ -243,6 +243,7 @@ namespace TheEscAPists2Bridge
                 //TODO: Send Chat Failure
 
                 connectedToServer = false;
+                ConsoleLogging.LogInfo("To retry connection, please type '/connect ap' wd");
                 Disconnect();
 
                 return false;
@@ -272,6 +273,7 @@ namespace TheEscAPists2Bridge
                 connectedToServer = false;
                 ConsoleLogging.LogError(ConsoleLogging.ErrorCode.ServerRefusedConnection, "Connection Error: " + String.Join("\n", loginFailure.Errors));
                 MessageHandler.instance.SendConnectionStatus();
+                ConsoleLogging.LogInfo("To retry connection, please type '/connect ap' wd");
                 Session.Socket.DisconnectAsync();
             }
 
