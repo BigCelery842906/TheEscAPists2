@@ -3,6 +3,8 @@ This is a mod the 'The Escapists 2' for use with Archipelago, the Multi World Ra
 # Installing the APworld:
 Download and install the way you usually would, no extra files required.
 
+Repo here: https://github.com/BigCelery842906/TE2Archipelago/
+
 # Installing the mod:
 Extract the zip into the root of your game directory, such that your Escapists2 folder looks like so:
 - TheEscapists2 root folder
