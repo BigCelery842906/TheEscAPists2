@@ -42,6 +42,7 @@ public static class ConsoleLogging
     /// 
     public static void LogError(ErrorCode errorCode, string error)
     {
+        debugStatements.Add(error);
         //Make Text Red - Maybe also flag with surrounding text
         SetConsoleTextColor(ConsoleColor.Red);
         // Console.WriteLine("!! ERROR !!");
@@ -50,9 +51,13 @@ public static class ConsoleLogging
         SetConsoleTextColor(ConsoleColor.White);
     }
 
-    public static void LogDebug(string debugInfo)
+    public static void LogDebug(string debugInfo, bool loggingDebugs = false)
     {
-        debugStatements.Add(debugInfo);
+        if (!loggingDebugs)
+        {
+            debugStatements.Add(debugInfo);
+        }
+
         if (!debugMode) { return; }
         
         SetConsoleTextColor(ConsoleColor.Cyan);
@@ -62,6 +67,7 @@ public static class ConsoleLogging
     
     public static void LogWarning(string debugInfo)
     {
+        debugStatements.Add(debugInfo);
         SetConsoleTextColor(ConsoleColor.Yellow);
         Console.WriteLine(debugInfo);
         SetConsoleTextColor(ConsoleColor.White);
@@ -69,6 +75,7 @@ public static class ConsoleLogging
 
     public static void LogSuccess(string success)
     {
+        debugStatements.Add(success);
         SetConsoleTextColor(ConsoleColor.Green);
         Console.WriteLine(success);
         SetConsoleTextColor(ConsoleColor.White);
@@ -131,12 +138,24 @@ public static class ConsoleLogging
 
     public static void LogDebugs()
     {
+        List<string> lineToSave = new List<string>();
+        ConsoleLogging.LogDebug("SAVING LOG FILE");
+        
+        string pathToSave = Directory.GetCurrentDirectory();
+        pathToSave = pathToSave.Remove(pathToSave.Length - 6);
+        pathToSave += "bridgeLog.json";
+        ConsoleLogging.LogDebug($"Saving to {pathToSave}");
+        
         SetConsoleTextColor(ConsoleColor.Cyan);
+        lineToSave.Add($"Mod Version: {ModInfo.PLUGIN_VERSION}");
         Console.WriteLine($"Mod Version: {ModInfo.PLUGIN_VERSION}");
+        
         foreach (string debugStatement in debugStatements)
         {
+            lineToSave.Add(debugStatement);
             Console.WriteLine(debugStatement);
         }
         SetConsoleTextColor(ConsoleColor.White);
+        File.WriteAllLines(pathToSave, lineToSave);
     }
 }

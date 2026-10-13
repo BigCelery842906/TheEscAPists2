@@ -39,7 +39,7 @@ namespace BC_Dual_Ref_Library
             { "Centre_Perks|Desk_L_01 (7) (24.5, -13.5, 0.0)", 81024 }, //Bottom Row Cell 8
 
 
-            { "Centre_Perks|Desk_D_01 (4) (-17.5, 37.5, 0.0)", 81025 }, //Desk next to car park
+            { "Centre_Perks|Desk_D_01 (4) (-17.5, 37.5, 0.0)", 81025 }, //Desk west of car park
             { "Centre_Perks|Desk_D_01 (2) (-7.5, 28.5, -6.0)", 81026 }, //Room above gym Floor 1
             { "Centre_Perks|Desk_D_01 (1) (6.5, -11.5, -6.0)", 81027 }, //Classroom Desk Floor 1
             { "Centre_Perks|Desk_D_01 (3) (-19.5, 27.5, -6.0)", 81028 }, //Meet the Crew Desk
@@ -98,8 +98,8 @@ namespace BC_Dual_Ref_Library
             { "OldWestFort|Desk_D_01 (3) (-25.5, 25.5, -6.0)", 82033 }, //Floor 2 Up from Red Door (Red Door)
             { "OldWestFort|Desk_D_01 (12) (2.5, 49.5, -12.0)", 82034 }, //Floor 3 Guard Desk (Red Door)
 
-            { "OldWestFort|Desk_D_01 (37.5, 26.5, 0.0)", 82035 }, //Contraband Desk (Red Door)
-            { "OldWestFort|Cutlery_Tray_Down (29.5, -23.5, 0.0)", 82036 }, //Cutlery Tray
+            { "OldWestFort|Desk_D_01 (37.5, 26.5, 0.0)", 82036 }, //Contraband Desk (Red Door)
+            { "OldWestFort|Cutlery_Tray_Down (29.5, -23.5, 0.0)", 82037 }, //Cutlery Tray
 
 
             // { "OldWestFort|Desk_D_01 (5.5, 27.5, 3.0)", 82037 },                //Multiplayer

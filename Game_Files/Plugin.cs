@@ -135,7 +135,7 @@ public class Plugin : BaseUnityPlugin
         }
         catch (Exception ex)
         {
-            Logger.LogError("(ForGame) Failed to connect to bridge.");
+            // Logger.LogError("(ForGame) Failed to connect to bridge.");
             pipeClientForGame = null;
             return;
         }
@@ -170,7 +170,7 @@ public class Plugin : BaseUnityPlugin
         }
         catch (Exception ex)
         {
-            Logger.LogError("(ForBridge) Failed to connect to bridge.");
+            // Logger.LogError("(ForBridge) Failed to connect to bridge.");
             pipeClientForBridge = null;
             return;
         }
