@@ -117,7 +117,7 @@ namespace TheEscAPists2Bridge
         public void ScoutHintToGame(string location, string item)
         {
             Packet.HintPacket hintPacket = new Packet.HintPacket(location, Packet.HintPacket.TypeOfHint.Scout, item);
-            ConsoleLogging.LogSend($"Scouted Hint: {location} contains {item}");
+            ConsoleLogging.LogDebugSend($"Scouted Hint: {location} contains {item}");
             SerialiseAndSend(hintPacket);
         }
 
@@ -231,7 +231,7 @@ namespace TheEscAPists2Bridge
         void TryConnectToServer(Packet.ConnectionPacket Connection)
         {
             ArchipelagoClient.instance.SetConnectionValues(Connection.game, Connection.slotName, Connection.serverAddress, Connection.password, Connection.version);
-            ConsoleLogging.LogSend(ArchipelagoClient.instance.GetConnectionInfo().ToString());
+            ConsoleLogging.LogDebugSend(ArchipelagoClient.instance.GetConnectionInfo().ToString());
             ArchipelagoClient.instance.TryToConnect();
             ArchipelagoClient.instance.DequeueItems();
         }
@@ -271,7 +271,7 @@ namespace TheEscAPists2Bridge
         //Goal
         void SendGoalToServer()
         {
-            ConsoleLogging.LogSend("Sending Goal to server.");
+            ConsoleLogging.LogDebugSend("Sending Goal to server.");
             ArchipelagoClient.instance.CheckGoalAndSendToServer();
         }
 

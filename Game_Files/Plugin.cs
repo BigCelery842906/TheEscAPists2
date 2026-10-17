@@ -1469,6 +1469,7 @@ public class Plugin : BaseUnityPlugin
         instance.Logger.LogInfo("Doing the player stats now!!!");
         instance.SetStats();
         instance.inGame = true;
+        instance.localPlayer = Gamer.GetPrimaryGamer().m_PlayerObject;
     }
 
     [HarmonyPatch(typeof(PlayerSelectMenu), "OnAppearanceSelected")]

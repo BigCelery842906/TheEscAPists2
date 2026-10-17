@@ -243,7 +243,7 @@ namespace TheEscAPists2Bridge
                 //TODO: Send Chat Failure
 
                 connectedToServer = false;
-                ConsoleLogging.LogInfo("To retry connection, please type '/connect ap' wd");
+                ConsoleLogging.LogInfo("To retry connection, please type '/connect ap'");
                 Disconnect();
 
                 return false;
@@ -583,7 +583,7 @@ namespace TheEscAPists2Bridge
                 checkedLocations.Add(id);
                 ConsoleLogging.LogDebug($"Added {id} to the checked locations, which sits at {checkedLocations.Count} items.");
                 //TODO: Difference between CompleteLocationChecks and CompleteLocationChecksAsync
-                ConsoleLogging.LogSend("Check Send: " + Session.Locations.GetLocationNameFromId(id));
+                ConsoleLogging.LogDebugSend("Check Send: " + Session.Locations.GetLocationNameFromId(id));
                 Session.Locations.CompleteLocationChecks(checkedLocations.Except(Session.Locations.AllLocationsChecked).ToArray());
                 
             }

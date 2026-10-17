@@ -84,6 +84,14 @@ public static class ConsoleLogging
     public static void LogSend(string thingToSend)
     {
         debugStatements.Add(thingToSend);
+        SetConsoleTextColor(ConsoleColor.DarkCyan);
+        Console.WriteLine(thingToSend);
+        SetConsoleTextColor(ConsoleColor.White);
+    }
+    
+    public static void LogDebugSend(string thingToSend)
+    {
+        debugStatements.Add(thingToSend);
         if (!debugMode)
         { return; }
         SetConsoleTextColor(ConsoleColor.DarkCyan);
