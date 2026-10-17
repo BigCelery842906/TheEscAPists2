@@ -302,15 +302,15 @@ namespace BC_Dual_Ref_Library
 
             { "Space Prison|Desk_D_01 (-12.5, 8.5, 0.0)", 87013 }, //Medic Desk
             { "Space Prison|Desk_D_01 (1) (-9.5, 29.5, 0.0)", 87014 }, //Northern Storage Desk
-            { "Space Prison|Desk_D_01 (1) (45.5, 6.5, -6.0)", 87015 }, //Jetpack/Forcefield Desk
+            { "Space Prison|Desk_D_01 (1) (45.5, 6.5, -6.0)", 87015 }, //Jetpack/Forcefield Desk (Red Key)
             { "Space Prison|Desk_D_01 (34.5, -12.5, 0.0)", 87016 }, //Eastern Storage Desk
             { "Space Prison|Desk_D_01 (4) (13.5, 25.5, -6.0)", 87017 }, //Northern Stray Desk
             { "Space Prison|Desk_D_01 (1) (49.5, -27.5, -6.0)", 87018 }, //Generator Stray Desk
-            { "Space Prison|Desk_D_01 (2) (-35.5, -16.5, 0.0)", 87019 }, //Kennels Desk
+            { "Space Prison|Desk_D_01 (2) (-35.5, -16.5, 0.0)", 87019 }, //Kennels Desk (Red Key)
             { "Space Prison|Desk_D_01 (6.5, 8.5, 0.0)", 87020 }, //Storage Desk near Kitchen
             { "Space Prison|Desk_D_01 (3) (-18.5, 11.5, -6.0)", 87021 }, //Inmate Lounge Desk
             { "Space Prison|Desk_D_01 (2) (-35.5, 13.5, -6.0)", 87022 }, //Western Office Desk
-            { "Space Prison|Desk_D_01 (3) (45.5, 12.5, 0.0)", 87023 }, //Guard Pod Room Desk
+            { "Space Prison|Desk_D_01 (3) (45.5, 12.5, 0.0)", 87023 }, //Guard Pod Room Desk (Red Key)
 
             { "Space Prison|Desk_D_01 (-11.5, 43.5, -6.0)", 87024 }, //Northern Hidden Stray Desk (Cutting Tool)
 
