@@ -137,16 +137,16 @@ namespace TheEscAPists2Bridge
                         break;
                     }
 
-                    case "//sendbroken":
-                    {
-                        //TODO: CHECK FOR ITEMS BEFORE SENDING THIS
-                        if (ArchipelagoClient.instance.GetConnectedStatus())
-                        {
-                            ArchipelagoClient.instance.SendCheck("Rattlesnake Springs Desk 35", false);
-                        }
-
-                        break;
-                    }
+                    // case "//sendbroken":
+                    // {
+                    //     //TODO: CHECK FOR ITEMS BEFORE SENDING THIS
+                    //     if (ArchipelagoClient.instance.GetConnectedStatus())
+                    //     {
+                    //         ArchipelagoClient.instance.SendCheck("Rattlesnake Springs Desk 35", false);
+                    //     }
+                    //
+                    //     break;
+                    // }
 
                     case "/test":
                     {
