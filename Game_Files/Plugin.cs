@@ -846,7 +846,7 @@ public class Plugin : BaseUnityPlugin
 
             if (localPlayer != null && __instance == localPlayer && knockedOut)
             {
-                if (Time.time - lastDeathLinkTime < 5f) return;
+                if (Time.time - lastDeathLinkTime < 5f && !instance.pendingDeathLink) return;
                 lastDeathLinkTime = Time.time;
 
                 string killerName = "their own incompetence";
