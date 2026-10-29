@@ -110,6 +110,18 @@ namespace TheEscAPists2Bridge
                         break;
                     }
 
+                    case "/deathamount":
+                    {
+                        string curLine2 = Console.ReadLine().Trim();
+                        int numDeaths = 0;
+
+                        if (int.TryParse(curLine2, out numDeaths))
+                        {
+                            ArchipelagoClient.instance.SetAmnestyAmount(numDeaths);
+                        }
+                        break;
+                    }
+
                     case "/help":
                     {
                         PrintHelp();
@@ -352,6 +364,7 @@ namespace TheEscAPists2Bridge
             // ConsoleLogging.LogInfo("If the game or bridge disconnects for any reason, you will need to close and reopen everything. I apologise for this, it will be fixed for a future update - BC");
             ConsoleLogging.LogInfo("/deathlink - Toggle DeathLink");
             ConsoleLogging.LogInfo("/steathlink - Toggle SteathLink");
+            ConsoleLogging.LogInfo("/deathamount - DeathLink Amnesty Amount. How many deaths you need to die before you send a DeathLink");
             ConsoleLogging.LogInfo("/help - Displays this help message.");
             ConsoleLogging.LogInfo("/status - Log the current status of the bridge connections");
             ConsoleLogging.LogInfo("/exit - Close the bridge safely (Note this may not work fully and you may need to force close)");

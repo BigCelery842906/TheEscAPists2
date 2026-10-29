@@ -138,6 +138,9 @@ namespace TheEscAPists2Bridge
         public SlotData slotData;
         private List<long> uniqueEscapesCompleted = new List<long>();
 
+        private int curDeaths = 0;
+        private int DeathLinkAmnestyAmount = 1;
+
         public ConnectionInfo GetConnectionInfo()
         {
             return connectionInfo;
@@ -601,8 +604,11 @@ namespace TheEscAPists2Bridge
 
         public void SendDeathLinkToServer(string slot, string reason)
         {
-            DeathLink deathlink = new DeathLink(slot, reason);
-            DeathLinkService.SendDeathLink(deathlink);
+            if (CheckDeathSend())
+            {
+                DeathLink deathlink = new DeathLink(slot, reason);
+                DeathLinkService.SendDeathLink(deathlink);
+            }
         }
 
         public void CheckGoalAndSendToServer()
@@ -718,7 +724,6 @@ namespace TheEscAPists2Bridge
             File.WriteAllLines(pathToSave, lineToSave);
         }
 
-
         public void ResetQueues()
         {
             incomingItemsQueue.Clear();
@@ -736,6 +741,24 @@ namespace TheEscAPists2Bridge
             }
             
             ConsoleLogging.LogDebug($"Reset the queues for when the game reconnects. {incomingItemsQueue.Count} items have been added to the queue.");
+        }
+
+        public void SetAmnestyAmount(int newAmount = 1)
+        {
+            DeathLinkAmnestyAmount = newAmount;
+        }
+
+        private bool CheckDeathSend()
+        {
+            curDeaths++;
+
+            if (curDeaths >= DeathLinkAmnestyAmount)
+            {
+                curDeaths = 0;
+                return true;
+            }
+
+            return false;
         }
     }
 }
