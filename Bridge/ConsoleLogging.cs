@@ -27,7 +27,7 @@ public static class ConsoleLogging
         FailToDisconnect,
         CheckSendFailure,
         LoadFailure,
-        
+        ParseError,
     }
     /// <summary>
     /// 01 - Test Error (Nothing actually wrong).
@@ -37,6 +37,7 @@ public static class ConsoleLogging
     /// 05 - Failed to disconnect from server
     /// 06 - Check failed to send
     /// 07 - Failed to Load Save
+    /// 08 - Parsing Error
     /// </summary>
     /// <param name="errorCode"></param>
     /// 
